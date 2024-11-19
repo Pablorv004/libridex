@@ -5,17 +5,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
-public class HomeController {
+public class IndexController {
 
-    private static final String HOME_VIEW = "home";
+    private static final String INDEX = "index";
     
     @GetMapping("/")
-    public String redirectToHome() {
-        return "redirect:/home";
+    public String redirectToIndex() {
+        return "redirect:/index";
     }
 
-    @GetMapping("/home")
-    public ModelAndView home(){
-        return new ModelAndView(HOME_VIEW);
+    @GetMapping("/index")
+    public ModelAndView index(){
+        return new ModelAndView(INDEX);
     }
 }
