@@ -1,15 +1,14 @@
-<header th:fragment="navBar">
-    <div class="navbar navbar-expand-md navbar-dark bg-dark" role="navigation">
-        <a class="navbar-brand ps-5" href="/" style="color:rgb(197, 134, 255)">Libridex</a>
-        <a class="navbar-brand ps-5" href="#">Our Books</a>
-        <a class="navbar-brand ps-5" href="#">Test</a>
+<header class="sticky-top" th:fragment="navbar">
+    <div class="navbar navbar-expand-md navbar-light bg-light" role="navigation">
+        <a class="navbar-brand ps-5 fw-bold" href="/" style="color:rgb(103, 75, 29)">Libridex</a>
+        <a class="navbar-brand ps-5" th:href="@{/catalog}">Our Books</a>
+        <a class="navbar-brand ps-5" th:href="@{/reservations}">Your Reservations</a>
         <div class="ms-auto pe-5">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="#"
-                        style="color: azure;">Login</a>
+                    <a class="nav-link btn btn-primary text-white fw-bold px-3" th:href="@{/login}" style="background-color: rgb(103, 75, 29); border-color: rgb(103, 75, 29);">Login</a>
 
-                        <!-- We'll uncomment this when we finish implementing Spring Security-->
+                    <!-- We'll uncomment this when we finish implementing Spring Security-->
                     <!-- <div sec:authorize="isAuthenticated()" class="dropdown">
                         <button class="btn btn-primary dropdown-toggle d-flex align-items-center" type="button"
                             id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
@@ -30,4 +29,14 @@
             </ul>
         </div>
     </div>
+    <hr class="p-0 m-0 border-2">
 </header>
+
+<head th:fragment="head">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}" />
+    <script src="https://kit.fontawesome.com/39fe04e284.js" crossorigin="anonymous"></script>
+    <script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
+    <title>Libridex</title>
+</head>
