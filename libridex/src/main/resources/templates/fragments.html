@@ -1,0 +1,33 @@
+<header th:fragment="navBar">
+    <div class="navbar navbar-expand-md navbar-dark bg-dark" role="navigation">
+        <a class="navbar-brand ps-5" href="/" style="color:rgb(197, 134, 255)">Libridex</a>
+        <a class="navbar-brand ps-5" href="#">Our Books</a>
+        <a class="navbar-brand ps-5" href="#">Test</a>
+        <div class="ms-auto pe-5">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="#"
+                        style="color: azure;">Login</a>
+
+                        <!-- We'll uncomment this when we finish implementing Spring Security-->
+                    <!-- <div sec:authorize="isAuthenticated()" class="dropdown">
+                        <button class="btn btn-primary dropdown-toggle d-flex align-items-center" type="button"
+                            id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fa fa-user-circle me-2"></i>
+                            <span sec:authentication="name"></span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton1">
+                            <li><a class="dropdown-item" href="/profile">Profile</a></li>
+                            <li><a class="dropdown-item" href="/settings">Settings</a></li>
+                            <li>
+                                <form th:action="@{/logout}" method="post">
+                                    <button type="submit" class="dropdown-item">Logout</button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div> -->
+                </li>
+            </ul>
+        </div>
+    </div>
+</header>
