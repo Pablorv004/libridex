@@ -1,8 +1,8 @@
 <header class="sticky-top" th:fragment="navbar">
     <div class="navbar navbar-expand-md navbar-light bg-light" role="navigation">
         <a class="navbar-brand ps-5 fw-bold" href="/" style="color:rgb(103, 75, 29)">Libridex</a>
-        <a class="navbar-brand ps-5" href="#" style="color:rgb(0, 0, 0)">Our Books</a>
-        <a class="navbar-brand ps-5" href="#" style="color:rgb(0, 0, 0)">Test</a>
+        <a class="navbar-brand ps-5" th:href="@{/catalog}">Our Books</a>
+        <a class="navbar-brand ps-5" th:href="@{/reservations}">Your Reservations</a>
         <div class="ms-auto pe-5">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
