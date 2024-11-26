@@ -10,26 +10,32 @@
         alt="Image" class="img-fluid w-100" style="height: 100vh; object-fit: cover;">
     <div class="hero-text position-absolute w-100 top-50 start-50 translate-middle">
         <div class="card bg-dark bg-opacity-75 p-5 mx-auto" style="width: 600px;">
-            <!--No me dejaba hacerlo con w-30 :sob:-->
             <div class="text-center mb-4">
                 <i class="fas fa-user-circle fa-5x text-white"></i>
             </div>
-            <h1 class="display-4 text-white mb-4 text-center">Login</h1>
-            <form th:action="@{/login}" method="post" th:object="${user}">
+            <h1 class="display-4 text-white mb-4 text-center">Register</h1>
+            <form th:action="@{/register}" method="post" th:object="${user}">
                 <div class="mb-3">
                     <label for="username" class="form-label text-white">Username</label>
                     <input type="text" class="form-control" id="username" name="username" required>
                 </div>
                 <div class="mb-3">
+                    <label for="email" class="form-label text-white">Email</label>
+                    <input type="email" class="form-control" id="email" name="email" required>
+                </div>
+                <div class="mb-3">
                     <label for="password" class="form-label text-white">Password</label>
                     <input type="password" class="form-control" id="password" name="password" required>
                 </div>
+                <div class="mb-3">
+                    <label for="confirm-password" class="form-label text-white">Confirm Password</label>
+                    <input type="password" class="form-control" id="confirm-password" name="confirmPassword" required>
+                </div>
                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
                 <button type="submit" class="btn btn-dark rounded-pill w-100"
-                        style="background-color: rgb(103, 75, 29); border-color: rgb(103, 75, 29);">Login</button>
+                        style="background-color: rgb(103, 75, 29); border-color: rgb(103, 75, 29);">Register</button>
                 <div class="d-flex justify-content-between w-100 mt-3">
-                    <a class="btn btn-link text-white p-0" th:href="@{/register}">Don't have an account? <strong>Sign up</strong></a>
-                    <a th:href= "@{/forgot-password}" class="text-white">Forgot Password?</a>
+                    <a class="btn btn-link text-white p-0" th:href="@{/login}">Already have an account? <strong>Login</strong></a>
                 </div>
             </form>
         </div>

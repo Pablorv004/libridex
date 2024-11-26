@@ -8,19 +8,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.main.libridex.entity.User;
 
+
 @Controller
-@RequestMapping("/login")
-public class LoginController {
-    private static final String LOGIN_VIEW = "login";
-
-    @GetMapping("")
-    public String login(Model model, @RequestParam(value = "error", required = false) String error, @RequestParam(value = "logout", required = false) String logout) {
-        model.addAttribute("error", error);
-        model.addAttribute("logout", logout);
-        model.addAttribute("user", new User());
-        return LOGIN_VIEW;
-    }
-
+@RequestMapping("/register")
+public class RegisterController {
+    private static final String REGISTER_VIEW = "register";
     
+    @GetMapping("")
+    public String getRegister(Model model, @RequestParam(value = "error", required = false) String error) {
+        model.addAttribute("error", error);
+        model.addAttribute("user", new User());
+        return REGISTER_VIEW;
+    }
     
 }
