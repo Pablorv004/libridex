@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head th:replace="~{fragments :: head}"></head>
+
+<body>
+    <header th:replace="~{fragments :: navbar}"></header>
+    <div class="hero-image position-relative text-center text-white"></div>
+    <img src="https://trello-backgrounds.s3.amazonaws.com/SharedBackground/2215x2048/5fa9c73355b096b1e1786af0510a6fc4/photo-1481627834876-b7833e8f5570.webp"
+        alt="Brand Image" class="img-fluid w-100" style="height: 100vh; object-fit: cover;">
+    <div class="hero-text position-absolute w-100 top-50 start-50 translate-middle">
+        <div class="card bg-dark bg-opacity-75 p-5 mx-auto" style="width: 30%;">
+            <!--No me dejaba hacerlo con w-30 :sob:-->
+            <div class="text-center mb-4">
+                <i class="fas fa-user-circle fa-5x text-white"></i>
+            </div>
+            <h1 class="display-4 text-white mb-4 text-center">Login</h1>
+            <form th:action="@{/login}" method="post" th:object="${user}">
+                <div class="mb-3">
+                    <label for="username" class="form-label text-white">Username</label>
+                    <input type="text" class="form-control" id="username" name="username" required>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label text-white">Password</label>
+                    <input type="password" class="form-control" id="password" name="password" required>
+                </div>
+                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
+                <button type="submit" class="btn btn-dark rounded-pill w-100"
+                        style="background-color: rgb(103, 75, 29); border-color: rgb(103, 75, 29);">Login</button>
+                <div class="d-flex justify-content-between w-100 mt-3">
+                    <a class="btn btn-link text-white p-0" th:href="@{/register}">Don't have an account? <strong>Sign up</strong></a>
+                    <a th:href= "@{/forgot-password}" class="text-white">Forgot Password?</a>
+                </div>
+            </form>
+        </div>
+    </div>
+    </div>
+</body>
