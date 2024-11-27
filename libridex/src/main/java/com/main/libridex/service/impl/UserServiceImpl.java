@@ -4,6 +4,12 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.core.userdetails.User.UserBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
@@ -13,11 +19,28 @@ import com.main.libridex.repository.UserRepository;
 import com.main.libridex.service.UserService;
 
 @Service("userService")
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Autowired
     @Qualifier("userRepository")
     UserRepository userRepository;
+
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        User user = userRepository.findByEmail(email);
+
+        UserBuilder builder = null;
+
+        if(user!=null){
+            builder = org.springframework.security.core.userdetails.User.withUsername(email);
+            builder.password(user.getPassword());
+            builder.authorities(new SimpleGrantedAuthority(user.getRole()));
+        } else {
+            throw new UsernameNotFoundException("User not found");
+        }
+
+        return builder.build();
+    }
 
     @Override
     public List<User> findAll() {
@@ -44,24 +67,10 @@ public class UserServiceImpl implements UserService {
         return userRepository.existsByEmail(email);
     }
 
-    public boolean passwordsMatch(String password, String password2) {
-        return password.equals(password2);
-    }
-
-    public boolean isEmailValid(String email) {
-        return email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$");
-    }
-
-    public boolean isPasswordValid(String password) {
-        boolean hasUppercase = !password.equals(password.toLowerCase());
-        boolean hasLowercase = !password.equals(password.toUpperCase());
-        boolean hasNumber = password.matches(".*\\d.*");
-        return hasUppercase && hasLowercase && hasNumber && password.length() >= 8;
-    }
-
     public User register(User user) {
         user.setSurname("");
         user.setRole("ROLE_USER");
+        user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
         return userRepository.save(user);
     }
 
@@ -87,4 +96,18 @@ public class UserServiceImpl implements UserService {
         return !bindingResult.hasErrors();
     }
 
+    public boolean passwordsMatch(String password, String password2) {
+        return password.equals(password2);
+    }
+
+    public boolean isEmailValid(String email) {
+        return email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$");
+    }
+
+    public boolean isPasswordValid(String password) {
+        boolean hasUppercase = !password.equals(password.toLowerCase());
+        boolean hasLowercase = !password.equals(password.toUpperCase());
+        boolean hasNumber = password.matches(".*\\d.*");
+        return hasUppercase && hasLowercase && hasNumber && password.length() >= 8;
+    }
 }
