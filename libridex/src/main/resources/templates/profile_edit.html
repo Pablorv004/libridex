@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{fragments :: head}"></head>
+<body>
+    <header th:replace="~{fragments :: header}"></header>
+    <div class="hero-image position-relative text-center text-white"></div>
+    <img src="https://trello-backgrounds.s3.amazonaws.com/SharedBackground/2215x2048/5fa9c73355b096b1e1786af0510a6fc4/photo-1481627834876-b7833e8f5570.webp" alt="Image" class="img-fluid w-100" style="height: 100vh; object-fit: cover;">
+    <div class="hero-text position-absolute w-100 top-50 start-50 translate-middle">
+        <div class="card bg-dark bg-opacity-75 p-5 mx-auto" style="width: 800px;">
+            <div class="row me-4">
+                <div class="col-md-4 text-center mb-4">
+                    <i class="fas fa-user-circle fa-10x text-white mt-4"></i>
+                    <h2 class="display-4 text-white mt-1 mb-4">Edit</h2>
+                </div>
+                <div class="col-md-8">
+                    <form>
+                        <div class="mb-3">
+                            <label for="name" class="form-label text-white">Name</label>
+                            <input type="text" class="form-control" id="name" th:value="${user.name}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="surname" class="form-label text-white">Surname</label>
+                            <input type="text" class="form-control" id="surname" th:value="${user.surname}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label text-white">Email</label>
+                            <input type="email" class="form-control" id="email" th:value="${user.email}">
+                        </div>
+                        <div class="text-center mt-4 ms-1 row">
+                            <button type="submit" class="btn btn-dark w-50 me-4" style="background-color: rgb(103, 75, 29); border-color: rgb(103, 75, 29);">Apply Changes</button>
+                            <a class="btn btn-info w-25 text-dark" th:href="@{/profile}" style="background-color: lightgray; border-color: lightgray;">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
