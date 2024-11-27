@@ -18,19 +18,19 @@
             <h1 class="display-4 text-white mb-4 text-center">Login</h1>
             <form th:action="@{/login}" method="post" th:object="${user}">
                 <div class="mb-3">
-                    <label for="username" class="form-label text-white">Username</label>
-                    <input type="text" class="form-control" id="username" name="username" required>
+                    <label for="email" class="form-label text-white">Email</label>
+                    <input type="text" th:field="*{email}" class="form-control" id="email" name="email">
                 </div>
                 <div class="mb-3">
                     <label for="password" class="form-label text-white">Password</label>
-                    <input type="password" class="form-control" id="password" name="password" required>
+                    <input type="password" th:field="*{password}" class="form-control" id="password" name="password">
                 </div>
                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
                 <button type="submit" class="btn btn-dark rounded-pill w-100"
                         style="background-color: rgb(103, 75, 29); border-color: rgb(103, 75, 29);">Login</button>
                 <div class="d-flex justify-content-between w-100 mt-3">
                     <a class="btn btn-link text-white p-0" th:href="@{/register}">Don't have an account? <strong>Sign up</strong></a>
-                    <a th:href= "@{/forgot-password}" class="text-white">Forgot Password?</a>
+                    <a th:href= "@{/forgot-password}" class="text-white" hidden>Forgot Password?</a>
                 </div>
             </form>
         </div>

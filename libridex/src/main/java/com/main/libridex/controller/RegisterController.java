@@ -20,6 +20,7 @@ import jakarta.validation.Valid;
 @RequestMapping("/register")
 public class RegisterController {
     private static final String REGISTER_VIEW = "register";
+    private static final String SUCCESS_MESSAGE="User registered! Please proceed to login.";
 
     @Autowired
     private UserServiceImpl userService;
@@ -35,7 +36,7 @@ public class RegisterController {
         if (!userService.isRegisterValid(userDTO, bindingResult))
             return REGISTER_VIEW;
         userService.register(UserMapper.toUser(userDTO));
-        flash.addFlashAttribute("success", "User registered! Please proceed to login.");
+        flash.addFlashAttribute("success", SUCCESS_MESSAGE);
         return "redirect:/login";
     }
 }
