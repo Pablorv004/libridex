@@ -75,24 +75,24 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     public boolean isRegisterValid(UserDTO userDTO, BindingResult bindingResult) {
-        if (userDTO.getName().isEmpty() || userDTO.getName() == null) {
+        //Name Requirement
+        if (userDTO.getName().isEmpty() || userDTO.getName() == null)
             bindingResult.rejectValue("name", "error.user", "Name is required.");
-        }
-        if (userDTO.getEmail().isEmpty() || userDTO.getEmail() == null) {
+        //Email Requirements
+        if (userDTO.getEmail().isEmpty() || userDTO.getEmail() == null)
             bindingResult.rejectValue("email", "error.user", "Email is required.");
-        } else if (existsByEmail(userDTO.getEmail())) {
+        else if (existsByEmail(userDTO.getEmail()))
             bindingResult.rejectValue("email", "error.user", "An account with this email already exists.");
-        } else if (!isEmailValid(userDTO.getEmail())) {
+        else if (!isEmailValid(userDTO.getEmail()))
             bindingResult.rejectValue("email", "error.user", "Invalid email format.");
-        }
-        if (userDTO.getPassword().isEmpty() || userDTO.getPassword() == null) {
+        //Password Requirements
+        if (userDTO.getPassword().isEmpty() || userDTO.getPassword() == null)
             bindingResult.rejectValue("password", "error.user", "Password is required.");
-        } else if (!isPasswordValid(userDTO.getPassword())) {
+        else if (!isPasswordValid(userDTO.getPassword()))
             bindingResult.rejectValue("password", "error.user",
                     "Password must be at least 8 characters long and contain uppercase, lowercase, and a number.");
-        } else if (!passwordsMatch(userDTO.getPassword(), userDTO.getRePassword())) {
+        else if (!passwordsMatch(userDTO.getPassword(), userDTO.getRePassword()))
             bindingResult.rejectValue("rePassword", "error.user", "Passwords do not match.");
-        }
         return !bindingResult.hasErrors();
     }
 
