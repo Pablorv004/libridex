@@ -9,4 +9,7 @@ import com.main.libridex.entity.User;
 
 @Repository("userRepository")
 public interface UserRepository extends JpaRepository<User,Serializable>{
+    User findByEmail(String email);
+    User findByEmailAndPassword(String email, String password);
+    boolean existsByEmail(String email);
 }
