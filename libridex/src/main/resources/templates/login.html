@@ -11,8 +11,9 @@
     <div class="hero-text position-absolute w-100 top-50 start-50 translate-middle">
         <div class="card bg-dark bg-opacity-75 p-5 mx-auto" style="width: 600px;">
             <!--No me dejaba hacerlo con w-30 :sob:-->
+            <div th:if="${success!=null}" class="alert alert-success text-center mb-4" th:text="${success}"></div>
             <div class="text-center mb-4">
-                <i class="fas fa-user-circle fa-5x text-white"></i>
+                <i class="fas fa-user-circle fa-5x text-white mt-4"></i>
             </div>
             <h1 class="display-4 text-white mb-4 text-center">Login</h1>
             <form th:action="@{/login}" method="post" th:object="${user}">
