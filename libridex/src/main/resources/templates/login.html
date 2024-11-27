@@ -27,14 +27,23 @@
                 </div>
                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
                 <button type="submit" class="btn btn-dark rounded-pill w-100"
-                        style="background-color: rgb(103, 75, 29); border-color: rgb(103, 75, 29);">Login</button>
-                <div class="d-flex justify-content-between w-100 mt-3">
-                    <a class="btn btn-link text-white p-0" th:href="@{/register}">Don't have an account? <strong>Sign up</strong></a>
-                    <a th:href= "@{/forgot-password}" class="text-white" hidden>Forgot Password?</a>
-                </div>
+                    style="background-color: rgb(103, 75, 29); border-color: rgb(103, 75, 29);">Login</button>
             </form>
+            <div th:if="${error!=null}" class="alert alert-danger mt-4" role="alert">
+                These credentials aren't registered in our system.
+            </div>
+            <div th:if="${logout!=null}" class="alert alert-info" role="alert">
+                Logout successful!
+            </div>
+            <div class="d-flex justify-content-between w-100 mt-3">
+                <a class="btn btn-link text-white p-0" th:href="@{/register}">Don't have an account? <strong>Sign
+                        up</strong></a>
+                <a th:href="@{/forgot-password}" class="text-white" hidden>Forgot Password?</a>
+            </div>
+
         </div>
     </div>
     </div>
 </body>
+
 </html>
