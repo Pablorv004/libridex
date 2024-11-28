@@ -12,4 +12,5 @@ public interface UserRepository extends JpaRepository<User,Serializable>{
     User findByEmail(String email);
     User findByEmailAndPassword(String email, String password);
     boolean existsByEmail(String email);
+    boolean existsByEmailAndIdNot(String email, Integer id);
 }

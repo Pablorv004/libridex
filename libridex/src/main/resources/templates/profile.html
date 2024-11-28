@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head th:replace="~{fragments :: head}"></head>
+
 <body>
     <header th:replace="~{fragments :: header}"></header>
     <img src="https://trello-backgrounds.s3.amazonaws.com/SharedBackground/2215x2048/5fa9c73355b096b1e1786af0510a6fc4/photo-1481627834876-b7833e8f5570.webp"
         alt="Image" class="img-fluid w-100" style="height: 100vh; object-fit: cover;">
     <div class="position-absolute w-100 bg-white pb-5" style="top: 50%; transform: translateY(-50%); opacity: 0.95;">
         <div class="container mt-5">
+            <div th:if="${success!=null}" class="alert alert-success text-center mb-4" th:text="${success}"></div>
             <div class="row">
                 <div class="col-md-5 text-center">
                     <i class="fas fa-user-circle fa-10x mt-4 mb-4"></i>
@@ -15,9 +18,10 @@
                     </div>
                     <h2 th:text="${user.name} + ' ' + ${user.surname}">User Name</h2>
                     <div class="text-center mt-4">
-                        <a type="submit" class="btn btn-dark w-50" th:href="@{/profile/edit}" style="background-color: rgb(103, 75, 29); border-color: rgb(103, 75, 29);">Edit Profile</a>
+                        <a type="submit" class="btn btn-dark w-50" th:href="@{/profile/edit}"
+                            style="background-color: rgb(103, 75, 29); border-color: rgb(103, 75, 29);">Edit Profile</a>
                     </div>
-                    
+
                 </div>
                 <div class="col-md-5">
                     <h3 class="text-center" style="color: rgb(103, 75, 29);">Details</h3>
@@ -27,9 +31,9 @@
                         <h4><span th:text="${user.email}">user@example.com</span></h4>
                     </div>
                 </div>
-                <div th:if="${success!=null}" class="alert alert-success text-center mb-4" th:text="${success}"></div>
             </div>
         </div>
     </div>
 </body>
+
 </html>

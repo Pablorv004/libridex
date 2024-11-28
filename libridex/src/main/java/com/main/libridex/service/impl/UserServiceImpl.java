@@ -13,7 +13,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
-import com.main.libridex.converters.UserMapper;
 import com.main.libridex.entity.User;
 import com.main.libridex.model.UserDTO;
 import com.main.libridex.repository.UserRepository;
@@ -66,6 +65,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public boolean existsByEmail(String email) {
         return userRepository.existsByEmail(email);
+    }
+
+    @Override
+    public boolean existsByEmailExceptCurrent(String email, Integer id) {
+        return userRepository.existsByEmailAndIdNot(email, id);
     }
 
     public User register(User user) {
@@ -123,12 +127,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         //Email Requirements
         if (userDTO.getEmail().isEmpty() || userDTO.getEmail() == null)
             bindingResult.rejectValue("email", "error.user", "Email is required.");
-        else if (existsByEmail(userDTO.getEmail()))
+        else if (existsByEmailExceptCurrent(userDTO.getEmail(), userDTO.getId()))
             bindingResult.rejectValue("email", "error.user", "An account with this email already exists.");
         else if (!isEmailValid(userDTO.getEmail()))
             bindingResult.rejectValue("email", "error.user", "Invalid email format.");
 
-        return bindingResult.hasErrors();
+        return !bindingResult.hasErrors();
     }
 
     public boolean passwordsMatch(String password, String password2) {

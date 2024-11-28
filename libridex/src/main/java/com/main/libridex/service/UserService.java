@@ -9,5 +9,6 @@ public interface UserService {
     User findByEmail(String email);
     User findByEmailAndPassword(String email, String password);
     boolean existsByEmail(String email);
+    boolean existsByEmailExceptCurrent(String email, Integer id);
     User save(User user);
 }

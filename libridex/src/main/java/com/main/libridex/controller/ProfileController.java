@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.main.libridex.converters.UserMapper;
 import com.main.libridex.entity.User;
 import com.main.libridex.model.UserDTO;
 import com.main.libridex.service.impl.UserServiceImpl;
@@ -46,18 +45,14 @@ public class ProfileController {
     }
     
     @PostMapping("/apply")
-    public ModelAndView applyChanges(@Valid @ModelAttribute("user") UserDTO userDTO, BindingResult bindingResult, RedirectAttributes flash){
-        ModelAndView mav = new ModelAndView(PROFILE_VIEW);
+    public String applyChanges(@Valid @ModelAttribute("user") UserDTO userDTO, BindingResult bindingResult, RedirectAttributes flash){
 
-        if(userService.isEditValid(userDTO, bindingResult)){
-            mav.setViewName(PROFILE_EDIT_VIEW);
-            mav.addObject("user", userDTO);
+        if(!userService.isEditValid(userDTO, bindingResult)){
+            return PROFILE_EDIT_VIEW;
         } else {
             userService.edit(userDTO);
-            flash.addAttribute("success", "Profile edited successfully!");
-            mav.setViewName("redirect:/profile");
+            flash.addFlashAttribute("success", "Profile edited successfully!");
+            return "redirect:/profile";
         }
-
-        return mav;
     }
 }
