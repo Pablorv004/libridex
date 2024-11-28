@@ -27,6 +27,7 @@
                         <h4><span th:text="${user.email}">user@example.com</span></h4>
                     </div>
                 </div>
+                <div th:if="${success!=null}" class="alert alert-success text-center mb-4" th:text="${success}"></div>
             </div>
         </div>
     </div>

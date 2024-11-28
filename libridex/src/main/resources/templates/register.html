@@ -17,7 +17,7 @@
             <form th:action="@{/register/send}" method="post" th:object="${user}">
                 <div class="mb-3">
                     <label for="Name" class="form-label text-white">Name</label>
-                    <input type="text" th:field="*{name}" class="form-control" id="Name" name="Name">
+                    <input type="text" th:field="*{name}" class="form-control" id="name" name="name">
                     <div class="text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
                 </div>
                 <div class="mb-3">

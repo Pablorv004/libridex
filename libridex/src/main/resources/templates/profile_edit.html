@@ -13,21 +13,26 @@
                     <h2 class="display-4 text-white mt-1 mb-4">Edit</h2>
                 </div>
                 <div class="col-md-8 pt-2">
-                    <form>
+                    <form th:action="@{/profile/apply}" th:object="${user}" method="post">
+                        <input type="hidden" th:field="*{id}" th:value="${user.id}">
                         <div class="mb-3">
                             <label for="name" class="form-label text-white">Name</label>
-                            <input type="text" class="form-control" id="name" th:value="${user.name}">
+                            <input type="text" class="form-control" id="name" th:field="*{name}">
+                            <div class="text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
                         </div>
                         <div class="mb-3">
                             <label for="surname" class="form-label text-white">Surname</label>
-                            <input type="text" class="form-control" id="surname" th:value="${user.surname}">
+                            <input type="text" class="form-control" id="surname" th:field="*{surname}">
+                            <div class="text-danger" th:if="${#fields.hasErrors('surname')}" th:errors="*{surname}"></div>
                         </div>
                         <div class="mb-3">
                             <label for="email" class="form-label text-white">Email</label>
-                            <input type="email" class="form-control" id="email" th:value="${user.email}">
+                            <input type="email" class="form-control" id="email" th:field="*{email}">
+                            <div class="text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
                         </div>
+                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
                         <div class="text-center mt-4 ms-1 row">
-                            <button type="submit" class="btn btn-dark w-50 me-4" style="background-color: rgb(103, 75, 29); border-color: rgb(103, 75, 29);">Apply Changes</button>
+                            <button type="submit" class="btn btn-primary">Save changes</button>
                             <a class="btn btn-info w-25 text-dark" th:href="@{/profile}" style="background-color: lightgray; border-color: lightgray;">Cancel</a>
                         </div>
                     </form>
