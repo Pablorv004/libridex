@@ -1,6 +1,7 @@
 package com.main.libridex.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -23,6 +24,7 @@ public class RegisterController {
     private static final String SUCCESS_MESSAGE="User registered! Please proceed to login.";
 
     @Autowired
+    @Qualifier("userService")
     private UserServiceImpl userService;
 
     @GetMapping("")
