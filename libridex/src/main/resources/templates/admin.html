@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head th:replace="~{fragments :: head}"></head>
+
+<body>
+    <header th:replace="~{fragments :: navbar}"></header>
+    <img src="https://trello-backgrounds.s3.amazonaws.com/SharedBackground/2215x2048/5fa9c73355b096b1e1786af0510a6fc4/photo-1481627834876-b7833e8f5570.webp"
+        alt="Image" class="img-fluid w-100" style="height: 25vh; object-fit: cover;">
+    <div class="container text-center mt-5">
+        <h1 class="display-1" style="color: rgb(103, 75, 29);">Admin Menu</h1>
+        <hr class="border-black border-2">
+        <h2 class="text-bg-light pt-2 pb-2">What will you manage today?</h2>
+        <div class="row mt-4">
+            <div class="col-md-4 offset-md-2">
+            <div class="card border-3">
+                <a th:href="@{/admin/books}" class="text-decoration-none"></a>
+                <img src="https://imageio.forbes.com/specials-images/imageserve/66cc9d9ffc537cb99b7a3440/0x0.jpg?format=jpg&crop=1884,1256,x0,y0,safe&height=600&width=1200&fit=bounds"
+                    class="card-img-top mb-1" alt="Books">
+                <div class="card-body">
+                    <h3 class="card-title text-black">Books</h3>
+                </div>
+                </a>
+            </div>
+            </div>
+            <div class="col-md-4">
+            <div class="card border-3">
+                <a th:href="@{/admin/users}" class="text-decoration-none">
+                <img src="https://t4.ftcdn.net/jpg/02/50/23/29/360_F_250232932_MnAM3LqScjM6gIc9jb1BG44aXq8erWs3.jpg" class="card-img-top mb-3" alt="Users">
+                <div class="card-body">
+                    <h3 class="card-title text-black">Users</h3>
+                </div>
+                </a>
+            </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
