@@ -11,4 +11,6 @@ public interface UserService {
     boolean existsByEmail(String email);
     boolean existsByEmailExceptCurrent(String email, Integer id);
     User save(User user);
+    public User findById(Integer id);
+    public void deleteById(Integer id);
 }

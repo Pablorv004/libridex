@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head th:replace="~{fragments :: head}"></head>
+
+<body>
+    <header th:replace="~{fragments :: navbar}"></header>
+    <img src="https://trello-backgrounds.s3.amazonaws.com/SharedBackground/2215x2048/5fa9c73355b096b1e1786af0510a6fc4/photo-1481627834876-b7833e8f5570.webp"
+        alt="Image" class="img-fluid w-100" style="height: 25vh; object-fit: cover;">
+    <div class="container text-center mt-5">
+        <h1 style="color: rgb(103, 75, 29);">Books</h1>
+        <hr class="border-black border-2">
+        <div class="table-responsive">
+            <table class="table table-responsive">
+                <thead>
+                    <tr>
+                        <th scope="col">Image</th>
+                        <th scope="col">Title</th>
+                        <th scope="col">Author</th>
+                        <th scope="col">Genre</th>
+                        <th scope="col">Publishing Date</th>
+                        <th scope="col">Lent</th>
+                        <th scope="col">Reserved</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="" th:each="book : ${books}">
+                        <td scope="row"><img th:src="${book.image}" alt="Book Image" class="rounded-circle h-auto" style="width: 50px;"></td>
+                        <td th:text="${book.title}"></td>
+                        <td th:text="${book.author}"></td>
+                        <td th:text="${book.genre}"></td>
+                        <td th:text="${book.publishing_date}"></td>
+                        <td th:text="${book.lent ? '✔' : '✘'}"></td>
+                        <td th:text="${book.reserved ? '✔' : '✘'}"></td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="pagination d-flex justify-content-center mt-4">
+                <a class="btn btn-primary mx-2" th:if="${page > 0}" th:href="@{/admin/books(page=${page - 1})}">&laquo; Previous</a>
+                <span class="mx-2 fs-4" th:text="${page + 1}">1</span>
+                <a class="btn btn-primary mx-2" th:if="${page < totalPages - 1}" th:href="@{/admin/books(page=${page + 1})}">Next &raquo;</a>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
