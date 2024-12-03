@@ -11,9 +11,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.main.libridex.components.logger.AccessLogger;
+import com.main.libridex.components.logger.UserLogger;
 import com.main.libridex.entity.User;
 import com.main.libridex.model.UserDTO;
 import com.main.libridex.service.impl.UserServiceImpl;
@@ -29,18 +30,28 @@ public class ProfileController {
     private static final String PROFILE_EDIT_VIEW = "profile_edit";
 
     @Autowired
+    @Qualifier("accessLogger")
+    private AccessLogger accessLogger;
+
+    @Autowired
+    @Qualifier("userLogger")
+    private UserLogger userLogger;
+
+    @Autowired
     @Qualifier("userService")
     private UserServiceImpl userService;
 
     @GetMapping("")
     public String getProfile(Model model, User user) {
         model.addAttribute("user", userService.findByEmail(((UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername()));
+        accessLogger.accessed("profile");
         return PROFILE_VIEW;
     }
 
     @GetMapping("/edit")
     public String editProfile(Model model, User user) {
         model.addAttribute("user", userService.findByEmail(((UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername()));
+        accessLogger.accessed("profile/edit");
         return PROFILE_EDIT_VIEW;
     }
     
@@ -48,9 +59,11 @@ public class ProfileController {
     public String applyChanges(@Valid @ModelAttribute("user") UserDTO userDTO, BindingResult bindingResult, RedirectAttributes flash){
 
         if(!userService.isEditValid(userDTO, bindingResult)){
+            userLogger.failedToUpdateProfile(userDTO.getEmail(), new Exception("Invalid data"));
             return PROFILE_EDIT_VIEW;
         } else {
             userService.edit(userDTO);
+            userLogger.updatedProfile(userDTO.getEmail());
             flash.addFlashAttribute("success", "Profile edited successfully!");
             return "redirect:/profile";
         }

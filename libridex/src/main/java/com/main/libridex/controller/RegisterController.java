@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.main.libridex.components.logger.AccessLogger;
+import com.main.libridex.components.logger.UserLogger;
 import com.main.libridex.converters.UserMapper;
 import com.main.libridex.model.UserDTO;
 import com.main.libridex.service.impl.UserServiceImpl;
@@ -27,17 +29,29 @@ public class RegisterController {
     @Qualifier("userService")
     private UserServiceImpl userService;
 
+    @Autowired
+    @Qualifier("accessLogger")
+    private AccessLogger accessLogger;
+
+    @Autowired
+    @Qualifier("userLogger")
+    private UserLogger userLogger;
+
     @GetMapping("")
     public String getRegister(Model model) {
         model.addAttribute("user", new UserDTO());
+        accessLogger.accessed("register");
         return REGISTER_VIEW;
     }
 
     @PostMapping("/send")
     public String registerUser(@Valid @ModelAttribute("user") UserDTO userDTO, BindingResult bindingResult, RedirectAttributes flash) {
-        if (!userService.isRegisterValid(userDTO, bindingResult))
+        if (!userService.isRegisterValid(userDTO, bindingResult)){
+            userLogger.failedToRegister(userDTO.getEmail(), new Exception("Invalid registration data"));
             return REGISTER_VIEW;
+        }
         userService.register(UserMapper.toUser(userDTO));
+        userLogger.registered(userDTO.getEmail());
         flash.addFlashAttribute("success", SUCCESS_MESSAGE);
         return "redirect:/login";
     }

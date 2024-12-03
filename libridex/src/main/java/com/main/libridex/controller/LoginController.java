@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.main.libridex.components.logger.AccessLogger;
+import com.main.libridex.components.logger.UserLogger;
 import com.main.libridex.entity.User;
 import com.main.libridex.service.UserService;
 
@@ -15,6 +17,14 @@ import com.main.libridex.service.UserService;
 @RequestMapping("/login")
 public class LoginController {
     private static final String LOGIN_VIEW = "login";
+
+    @Autowired
+    @Qualifier("userLogger")
+    private UserLogger userLogger;
+
+    @Autowired
+    @Qualifier("accessLogger")
+    private AccessLogger accessLogger;
 
     @Autowired
     @Qualifier("userService")
@@ -25,6 +35,7 @@ public class LoginController {
         model.addAttribute("error", error);
         model.addAttribute("logout", logout);
         model.addAttribute("user", new User());
+        accessLogger.accessed("login");
         return LOGIN_VIEW;
     }
 

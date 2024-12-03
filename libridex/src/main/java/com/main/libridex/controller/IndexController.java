@@ -6,12 +6,17 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.main.libridex.components.logger.AccessLogger;
 import com.main.libridex.service.BookService;
 
 @Controller
 public class IndexController {
 
     private static final String INDEX = "index";
+
+    @Autowired
+    @Qualifier("accessLogger")
+    private AccessLogger accessLogger;
     
     @Autowired
     @Qualifier("bookService")
@@ -19,6 +24,7 @@ public class IndexController {
 
     @GetMapping("/")
     public String redirectToIndex() {
+        accessLogger.redirected("index");
         return "redirect:/index";
     }
 
@@ -26,6 +32,7 @@ public class IndexController {
     public ModelAndView index(){
         ModelAndView mav = new ModelAndView(INDEX);
         mav.addObject("mostReservedBooks", bookService.findAll());
+        accessLogger.accessed("index");
         return mav;
     }
 }
