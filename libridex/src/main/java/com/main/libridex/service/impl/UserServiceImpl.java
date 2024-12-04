@@ -89,6 +89,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return userRepository.save(user);
     }
 
+    @Override
     public void edit(UserDTO userDTO) {
         User user = userRepository.findById(userDTO.getId()).orElse(null);
 
@@ -98,6 +99,27 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             user.setEmail(userDTO.getEmail());
             userRepository.save(user);
         }
+    }
+
+    @Override
+    public boolean isEditValid(UserDTO userDTO, BindingResult bindingResult) {
+        //Name Requirements
+        if (userDTO.getName().isEmpty() || userDTO.getName() == null)
+            bindingResult.rejectValue("name", "error.user", "Name is required.");
+
+        //Surname Requirements
+        if (!userDTO.getSurname().matches("([A-Za-z]+\\s)*[A-Za-z]*"))
+            bindingResult.rejectValue("surname", "error.surname", "Surname is invalid.");
+
+        //Email Requirements
+        if (userDTO.getEmail().isEmpty() || userDTO.getEmail() == null)
+            bindingResult.rejectValue("email", "error.user", "Email is required.");
+        else if (existsByEmailExceptCurrent(userDTO.getEmail(), userDTO.getId()))
+            bindingResult.rejectValue("email", "error.user", "An account with this email already exists.");
+        else if (!isEmailValid(userDTO.getEmail()))
+            bindingResult.rejectValue("email", "error.user", "Invalid email format.");
+
+        return !bindingResult.hasErrors();
     }
 
     public boolean isRegisterValid(UserDTO userDTO, BindingResult bindingResult) {
@@ -121,26 +143,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                     "Password must be at least 8 characters long and contain uppercase, lowercase, and a number.");
         else if (!passwordsMatch(userDTO.getPassword(), userDTO.getRePassword()))
             bindingResult.rejectValue("rePassword", "error.user", "Passwords do not match.");
-
-        return !bindingResult.hasErrors();
-    }
-
-    public boolean isEditValid(UserDTO userDTO, BindingResult bindingResult) {
-        //Name Requirements
-        if (userDTO.getName().isEmpty() || userDTO.getName() == null)
-            bindingResult.rejectValue("name", "error.user", "Name is required.");
-
-        //Surname Requirements
-        if (!userDTO.getSurname().matches("([A-Za-z]+\\s)*[A-Za-z]*"))
-            bindingResult.rejectValue("surname", "error.surname", "Surname is invalid.");
-
-        //Email Requirements
-        if (userDTO.getEmail().isEmpty() || userDTO.getEmail() == null)
-            bindingResult.rejectValue("email", "error.user", "Email is required.");
-        else if (existsByEmailExceptCurrent(userDTO.getEmail(), userDTO.getId()))
-            bindingResult.rejectValue("email", "error.user", "An account with this email already exists.");
-        else if (!isEmailValid(userDTO.getEmail()))
-            bindingResult.rejectValue("email", "error.user", "Invalid email format.");
 
         return !bindingResult.hasErrors();
     }

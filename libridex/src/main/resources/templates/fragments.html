@@ -16,8 +16,8 @@
                             <span sec:authentication="name"></span>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton1">
-                            <li><a class="dropdown-item" href="/profile">Profile</a></li>
-                            <li><a class="dropdown-item" href="/settings">Settings</a></li>
+                            <li><a class="dropdown-item" th:href="@{/profile}">Profile</a></li>
+                            <li><a class="dropdown-item" th:href="@{/settings}">Settings</a></li>
                             <li>
                                 <form th:action="@{/logout}" method="post">
                                     <button type="submit" class="dropdown-item">Logout</button>

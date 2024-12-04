@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.main.libridex.components.logger.AccessLogger;
 import com.main.libridex.entity.Book;
-import com.main.libridex.service.impl.BookServiceImpl;
-import com.main.libridex.service.impl.UserServiceImpl;
+import com.main.libridex.service.BookService;
+import com.main.libridex.service.UserService;
 
 @Controller
 @RequestMapping("/admin")
@@ -25,11 +25,11 @@ public class AdminController {
 
     @Autowired
     @Qualifier("userService")
-    private UserServiceImpl userServiceImpl;
+    private UserService userService;
 
     @Autowired
     @Qualifier("bookService")
-    private BookServiceImpl bookServiceImpl;
+    private BookService bookService;
 
     @Autowired
     @Qualifier("accessLogger")
@@ -42,7 +42,7 @@ public class AdminController {
     
     @GetMapping("/books")
     public String getBooksView(Model model, @RequestParam(defaultValue = "0") int page) {
-        Page<Book> bookPage = bookServiceImpl.findAll(PageRequest.of(page, 5));
+        Page<Book> bookPage = bookService.findAll(PageRequest.of(page, 5));
         model.addAttribute("books", bookPage.getContent());
         model.addAttribute("totalPages", bookPage.getTotalPages());
         model.addAttribute("page", page);

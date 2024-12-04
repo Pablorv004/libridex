@@ -17,7 +17,7 @@ import com.main.libridex.components.logger.AccessLogger;
 import com.main.libridex.components.logger.UserLogger;
 import com.main.libridex.entity.User;
 import com.main.libridex.model.UserDTO;
-import com.main.libridex.service.impl.UserServiceImpl;
+import com.main.libridex.service.UserService;
 
 import jakarta.validation.Valid;
 
@@ -39,7 +39,7 @@ public class ProfileController {
 
     @Autowired
     @Qualifier("userService")
-    private UserServiceImpl userService;
+    private UserService userService;
 
     @GetMapping("")
     public String getProfile(Model model, User user) {
