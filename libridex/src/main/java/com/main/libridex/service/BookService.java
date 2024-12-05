@@ -4,18 +4,24 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.main.libridex.entity.Book;
+import com.main.libridex.model.BookDTO;
 
 public interface BookService {
-    public List<Book> findAll();
+    List<Book> findAll();
 
-    public Book findById(Integer id);
+    BookDTO findById(Integer id);
 
-    public Book save(Book book);
+    Book save(BookDTO bookDTO);
 
-    public void deleteById(Integer id);
+    void deleteById(Integer id);
 
-    public Page<Book> findAll(PageRequest pageRequest);
+    Page<Book> findAll(PageRequest pageRequest);
 
+    void checkExistentBook(BookDTO bookDTO, BindingResult bResult);
+
+    String saveImage(MultipartFile imageFile);
 }

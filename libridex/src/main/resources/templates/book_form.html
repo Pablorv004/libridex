@@ -12,15 +12,16 @@
     <div class="hero-text position-absolute w-100 top-50 start-50 translate-middle mt-5">
         <div class="card bg-dark bg-opacity-75 p-5 mx-auto" style="width: 600px;">
             <h1 class="display-4 text-white mb-4 text-center" th:text="${book.id == null ? 'New Book' : 'Edit Book'}"></h1>
+            <div class="alert alert-danger" th:if= "${error!=null}" th:text="${error}"></div>
             <form th:action="${book.id == null ? '/admin/books/add' : '/admin/books/edit'}" method="post" th:object="${book}" enctype="multipart/form-data">
                 <input type="hidden" th:field="*{id}">
                 <hr class="text-white">
                 <div class="mb-4 mt-4">
                     <div class="card mx-auto mb-4 text-center justify-content-center" style="height: 15vh; width: 15vh; object-fit: contain;">
-                        <img th:src="${book.image}" alt="No image" class="card-img-top">
+                        <img th:src="@{/images/{image}(image=${book.image})}" alt="No image" class="card-img-top">
                     </div>
-                    <h5 class="text-center text-white">Image selection coming soon!</h4>
-                    <!-- <input type="file" id="image" name="image" class="form-control w-75 mx-auto" accept="image/*"> -->
+                    <input type="file" id="image" name="image" class="form-control w-75 mx-auto" accept="image/*">
+                    <div class="text-danger" th:if="${#fields.hasErrors('image')}" th:errors="*{image}"></div>
                 </div>
                 <div class="mb-3">
                     <label for="title" class="form-label text-white">Title</label>
@@ -37,16 +38,27 @@
                     <input type="text" th:field="*{genre}" class="form-control" id="genre" name="genre">
                     <div class="text-danger" th:if="${#fields.hasErrors('genre')}" th:errors="*{genre}"></div>
                 </div>
-                <div class="mb-4">
+                <div class="mb-3">
                     <label for="publishing_date" class="form-label text-white">Publishing Date</label>
-                    <input type="text" th:field="*{publishing_date}" class="form-control" id="publishing_date" name="publishing_date">
+                    <input type="date" th:field="*{publishing_date}" class="form-control" id="publishing_date" name="publishing_date">
                     <div class="text-danger" th:if="${#fields.hasErrors('publishing_date')}" th:errors="*{publishing_date}"></div>
+                </div>
+                <div class="mb-4">
+                    <label class="form-label text-white d-block">Status</label>
+                    <div class="form-check form-check-inline mb-2">
+                        <input type="checkbox" th:field="*{lent}" class="form-check-input me-2" id="lent" name="lent">
+                        <label for="lent" class="form-check-label text-white">Lent</label>
+                    </div>
+                    <div class="form-check form-check-inline d-block">
+                        <input type="checkbox" th:field="*{reserved}" class="form-check-input me-2" id="reserved" name="reserved">
+                        <label for="reserved" class="form-check-label text-white">Reserved</label>
+                    </div>
                 </div>
                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
                 <hr class="text-white mb-4 mt-4">
                 <div class="text-center">
                     <button type="submit" class="btn btn-dark d-inline me-3"
-                            style="background-color: rgb(103, 75, 29); border-color: rgb(103, 75, 29);">Add new book</button>
+                            style="background-color: rgb(103, 75, 29); border-color: rgb(103, 75, 29);"><spant th:text="${book.id != null ? 'Edit book' : 'Add book'}"></span></button>
                     <a class="btn btn-danger d-inline" th:href="@{/admin/books}">Return</a>
                 </div>
             </form>

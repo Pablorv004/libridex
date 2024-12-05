@@ -1,21 +1,30 @@
 package com.main.libridex.controller;
 
+import java.io.IOException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.main.libridex.components.logger.AccessLogger;
 import com.main.libridex.entity.Book;
+import com.main.libridex.model.BookDTO;
 import com.main.libridex.service.BookService;
 import com.main.libridex.service.UserService;
+
+import jakarta.validation.Valid;
 
 @Controller
 @RequestMapping("/admin")
@@ -42,7 +51,7 @@ public class AdminController {
     public String getMainMenuView() {
         return ADMIN_VIEW;
     }
-    
+
     @GetMapping("/books")
     public String getBooksView(Model model, @RequestParam(defaultValue = "0") int page) {
         Page<Book> bookPage = bookService.findAll(PageRequest.of(page, 5));
@@ -52,12 +61,12 @@ public class AdminController {
         return BOOKS_VIEW;
     }
 
-    @GetMapping(value = {"/books/form", "/books/form/{id}"})
+    @GetMapping(value = { "/books/form", "/books/form/{id}" })
     public String showForm(Model model, @PathVariable(required = false) Integer id) {
-        if(id != null)
+        if (id != null)
             model.addAttribute("book", bookService.findById(id));
         else
-            model.addAttribute("book", new Book());
+            model.addAttribute("book", new BookDTO());
 
         return BOOKS_FORM;
     }
@@ -69,10 +78,33 @@ public class AdminController {
         return "redirect:/admin/books";
     }
 
+    @PostMapping("/books/add")
+    public String addBook(@Valid @ModelAttribute("book") BookDTO bookDTO, BindingResult bResult,
+            @RequestParam("image") MultipartFile imageFile, RedirectAttributes flash) {
+
+        bookService.checkExistentBook(bookDTO, bResult);
+
+        if (!bResult.hasErrors()) {
+            if (!imageFile.isEmpty()) {
+                String imageName = bookService.saveImage(imageFile);
+                bookDTO.setImage(imageName);
+            } else {
+                bookDTO.setImage("default_image.png");
+            }
+
+            bookService.save(bookDTO);
+            flash.addFlashAttribute("success", "Book created successfully!");
+            return "redirect:/admin/books";
+        }
+
+        flash.addFlashAttribute("error", "Something went wrong!");
+        return BOOKS_FORM;
+    }
+
     @GetMapping("/users")
     public String getUsersView(Model model) {
-        
+
         return USERS_VIEW;
     }
-    
+
 }
