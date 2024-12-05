@@ -20,7 +20,8 @@
                     <div class="card mx-auto mb-4 text-center justify-content-center" style="height: 15vh; width: 15vh; object-fit: contain;">
                         <img th:src="@{/images/{image}(image=${book.image})}" alt="No image" class="card-img-top">
                     </div>
-                    <input type="file" id="image" name="image" class="form-control w-75 mx-auto" accept="image/*">
+                        <input type="file" id="imageFile" name="imageFile" class="form-control w-75 mx-auto" accept="image/*">
+                        <input type="hidden" id="image" name="image" th:field="*{image}">
                     <div class="text-danger" th:if="${#fields.hasErrors('image')}" th:errors="*{image}"></div>
                 </div>
                 <div class="mb-3">

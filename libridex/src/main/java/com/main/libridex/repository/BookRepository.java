@@ -10,4 +10,5 @@ import com.main.libridex.entity.Book;
 @Repository("bookRepository")
 public interface BookRepository extends JpaRepository<Book,Serializable>{
     boolean existsByTitle(String title);
+    boolean existsByTitleAndIdNot(String title, Integer id);
 }

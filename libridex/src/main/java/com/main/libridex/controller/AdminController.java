@@ -78,9 +78,9 @@ public class AdminController {
         return "redirect:/admin/books";
     }
 
-    @PostMapping("/books/add")
+    @PostMapping(value = {"/books/add", "/books/edit"})
     public String addBook(@Valid @ModelAttribute("book") BookDTO bookDTO, BindingResult bResult,
-            @RequestParam("image") MultipartFile imageFile, RedirectAttributes flash) {
+            @RequestParam("imageFile") MultipartFile imageFile, RedirectAttributes flash) {
 
         bookService.checkExistentBook(bookDTO, bResult);
 
@@ -89,15 +89,18 @@ public class AdminController {
                 String imageName = bookService.saveImage(imageFile);
                 bookDTO.setImage(imageName);
             } else {
-                bookDTO.setImage("default_image.png");
+                if(bookDTO.getId() == null)
+                    bookDTO.setImage("default_image.png");
             }
 
+            String message = bookDTO.getId() == null ? "Book created succesfully!" : "Book edited successfully!";
+
             bookService.save(bookDTO);
-            flash.addFlashAttribute("success", "Book created successfully!");
+            flash.addFlashAttribute("success", message);
             return "redirect:/admin/books";
         }
 
-        flash.addFlashAttribute("error", "Something went wrong!");
+        flash.addFlashAttribute("error", "Oops! Something went wrong!");
         return BOOKS_FORM;
     }
 

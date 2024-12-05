@@ -46,7 +46,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Book save(BookDTO bookDTO) {
-        // TODO: IMPLEMENT EDITING FUNCTIONALITY (MUST UPDATE RESERVATIONS AND LENDINGS)
+        // TODO: IMPLEMENT RESERVATION AND LENDINGS UPDATE FUNCTIONALITY    
         return bookRepository.save(toEntity(bookDTO));
     }
 
@@ -73,7 +73,7 @@ public class BookServiceImpl implements BookService {
     // VALIDATIONS
 
     public void checkExistentBook(BookDTO bookDTO, BindingResult bResult) {
-        if (bookRepository.existsByTitle(bookDTO.getTitle()))
+        if (bookRepository.existsByTitleAndIdNot(bookDTO.getTitle(), bookDTO.getId()))
             bResult.rejectValue("title", "error.title", "There already exists a book with that title");
     }
 

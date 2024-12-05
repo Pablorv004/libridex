@@ -28,7 +28,6 @@ public class BookDTO {
     @Size(max = 20, message = "The title cannot be more than 20 characters long")
     private String title;
 
-    @NotNull
     private String image;
 
     @NotBlank(message = "The author must not be empty")
@@ -41,6 +40,7 @@ public class BookDTO {
 
     @NotNull(message = "You must select a publishing date")
     @PastOrPresent(message = "You cannot select a future date")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate publishing_date;
 
     private boolean lent;
