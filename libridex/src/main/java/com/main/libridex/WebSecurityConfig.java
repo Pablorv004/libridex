@@ -20,7 +20,7 @@ public class WebSecurityConfig {
                                 .requestMatchers("/", "/index","/login/**" ,"/register", "/register/send", "/catalog").permitAll()
                                 // Users allowed accesses
                                 // Admin only accesses
-                                // .requestMatchers("").hasRole("ADMIN")
+                                .requestMatchers("/admin/**").hasRole("ADMIN")
                                 // Allow Static resources access
                                 .requestMatchers(
                                                 "/resources/**",

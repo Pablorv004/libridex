@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head th:replace="~{fragments :: head}"></head>
+
+<body>
+    <header th:replace="~{fragments :: navbar}"></header>
+
+    <div class="hero-image position-relative text-center text-white"></div>
+    <img src="https://trello-backgrounds.s3.amazonaws.com/SharedBackground/2215x2048/5fa9c73355b096b1e1786af0510a6fc4/photo-1481627834876-b7833e8f5570.webp"
+        alt="Image" class="img-fluid w-100" style="height: 100vh; object-fit: cover;">
+    <div class="hero-text position-absolute w-100 top-50 start-50 translate-middle mt-5">
+        <div class="card bg-dark bg-opacity-75 p-5 mx-auto" style="width: 600px;">
+            <h1 class="display-4 text-white mb-4 text-center" th:text="${book.id == null ? 'New Book' : 'Edit Book'}"></h1>
+            <form th:action="${book.id == null ? '/admin/books/add' : '/admin/books/edit'}" method="post" th:object="${book}" enctype="multipart/form-data">
+                <input type="hidden" th:field="*{id}">
+                <hr class="text-white">
+                <div class="mb-4 mt-4">
+                    <div class="card mx-auto mb-4 text-center justify-content-center" style="height: 15vh; width: 15vh; object-fit: contain;">
+                        <img th:src="${book.image}" alt="No image" class="card-img-top">
+                    </div>
+                    <h5 class="text-center text-white">Image selection coming soon!</h4>
+                    <!-- <input type="file" id="image" name="image" class="form-control w-75 mx-auto" accept="image/*"> -->
+                </div>
+                <div class="mb-3">
+                    <label for="title" class="form-label text-white">Title</label>
+                    <input type="text" th:field="*{title}" class="form-control" id="title" name="title">
+                    <div class="text-danger" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></div>
+                </div>
+                <div class="mb-3">
+                    <label for="author" class="form-label text-white">Author</label>
+                    <input type="text" th:field="*{author}" class="form-control" id="author" name="author">
+                    <div class="text-danger" th:if="${#fields.hasErrors('author')}" th:errors="*{author}"></div>
+                </div>
+                <div class="mb-3">
+                    <label for="genre" class="form-label text-white">Genre</label>
+                    <input type="text" th:field="*{genre}" class="form-control" id="genre" name="genre">
+                    <div class="text-danger" th:if="${#fields.hasErrors('genre')}" th:errors="*{genre}"></div>
+                </div>
+                <div class="mb-4">
+                    <label for="publishing_date" class="form-label text-white">Publishing Date</label>
+                    <input type="text" th:field="*{publishing_date}" class="form-control" id="publishing_date" name="publishing_date">
+                    <div class="text-danger" th:if="${#fields.hasErrors('publishing_date')}" th:errors="*{publishing_date}"></div>
+                </div>
+                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
+                <hr class="text-white mb-4 mt-4">
+                <div class="text-center">
+                    <button type="submit" class="btn btn-dark d-inline me-3"
+                            style="background-color: rgb(103, 75, 29); border-color: rgb(103, 75, 29);">Add new book</button>
+                    <a class="btn btn-danger d-inline" th:href="@{/admin/books}">Return</a>
+                </div>
+            </form>
+        </div>
+    </div>
+    </div>
+</body>
+</html>
