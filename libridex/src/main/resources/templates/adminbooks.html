@@ -8,6 +8,7 @@
     <img src="https://trello-backgrounds.s3.amazonaws.com/SharedBackground/2215x2048/5fa9c73355b096b1e1786af0510a6fc4/photo-1481627834876-b7833e8f5570.webp"
         alt="Image" class="img-fluid w-100" style="height: 25vh; object-fit: cover;">
     <div class="container text-center mt-5">
+        <div class="alert alert-info" th:if= "${success != null}" th:text="${success}"></div>
         <h1 style="color: rgb(103, 75, 29);">Books</h1>
         <hr class="border-black border-2">
         <div class="table-responsive">
@@ -21,20 +22,28 @@
                         <th scope="col">Publishing Date</th>
                         <th scope="col">Lent</th>
                         <th scope="col">Reserved</th>
+                        <th scope="col">&nbsp;</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr class="" th:each="book : ${books}">
-                        <td scope="row"><img th:src="${book.image}" alt="Book Image" class="rounded-circle h-auto" style="width: 50px;"></td>
-                        <td th:text="${book.title}"></td>
-                        <td th:text="${book.author}"></td>
-                        <td th:text="${book.genre}"></td>
-                        <td th:text="${book.publishing_date}"></td>
-                        <td th:text="${book.lent ? '✔' : '✘'}"></td>
-                        <td th:text="${book.reserved ? '✔' : '✘'}"></td>
+                        <td scope="row"><img th:src="@{/images/{image}(image=${book.image})}"  alt="Book Image" class="rounded-circle h-auto align-content-center" style="width: 50px;"></td>
+                        <td class="align-content-center" th:text="${book.title}"></td>
+                        <td class="align-content-center" th:text="${book.author}"></td>
+                        <td class="align-content-center" th:text="${book.genre}"></td>
+                        <td class="align-content-center" th:text="${book.publishing_date}"></td>
+                        <td class="align-content-center" th:text="${book.lent ? '✔' : '✘'}"></td>
+                        <td class="align-content-center" th:text="${book.reserved ? '✔' : '✘'}"></td>
+                        <td class="align-content-center">
+                            <a th:href= "@{/admin/books/form/{id}(id=${book.id})}"><i class="fa-solid fa-pen-to-square d-inline me-3" style="color: #74C0FC;"></i></a>
+                            <a th:href= "@{/admin/books/delete/{id}(id=${book.id})}"><i class="fa-solid fa-trash-can d-inline" style="color: #fd3535;"></i></a>
+                        </td>
                     </tr>
                 </tbody>
             </table>
+            <div class="d-flex justify-content-end mt-4">
+                <a class="btn btn-primary" th:href= "@{/admin/books/form}">Add book</a>
+            </div>
             <div class="pagination d-flex justify-content-center mt-4">
                 <a class="btn btn-primary mx-2" th:if="${page > 0}" th:href="@{/admin/books(page=${page - 1})}">&laquo; Previous</a>
                 <span class="mx-2 fs-4" th:text="${page + 1}">1</span>
