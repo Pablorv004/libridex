@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
@@ -40,13 +41,17 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    public Page<Book> findFirstN(int elementsNumber) {
+        return bookRepository.findAll(PageRequest.of(0, elementsNumber));
+    }
+
+    @Override
     public BookDTO findById(Integer id) {
         return toDTO(bookRepository.findById(id).orElse(null));
     }
 
     @Override
-    public Book save(BookDTO bookDTO) {
-        // TODO: IMPLEMENT RESERVATION AND LENDINGS UPDATE FUNCTIONALITY    
+    public Book save(BookDTO bookDTO) {  
         return bookRepository.save(toEntity(bookDTO));
     }
 

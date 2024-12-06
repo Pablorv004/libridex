@@ -1,6 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
-<head th:replace= "~{fragments :: head}"></head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}" />
+    <script src="https://kit.fontawesome.com/39fe04e284.js" crossorigin="anonymous"></script>
+    <script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
+    <title>Libridex</title>
+
+    <style>
+        .card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        a {
+            text-decoration: none;
+        }
+    </style>
+</head>
 <body>
     <header th:replace="~{fragments :: navbar}"></header>
     <div class="hero-image position-relative text-center text-white">
@@ -18,25 +40,26 @@
                     <hr>
                     <div class="row d-flex flex-wrap">
                         <div class="col-md-4 mb-4" th:each="book : ${latestBooks}">
-                            <div class="card">
-                                <a th:href="@{/book/{id}(id=${book.id})}"></a>
-                                    <img th:src="${book.image}" alt="Book Cover" class="card-img-top img-fluid w-100 text-center">
-                                </a>
-                                <div class="card-body d-flex flex-column gap-4">
-                                    <div class="d-flex flex-column gap-2">
-                                        <div>
-                                            <span class="badge text-light-emphasis bg-light-subtle border border-light-subtle rounded-pill" th:text="${book.genre}">Most Reserved</span>
+                            <a th:href="@{/book/{id}(id=${book.id})}">
+                                <div class="card">
+                                        <img th:src="@{/images/{image}(image=${book.image})}"  alt="Book Cover" class="rounded-circle h-auto align-content-center">
+                                    
+                                    <div class="card-body d-flex flex-column gap-4">
+                                        <div class="d-flex flex-column gap-2">
+                                            <div>
+                                                <span class="badge text-light-emphasis bg-light-subtle border border-light-subtle rounded-pill" th:text="${book.genre}">Most Reserved</span>
+                                            </div>
+                                            <h3 class="mb-0 h4">
+                                                <p class="text-inherit" th:text="${book.title}">Book Title</p>
+                                            </h3>
+                                            <small class="text-secondary" th:text="${book.publishing_date}">Date</small>
                                         </div>
-                                        <h3 class="mb-0 h4">
-                                            <a th:href="@{/book/{id}(id=${book.id})}" class="text-inherit" th:text="${book.title}">Book Title</a>
-                                        </h3>
-                                        <small class="text-secondary" th:text="${book.publishing_date}">Date</small>
-                                    </div>
-                                    <div>
-                                        <span class="fw-semibold text-dark" th:text="${book.author}"></span>
+                                        <div>
+                                            <span class="fw-semibold text-dark" th:text="${book.author}"></span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            </a>
                         </div>
                     </div>
                 </section>
@@ -46,26 +69,25 @@
                     <hr>
                     <div class="row d-flex flex-wrap">
                         <div class="col-md-4 mb-4" th:each="book : ${mostReservedBooks}">
-                            <div class="card"></div>
-                            <div class="card">
-                                <a th:href="@{/book/{id}(id=${book.id})}"></a>
-                                    <img th:src="${book.image}" alt="Book Cover" class="card-img-top img-fluid w-100 text-center">
-                                </a>
-                                <div class="card-body d-flex flex-column gap-4">
-                                    <div class="d-flex flex-column gap-2">
-                                        <div>
-                                            <span class="badge text-light-emphasis bg-light-subtle border border-light-subtle rounded-pill" th:text="${book.genre}">Most Reserved</span>
+                            <a th:href="@{/book/{id}(id=${book.id})}">
+                                <div class="card">
+                                    <img th:src="@{/images/{image}(image=${book.image})}" alt="Book Cover" class="mx-auto d-block" style="width: 15vh;">
+                                    <div class="card-body d-flex flex-column gap-4">
+                                        <div class="d-flex flex-column gap-2">
+                                            <div>
+                                                <span class="badge text-light-emphasis bg-light-subtle border border-light-subtle rounded-pill" th:text="${book.genre}">Most Reserved</span>
+                                            </div>
+                                            <h3 class="mb-0 h4">
+                                                <p class="text-inherit" th:text="${book.title}">Book Title</p>
+                                            </h3>
+                                            <small class="text-secondary" th:text="${book.publishing_date}">Date</small>
                                         </div>
-                                        <h3 class="mb-0 h4">
-                                            <a th:href="@{/book/{id}(id=${book.id})}" class="text-inherit" th:text="${book.title}">Book Title</a>
-                                        </h3>
-                                        <small class="text-secondary" th:text="${book.publishing_date}">Date</small>
-                                    </div>
-                                    <div>
-                                        <span class="fw-semibold text-dark" th:text="${book.author}"></span>
+                                        <div>
+                                            <span class="fw-semibold text-dark" th:text="${book.author}"></span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            </a>
                         </div>
                     </div>
                 </section>

@@ -13,13 +13,15 @@ import com.main.libridex.model.BookDTO;
 public interface BookService {
     List<Book> findAll();
 
+    Page<Book> findAll(PageRequest pageRequest);
+
+    Page<Book> findFirstN(int elementsNumber);
+    
     BookDTO findById(Integer id);
 
     Book save(BookDTO bookDTO);
 
     void deleteById(Integer id);
-
-    Page<Book> findAll(PageRequest pageRequest);
 
     void checkExistentBook(BookDTO bookDTO, BindingResult bResult);
 
