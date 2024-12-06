@@ -44,7 +44,7 @@
                     <input type="date" th:field="*{publishing_date}" class="form-control" id="publishing_date" name="publishing_date">
                     <div class="text-danger" th:if="${#fields.hasErrors('publishing_date')}" th:errors="*{publishing_date}"></div>
                 </div>
-                <div class="mb-4">
+                <!-- <div class="mb-4" th:if= "${book.id != null}">
                     <label class="form-label text-white d-block">Status</label>
                     <div class="form-check form-check-inline mb-2">
                         <input type="checkbox" th:field="*{lent}" class="form-check-input me-2" id="lent" name="lent">
@@ -54,7 +54,7 @@
                         <input type="checkbox" th:field="*{reserved}" class="form-check-input me-2" id="reserved" name="reserved">
                         <label for="reserved" class="form-check-label text-white">Reserved</label>
                     </div>
-                </div>
+                </div> -->
                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
                 <hr class="text-white mb-4 mt-4">
                 <div class="text-center">

@@ -1,7 +1,5 @@
 package com.main.libridex.controller;
 
-import java.io.IOException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
@@ -21,6 +19,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.main.libridex.components.logger.AccessLogger;
 import com.main.libridex.entity.Book;
 import com.main.libridex.model.BookDTO;
+import com.main.libridex.model.secureUserDTO;
 import com.main.libridex.service.BookService;
 import com.main.libridex.service.UserService;
 
@@ -51,6 +50,22 @@ public class AdminController {
     public String getMainMenuView() {
         return ADMIN_VIEW;
     }
+
+
+    // USERS RELATED ENDPOINTS
+
+    @GetMapping("/users")
+    public String getUsersView(Model model, @RequestParam(defaultValue = "0") int page) {
+        Page<secureUserDTO> userPage = userService.findAll(PageRequest.of(page, 5));
+        model.addAttribute("users", userPage.getContent());
+        model.addAttribute("totalPages", userPage.getTotalPages());
+        model.addAttribute("page", page);
+        return USERS_VIEW;
+    }
+
+
+
+    // BOOKS RELATED ENDPOINTS
 
     @GetMapping("/books")
     public String getBooksView(Model model, @RequestParam(defaultValue = "0") int page) {
@@ -102,12 +117,6 @@ public class AdminController {
 
         flash.addFlashAttribute("error", "Oops! Something went wrong!");
         return BOOKS_FORM;
-    }
-
-    @GetMapping("/users")
-    public String getUsersView(Model model) {
-
-        return USERS_VIEW;
     }
 
 }

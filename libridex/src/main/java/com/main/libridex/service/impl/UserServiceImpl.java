@@ -2,8 +2,11 @@ package com.main.libridex.service.impl;
 
 import java.util.List;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User.UserBuilder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,6 +18,7 @@ import org.springframework.validation.BindingResult;
 
 import com.main.libridex.entity.User;
 import com.main.libridex.model.UserDTO;
+import com.main.libridex.model.secureUserDTO;
 import com.main.libridex.repository.UserRepository;
 import com.main.libridex.service.UserService;
 
@@ -45,6 +49,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public List<User> findAll() {
         return userRepository.findAll();
+    }
+
+    @Override
+    public Page<secureUserDTO> findAll(PageRequest pageRequest) {
+        Page<User> usersPage = userRepository.findAll(pageRequest);
+        return usersPage.map(this::toSecureDTO);
     }
 
     @Override
@@ -160,5 +170,33 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         boolean hasLowercase = !password.equals(password.toUpperCase());
         boolean hasNumber = password.matches(".*\\d.*");
         return hasUppercase && hasLowercase && hasNumber && password.length() >= 8;
+    }
+
+
+    
+    // MODEL MAPPER
+
+    // From UserDTO to User
+    public User toEntity(UserDTO userDTO) {
+        ModelMapper mapper = new ModelMapper();
+        return mapper.map(userDTO, User.class);
+    }
+
+    // From secureUserDTO to User
+    public User toEntity(secureUserDTO secureUserDTO) {
+        ModelMapper mapper = new ModelMapper();
+        return mapper.map(secureUserDTO, User.class);
+    }
+
+    // From User to UserDTO
+    public UserDTO toDTO(User user) {
+        ModelMapper mapper = new ModelMapper();
+        return mapper.map(user, UserDTO.class);
+    }
+
+    // From User to secureUserDTO
+    public secureUserDTO toSecureDTO(User user) {
+        ModelMapper mapper = new ModelMapper();
+        return mapper.map(user, secureUserDTO.class);
     }
 }
