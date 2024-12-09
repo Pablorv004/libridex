@@ -96,9 +96,9 @@ public class AdminController {
     @PostMapping(value = {"/books/add", "/books/edit"})
     public String addBook(@Valid @ModelAttribute("book") BookDTO bookDTO, BindingResult bResult,
             @RequestParam("imageFile") MultipartFile imageFile, RedirectAttributes flash) {
-
+        
         bookService.checkExistentBook(bookDTO, bResult);
-
+//TODO: El controlador tiene logica. Mover esto a service.
         if (!bResult.hasErrors()) {
             if (!imageFile.isEmpty()) {
                 String imageName = bookService.saveImage(imageFile);
