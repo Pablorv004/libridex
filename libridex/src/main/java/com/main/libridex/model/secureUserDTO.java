@@ -10,10 +10,11 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class secureUserDTO {
+public class SecureUserDTO {
     private Integer id;
     private String name;
     private String surname;
     private String email;
     private String role;
+    private boolean activated;
 }

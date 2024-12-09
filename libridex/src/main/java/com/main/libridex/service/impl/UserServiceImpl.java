@@ -18,7 +18,7 @@ import org.springframework.validation.BindingResult;
 
 import com.main.libridex.entity.User;
 import com.main.libridex.model.UserDTO;
-import com.main.libridex.model.secureUserDTO;
+import com.main.libridex.model.SecureUserDTO;
 import com.main.libridex.repository.UserRepository;
 import com.main.libridex.service.UserService;
 
@@ -52,7 +52,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public Page<secureUserDTO> findAll(PageRequest pageRequest) {
+    public Page<SecureUserDTO> findAll(PageRequest pageRequest) {
         Page<User> usersPage = userRepository.findAll(pageRequest);
         return usersPage.map(this::toSecureDTO);
     }
@@ -96,6 +96,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         user.setSurname("");
         user.setRole("ROLE_USER");
         user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
+        user.setActivated(false); // Ensure user is deactivated by default
         return userRepository.save(user);
     }
 
@@ -172,6 +173,20 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return hasUppercase && hasLowercase && hasNumber && password.length() >= 8;
     }
 
+    @Override
+    public void toggleActivation(Integer id) {
+        User user = userRepository.findById(id).orElse(null);
+        if (user != null) {
+            user.setActivated(!user.isActivated());
+            userRepository.save(user);
+        }
+    }
+
+    @Override
+    public Page<SecureUserDTO> findFirstN(int elementsNumber) {
+        Page<User> usersPage = userRepository.findAll(PageRequest.of(0, elementsNumber));
+        return usersPage.map(this::toSecureDTO);
+    }
 
     
     // MODEL MAPPER
@@ -183,7 +198,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     // From secureUserDTO to User
-    public User toEntity(secureUserDTO secureUserDTO) {
+    public User toEntity(SecureUserDTO secureUserDTO) {
         ModelMapper mapper = new ModelMapper();
         return mapper.map(secureUserDTO, User.class);
     }
@@ -195,8 +210,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     // From User to secureUserDTO
-    public secureUserDTO toSecureDTO(User user) {
+    public SecureUserDTO toSecureDTO(User user) {
         ModelMapper mapper = new ModelMapper();
-        return mapper.map(user, secureUserDTO.class);
+        return mapper.map(user, SecureUserDTO.class);
     }
 }

@@ -40,6 +40,9 @@ public class User {
     @Column(nullable = false)
     private String role;
 
+    @Column(nullable = false)
+    private boolean activated = false;
+
     @OneToMany(mappedBy = "user")
     public List<Reservation> reservations = new ArrayList<>();
 

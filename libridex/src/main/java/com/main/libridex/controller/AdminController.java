@@ -19,7 +19,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.main.libridex.components.logger.AccessLogger;
 import com.main.libridex.entity.Book;
 import com.main.libridex.model.BookDTO;
-import com.main.libridex.model.secureUserDTO;
+import com.main.libridex.model.SecureUserDTO;
 import com.main.libridex.service.BookService;
 import com.main.libridex.service.UserService;
 
@@ -56,13 +56,26 @@ public class AdminController {
 
     @GetMapping("/users")
     public String getUsersView(Model model, @RequestParam(defaultValue = "0") int page) {
-        Page<secureUserDTO> userPage = userService.findAll(PageRequest.of(page, 5));
+        Page<SecureUserDTO> userPage = userService.findAll(PageRequest.of(page, 5));
         model.addAttribute("users", userPage.getContent());
         model.addAttribute("totalPages", userPage.getTotalPages());
         model.addAttribute("page", page);
         return USERS_VIEW;
     }
 
+    @GetMapping("/users/toggleactivation/{id}")
+    public String toggleUserActivation(@PathVariable Integer id, RedirectAttributes flash) {
+        userService.toggleActivation(id);
+        flash.addFlashAttribute("success", "User activation status updated successfully!");
+        return "redirect:/admin/users";
+    }
+
+    @GetMapping("/users/delete/{id}")
+    public String deleteUser(@PathVariable Integer id, RedirectAttributes flash) {
+        userService.deleteById(id);
+        flash.addFlashAttribute("success", "User deleted successfully!");
+        return "redirect:/admin/users";
+    }
 
 
     // BOOKS RELATED ENDPOINTS
@@ -96,27 +109,19 @@ public class AdminController {
     @PostMapping(value = {"/books/add", "/books/edit"})
     public String addBook(@Valid @ModelAttribute("book") BookDTO bookDTO, BindingResult bResult,
             @RequestParam("imageFile") MultipartFile imageFile, RedirectAttributes flash) {
-        
         bookService.checkExistentBook(bookDTO, bResult);
-//TODO: El controlador tiene logica. Mover esto a service.
         if (!bResult.hasErrors()) {
-            if (!imageFile.isEmpty()) {
-                String imageName = bookService.saveImage(imageFile);
-                bookDTO.setImage(imageName);
-            } else {
-                if(bookDTO.getId() == null)
-                    bookDTO.setImage("default_image.png");
-            }
-
-            String message = bookDTO.getId() == null ? "Book created succesfully!" : "Book edited successfully!";
-
-            bookService.save(bookDTO);
-            flash.addFlashAttribute("success", message);
-            return "redirect:/admin/books";
+            flash.addFlashAttribute("error", "Oops! Something went wrong!");
+            return BOOKS_FORM;
         }
+        
+        bookService.setImage(bookDTO, imageFile);
+        String message = bookDTO.getId() == null ? "Book created succesfully!" : "Book edited successfully!";
 
-        flash.addFlashAttribute("error", "Oops! Something went wrong!");
-        return BOOKS_FORM;
+        bookService.save(bookDTO);
+        flash.addFlashAttribute("success", message);
+        return "redirect:/admin/books";
+        
     }
 
 }

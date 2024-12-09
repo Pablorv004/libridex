@@ -38,7 +38,4 @@ public class LoginController {
         accessLogger.accessed("login");
         return LOGIN_VIEW;
     }
-
-    
-    
 }

@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
@@ -58,6 +57,17 @@ public class BookServiceImpl implements BookService {
     @Override
     public void deleteById(Integer id) {
         bookRepository.deleteById(id);
+    }
+
+    @Override
+    public void setImage(BookDTO bookDTO, MultipartFile imageFile) {
+        if (!imageFile.isEmpty()) {
+            String imageName = saveImage(imageFile);
+            bookDTO.setImage(imageName);
+        } else {
+            if(bookDTO.getId() == null)
+                bookDTO.setImage("default_image.png");
+        }
     }
 
     @Override
