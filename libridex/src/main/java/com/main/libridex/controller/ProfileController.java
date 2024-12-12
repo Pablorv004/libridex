@@ -59,7 +59,7 @@ public class ProfileController {
     public String applyChanges(@Valid @ModelAttribute("user") UserDTO userDTO, BindingResult bindingResult, RedirectAttributes flash){
 
         if(!userService.isEditValid(userDTO, bindingResult)){
-            userLogger.failedToUpdateProfile(userDTO.getEmail(), new Exception("Invalid data"));
+            userLogger.failedToUpdateProfile(userDTO.getEmail(), new Exception("Invalid data. Either data doesn't match regex or email is already in use."));
             return PROFILE_EDIT_VIEW;
         } else {
             userService.edit(userDTO);
