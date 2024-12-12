@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head th:replace="~{fragments :: head}"></head>
+<head th:replace="~{fragments :: head}">
+    <link href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css" rel="stylesheet">
+</head>
 
 <body>
     <header th:replace="~{fragments :: navbar}"></header>
@@ -11,22 +13,25 @@
         <div class="alert alert-info" th:if= "${success != null}" th:text="${success}"></div>
         <h1 style="color: rgb(103, 75, 29);">Books</h1>
         <hr class="border-black border-2">
-        <div class="table-responsive">
-            <table class="table table-responsive">
+        <div class="d-flex justify-content-center mt-4">
+            <a class="btn btn-primary" th:href= "@{/admin/books/form}">Add book</a>
+        </div>
+        <div class="mb-5">
+            <table id="booksTable" class="table table-striped">
                 <thead>
                     <tr>
-                        <th scope="col">Image</th>
-                        <th scope="col">Title</th>
-                        <th scope="col">Author</th>
-                        <th scope="col">Genre</th>
-                        <th scope="col">Publishing Date</th>
-                        <th scope="col">Lent</th>
-                        <th scope="col">Reserved</th>
-                        <th scope="col">&nbsp;</th>
+                        <th>Image</th>
+                        <th>Title</th>
+                        <th>Author</th>
+                        <th>Genre</th>
+                        <th>Publishing Date</th>
+                        <th>Lent</th>
+                        <th>Reserved</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr class="" th:each="book : ${books}">
+                    <tr th:each="book : ${books}">
                         <td scope="row"><img th:src="@{/images/{image}(image=${book.image})}"  alt="Book Image" class="rounded-circle h-auto align-content-center" style="width: 50px;"></td>
                         <td class="align-content-center" th:text="${book.title}"></td>
                         <td class="align-content-center" th:text="${book.author}"></td>
@@ -41,16 +46,24 @@
                     </tr>
                 </tbody>
             </table>
-            <div class="d-flex justify-content-end mt-4">
-                <a class="btn btn-primary" th:href= "@{/admin/books/form}">Add book</a>
-            </div>
-            <div class="pagination d-flex justify-content-center mt-4">
-                <a class="btn btn-primary mx-2" th:if="${page > 0}" th:href="@{/admin/books(page=${page - 1})}">&laquo; Previous</a>
-                <span class="mx-2 fs-4" th:text="${page + 1}">1</span>
-                <a class="btn btn-primary mx-2" th:if="${page < totalPages - 1}" th:href="@{/admin/books(page=${page + 1})}">Next &raquo;</a>
-            </div>
         </div>
     </div>
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
+    <script src="https://cdn.datatables.net/2.1.8/js/dataTables.bootstrap5.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#booksTable').DataTable({
+                "responsive": true,
+                "lengthMenu": [5, 10, 25, 50, 100],
+                "pageLength": 5,
+                "columnDefs": [
+                    { "orderable": false, "targets": 0 }, // Image column
+                    { "orderable": false, "targets": 7 }  // Actions column
+                ],
+            });
+        });
+    </script>
 </body>
 
 </html>

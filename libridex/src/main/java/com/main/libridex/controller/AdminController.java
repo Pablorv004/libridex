@@ -1,5 +1,7 @@
 package com.main.libridex.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
@@ -82,9 +84,8 @@ public class AdminController {
 
     @GetMapping("/books")
     public String getBooksView(Model model, @RequestParam(defaultValue = "0") int page) {
-        Page<Book> bookPage = bookService.findAll(PageRequest.of(page, 5));
-        model.addAttribute("books", bookPage.getContent());
-        model.addAttribute("totalPages", bookPage.getTotalPages());
+        List<Book> bookPage = bookService.findAll();
+        model.addAttribute("books", bookPage);
         model.addAttribute("page", page);
         return BOOKS_VIEW;
     }
