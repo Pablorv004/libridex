@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.main.libridex.components.logger.AccessLogger;
@@ -51,7 +52,6 @@ public class AdminController {
         return ADMIN_VIEW;
     }
 
-
     // USERS RELATED ENDPOINTS
 
     @GetMapping("/users")
@@ -77,12 +77,18 @@ public class AdminController {
         return "redirect:/admin/users";
     }
 
-
     // BOOKS RELATED ENDPOINTS
 
     @GetMapping("/books")
     public String getBooksView(Model model, @RequestParam(defaultValue = "0") int page) {
         Page<Book> bookPage = bookService.findAll(PageRequest.of(page, 5));
+        bookPage.forEach(book -> {
+            String imageUrl = MvcUriComponentsBuilder
+                    .fromMethodName(FileController.class, "serveFile", book.getImage())
+                    .build()
+                    .toUriString();
+            book.setImage(imageUrl);
+        });
         model.addAttribute("books", bookPage.getContent());
         model.addAttribute("totalPages", bookPage.getTotalPages());
         model.addAttribute("page", page);
@@ -106,24 +112,24 @@ public class AdminController {
         return "redirect:/admin/books";
     }
 
-    @PostMapping(value = {"/books/add", "/books/edit"})
+    @PostMapping(value = { "/books/add", "/books/edit" })
     public String addBook(@Valid @ModelAttribute("book") BookDTO bookDTO, BindingResult bResult,
             @RequestParam("imageFile") MultipartFile imageFile, RedirectAttributes flash) {
 
         bookService.checkExistentBook(bookDTO, bResult);
-        
+
         if (bResult.hasErrors()) {
             flash.addFlashAttribute("error", "Oops! Something went wrong!");
             return BOOKS_FORM;
         }
-        
+
         bookService.setImage(bookDTO, imageFile);
         String message = bookDTO.getId() == null ? "Book created succesfully!" : "Book edited successfully!";
 
         bookService.save(bookDTO);
         flash.addFlashAttribute("success", message);
         return "redirect:/admin/books";
-        
+
     }
 
 }

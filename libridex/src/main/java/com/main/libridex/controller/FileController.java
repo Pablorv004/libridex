@@ -19,7 +19,7 @@ public class FileController {
     @Qualifier("storageService")
     StorageService storageService;
     
-    @GetMapping("/files/{filename:.+}")
+    @GetMapping("{filename:.+}")
     @ResponseBody
     public ResponseEntity<Resource> serveFile(@PathVariable String filename) {
         Resource file = storageService.loadAsResource(filename);

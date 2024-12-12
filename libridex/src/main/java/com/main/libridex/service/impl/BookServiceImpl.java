@@ -77,10 +77,7 @@ public class BookServiceImpl implements BookService {
             storageService.delete(bookDTO.getImage());
 
             String image = storageService.store(imageFile, id, "Book");
-            bookDTO.setImage(MvcUriComponentsBuilder
-                .fromMethodName(FileController.class, "serveFile", image)
-                .build().toUriString()
-            );
+            bookDTO.setImage(image);
         }
     }
 
