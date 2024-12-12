@@ -23,6 +23,7 @@ import com.main.libridex.model.BookDTO;
 import com.main.libridex.model.SecureUserDTO;
 import com.main.libridex.service.BookService;
 import com.main.libridex.service.UserService;
+import com.main.libridex.utils.ResourceLoader;
 
 import jakarta.validation.Valid;
 
@@ -83,19 +84,7 @@ public class AdminController {
     public String getBooksView(Model model, @RequestParam(defaultValue = "0") int page) {
         Page<Book> bookPage = bookService.findAll(PageRequest.of(page, 5));
         bookPage.forEach(book -> {
-            if(!book.getImage().isEmpty()){
-                String imageUrl = MvcUriComponentsBuilder
-                        .fromMethodName(FileController.class, "serveFile", book.getImage())
-                        .build()
-                        .toUriString();
-                book.setImage(imageUrl);
-            }else {
-                String imageUrl = MvcUriComponentsBuilder
-                        .fromMethodName(FileController.class, "serveFile", "default_image.png")
-                        .build()
-                        .toUriString();
-                book.setImage(imageUrl);
-            }
+            book.setImage(ResourceLoader.loadResource(book.getImage()));
         });
         model.addAttribute("books", bookPage.getContent());
         model.addAttribute("totalPages", bookPage.getTotalPages());
@@ -105,9 +94,11 @@ public class AdminController {
 
     @GetMapping(value = { "/books/form", "/books/form/{id}" })
     public String showForm(Model model, @PathVariable(required = false) Integer id) {
-        if (id != null)
-            model.addAttribute("book", bookService.findById(id));
-        else
+        if (id != null){
+            BookDTO bookDTO = bookService.findById(id);
+            bookDTO.setImage(ResourceLoader.loadResource(bookDTO.getImage()));
+            model.addAttribute("book", bookDTO);
+        }else
             model.addAttribute("book", new BookDTO());
 
         return BOOKS_FORM;

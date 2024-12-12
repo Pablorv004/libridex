@@ -6,13 +6,15 @@ import org.springframework.stereotype.Component;
 @Component
 @ConfigurationProperties("storage")
 public class StorageProperties {
-    private String location = "images";
+    private String book_storage = "images/books";
 
-    public String getLocation() {
-        return location;
+    public String getBook_storage() {
+        return book_storage;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
+    public void setBook_storage(String book_storage) {
+        this.book_storage = book_storage;
     }
+
+    
 }

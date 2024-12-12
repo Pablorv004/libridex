@@ -26,10 +26,10 @@ public class StorageServiceImpl implements StorageService {
 	private final Path rootLocation;
 
 	public StorageServiceImpl(StorageProperties properties) {
-		if (properties.getLocation().trim().length() == 0) {
+		if (properties.getBook_storage().trim().length() == 0) {
 			throw new StorageException("File upload location can not be Empty.");
 		}
-		this.rootLocation = Paths.get(properties.getLocation());
+		this.rootLocation = Paths.get(properties.getBook_storage());
 	}
 
 	/**
@@ -87,30 +87,26 @@ public class StorageServiceImpl implements StorageService {
 			extension = originalFilename.substring(originalFilename.lastIndexOf("."));
 		}
 
-		// Then we set the name and subdirectory
+		// Then we set the name
 		String newFilename = "";
-		String subDir = "";
 		switch (type) {
 			case "User": {
 				newFilename = "user_image_" + id + extension;
-				subDir = "users";
 				break;
 			}
 			case "Book": {
 				newFilename = "book_image_" + id + extension;
-				subDir = "books";
 				break;
 			}
 			default: {
 				newFilename = "default_image.png";
-				subDir = "default";
 				break;
 			}
 		}
 
 		// Here we create the full route and return it
 		// This will return something like "/images/books/book_image_1.png"
-		Path destinationDir = this.rootLocation.resolve(subDir).normalize();
+		Path destinationDir = this.rootLocation.normalize();
 		return destinationDir.resolve(newFilename).normalize();
 	}
 
@@ -185,7 +181,6 @@ public class StorageServiceImpl implements StorageService {
 	public Resource loadAsResource(String filename) {
 		try {
 			Path file = load(filename);
-			System.out.println("File path: " + file.toString());
 			Resource resource = new UrlResource(file.toUri());
 			if (resource.exists() || resource.isReadable()) {
 				return resource;

@@ -57,12 +57,16 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Book save(BookDTO bookDTO) {  
+    public Book save(BookDTO bookDTO) {
         return bookRepository.save(toEntity(bookDTO));
     }
 
     @Override
     public void deleteById(Integer id) {
+        Book book = bookRepository.findById(id).orElse(null);
+        if (book.getImage() != null && !book.getImage().isBlank()) {
+            storageService.delete(book.getImage());
+        }
         bookRepository.deleteById(id);
     }
 
@@ -70,10 +74,12 @@ public class BookServiceImpl implements BookService {
     public void setImage(BookDTO bookDTO, MultipartFile imageFile) {
         Integer id = bookDTO.getId();
 
-        if(id == null)
+        if (id == null)
             id = bookRepository.findMaxId() + 1;
 
         if (!imageFile.isEmpty()) {
+            if (!bookDTO.getImage().isBlank())
+                storageService.delete(bookDTO.getImage());
 
             String image = storageService.store(imageFile, id, "Book");
             bookDTO.setImage(image);
