@@ -23,7 +23,6 @@ public class Book {
     @Column(unique = true, nullable = false)
     private String title;
 
-    @Column(nullable = false)
     private String image;
 
     @Column(nullable = false)

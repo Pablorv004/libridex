@@ -24,6 +24,7 @@ public class WebSecurityConfig {
                                 // Allow Static resources access
                                 .requestMatchers(
                                                 "/resources/**",
+                                                "/images/**",
                                                 "/static/**",
                                                 "/css/**",
                                                 "/js/**",

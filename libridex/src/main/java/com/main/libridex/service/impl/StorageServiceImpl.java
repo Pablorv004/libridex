@@ -61,7 +61,7 @@ public class StorageServiceImpl implements StorageService {
 				Files.copy(inputStream, destinationFile, StandardCopyOption.REPLACE_EXISTING);
 			}
 
-			return destinationFile.toString().replace("\\", "/");
+			return this.rootLocation.relativize(destinationFile).toString().replace("\\", "/");
 		} catch (IOException e) {
 			throw new StorageException("Failed to store file.", e);
 		}
@@ -185,6 +185,7 @@ public class StorageServiceImpl implements StorageService {
 	public Resource loadAsResource(String filename) {
 		try {
 			Path file = load(filename);
+			System.out.println("File path: " + file.toString());
 			Resource resource = new UrlResource(file.toUri());
 			if (resource.exists() || resource.isReadable()) {
 				return resource;

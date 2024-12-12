@@ -83,11 +83,19 @@ public class AdminController {
     public String getBooksView(Model model, @RequestParam(defaultValue = "0") int page) {
         Page<Book> bookPage = bookService.findAll(PageRequest.of(page, 5));
         bookPage.forEach(book -> {
-            String imageUrl = MvcUriComponentsBuilder
-                    .fromMethodName(FileController.class, "serveFile", book.getImage())
-                    .build()
-                    .toUriString();
-            book.setImage(imageUrl);
+            if(!book.getImage().isEmpty()){
+                String imageUrl = MvcUriComponentsBuilder
+                        .fromMethodName(FileController.class, "serveFile", book.getImage())
+                        .build()
+                        .toUriString();
+                book.setImage(imageUrl);
+            }else {
+                String imageUrl = MvcUriComponentsBuilder
+                        .fromMethodName(FileController.class, "serveFile", "default_image.png")
+                        .build()
+                        .toUriString();
+                book.setImage(imageUrl);
+            }
         });
         model.addAttribute("books", bookPage.getContent());
         model.addAttribute("totalPages", bookPage.getTotalPages());

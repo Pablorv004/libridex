@@ -71,10 +71,9 @@ public class BookServiceImpl implements BookService {
         Integer id = bookDTO.getId();
 
         if(id == null)
-            id = 1;
+            id = bookRepository.findMaxId() + 1;
 
         if (!imageFile.isEmpty()) {
-            storageService.delete(bookDTO.getImage());
 
             String image = storageService.store(imageFile, id, "Book");
             bookDTO.setImage(image);
