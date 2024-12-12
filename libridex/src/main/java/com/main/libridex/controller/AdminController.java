@@ -109,8 +109,10 @@ public class AdminController {
     @PostMapping(value = {"/books/add", "/books/edit"})
     public String addBook(@Valid @ModelAttribute("book") BookDTO bookDTO, BindingResult bResult,
             @RequestParam("imageFile") MultipartFile imageFile, RedirectAttributes flash) {
+
         bookService.checkExistentBook(bookDTO, bResult);
-        if (!bResult.hasErrors()) {
+        
+        if (bResult.hasErrors()) {
             flash.addFlashAttribute("error", "Oops! Something went wrong!");
             return BOOKS_FORM;
         }

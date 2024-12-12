@@ -16,11 +16,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 
+import com.main.libridex.controller.FileController;
 import com.main.libridex.entity.Book;
 import com.main.libridex.model.BookDTO;
 import com.main.libridex.repository.BookRepository;
 import com.main.libridex.service.BookService;
+import com.main.libridex.service.StorageService;
 
 @Service("bookService")
 public class BookServiceImpl implements BookService {
@@ -28,6 +31,10 @@ public class BookServiceImpl implements BookService {
     @Autowired
     @Qualifier("bookRepository")
     BookRepository bookRepository;
+
+    @Autowired
+    @Qualifier("storageService")
+    StorageService storageService;
 
     @Override
     public List<Book> findAll() {
@@ -61,28 +68,20 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public void setImage(BookDTO bookDTO, MultipartFile imageFile) {
+        Integer id = bookDTO.getId();
+
+        if(id == null)
+            id = 1;
+
         if (!imageFile.isEmpty()) {
-            String imageName = saveImage(imageFile);
-            bookDTO.setImage(imageName);
-        } else {
-            if(bookDTO.getId() == null)
-                bookDTO.setImage("default_image.png");
-        }
-    }
+            storageService.delete(bookDTO.getImage());
 
-    @Override
-    public String saveImage(MultipartFile imageFile) {
-        String uploadDir = "src/main/resources/static/images/";
-        String imageName = imageFile.getOriginalFilename();
-        Path uploadPath = Paths.get(uploadDir);
-
-        try (InputStream inputStream = imageFile.getInputStream()) {
-            Path filePath = uploadPath.resolve(imageName);
-            Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException e) {
-            e.printStackTrace();
+            String image = storageService.store(imageFile, id, "Book");
+            bookDTO.setImage(MvcUriComponentsBuilder
+                .fromMethodName(FileController.class, "serveFile", image)
+                .build().toUriString()
+            );
         }
-        return imageName;
     }
 
     // VALIDATIONS
@@ -103,5 +102,4 @@ public class BookServiceImpl implements BookService {
         ModelMapper mapper = new ModelMapper();
         return mapper.map(bookDTO, Book.class);
     }
-
 }

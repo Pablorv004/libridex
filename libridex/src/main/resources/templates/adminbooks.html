@@ -27,7 +27,7 @@
                 </thead>
                 <tbody>
                     <tr class="" th:each="book : ${books}">
-                        <td scope="row"><img th:src="@{/images/{image}(image=${book.image})}"  alt="Book Image" class="rounded-circle h-auto align-content-center" style="width: 50px;"></td>
+                        <td scope="row"><img th:src="${book.image == null ? 'http://localhost:8080/files/default_image.png' : book.image}"  alt="Book Image" class="rounded-circle h-auto align-content-center" style="width: 50px;"></td>
                         <td class="align-content-center" th:text="${book.title}"></td>
                         <td class="align-content-center" th:text="${book.author}"></td>
                         <td class="align-content-center" th:text="${book.genre}"></td>
