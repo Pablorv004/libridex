@@ -42,11 +42,6 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Page<Book> findAll(PageRequest pageRequest) {
-        return bookRepository.findAll(pageRequest);
-    }
-
-    @Override
     public Page<Book> findFirstN(int elementsNumber) {
         return bookRepository.findAll(PageRequest.of(0, elementsNumber));
     }

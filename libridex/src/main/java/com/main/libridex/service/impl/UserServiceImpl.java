@@ -52,12 +52,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public Page<SecureUserDTO> findAll(PageRequest pageRequest) {
-        Page<User> usersPage = userRepository.findAll(pageRequest);
-        return usersPage.map(this::toSecureDTO);
-    }
-
-    @Override
     public User findByEmail(String email) {
         return userRepository.findByEmail(email);
     }
@@ -186,6 +180,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public Page<SecureUserDTO> findFirstN(int elementsNumber) {
         Page<User> usersPage = userRepository.findAll(PageRequest.of(0, elementsNumber));
         return usersPage.map(this::toSecureDTO);
+    }
+
+    @Override
+    public List<SecureUserDTO> findAllSecureUsers() {
+        List<User> users = userRepository.findAll();
+        return users.stream().map(this::toSecureDTO).toList();
     }
 
     

@@ -39,5 +39,20 @@ public class UserLogger {
     public void failedToUpdateProfile(String email, Exception e) {
         logger.error("Failed to Update Profile: " + email + ". Here's the exception: "  + e.toString());
     }
-    
+
+    public void deleted(String email) {
+        logger.info("Successfully Deleted User: " + email);
+    }
+
+    public void failedToDelete(String email, Exception e) {
+        logger.error("Failed to Delete: " + email + ". Here's the exception: "  + e.toString());
+    }
+
+    public void changedStatus(String email) {
+        logger.info("Successfully Changed Activation Status of User: " + email);
+    }
+
+    public void failedToChangeStatus(String email, Exception e) {
+        logger.error("Failed to Change Status of User: " + email + ". Here's the exception: "  + e.toString());
+    }
 }

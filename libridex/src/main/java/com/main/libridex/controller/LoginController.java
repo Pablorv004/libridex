@@ -31,7 +31,7 @@ public class LoginController {
     private UserService userService;
 
     @GetMapping("")
-    public String login(Model model, @RequestParam(value = "error", required = false) String error, @RequestParam(value = "logout", required = false) String logout) {
+    public String login(Model model, @RequestParam(required = false) String error, @RequestParam(required = false) String logout) {
         model.addAttribute("error", error);
         model.addAttribute("logout", logout);
         model.addAttribute("user", new User());

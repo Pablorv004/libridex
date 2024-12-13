@@ -1,9 +1,9 @@
 package com.main.libridex.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -18,6 +18,8 @@ import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBui
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.main.libridex.components.logger.AccessLogger;
+import com.main.libridex.components.logger.BookLogger;
+import com.main.libridex.components.logger.UserLogger;
 import com.main.libridex.entity.Book;
 import com.main.libridex.model.BookDTO;
 import com.main.libridex.model.SecureUserDTO;
@@ -48,6 +50,14 @@ public class AdminController {
     @Qualifier("accessLogger")
     private AccessLogger accessLogger;
 
+    @Autowired
+    @Qualifier("userLogger")
+    private UserLogger userLogger;
+
+    @Autowired
+    @Qualifier("bookLogger")
+    private BookLogger bookLogger;
+
     @GetMapping("")
     public String getMainMenuView() {
         return ADMIN_VIEW;
@@ -57,16 +67,16 @@ public class AdminController {
 
     @GetMapping("/users")
     public String getUsersView(Model model, @RequestParam(defaultValue = "0") int page) {
-        Page<SecureUserDTO> userPage = userService.findAll(PageRequest.of(page, 5));
-        model.addAttribute("users", userPage.getContent());
-        model.addAttribute("totalPages", userPage.getTotalPages());
-        model.addAttribute("page", page);
+        List<SecureUserDTO> userPage = userService.findAllSecureUsers();
+        model.addAttribute("users", userPage);
+        accessLogger.accessed("admin/users");
         return USERS_VIEW;
     }
 
     @GetMapping("/users/toggleactivation/{id}")
     public String toggleUserActivation(@PathVariable Integer id, RedirectAttributes flash) {
         userService.toggleActivation(id);
+        userLogger.changedStatus(String.valueOf(id));
         flash.addFlashAttribute("success", "User activation status updated successfully!");
         return "redirect:/admin/users";
     }
@@ -74,6 +84,7 @@ public class AdminController {
     @GetMapping("/users/delete/{id}")
     public String deleteUser(@PathVariable Integer id, RedirectAttributes flash) {
         userService.deleteById(id);
+        userLogger.deleted(String.valueOf(id));
         flash.addFlashAttribute("success", "User deleted successfully!");
         return "redirect:/admin/users";
     }
@@ -81,14 +92,13 @@ public class AdminController {
     // BOOKS RELATED ENDPOINTS
 
     @GetMapping("/books")
-    public String getBooksView(Model model, @RequestParam(defaultValue = "0") int page) {
-        Page<Book> bookPage = bookService.findAll(PageRequest.of(page, 5));
-        bookPage.forEach(book -> {
-            book.setImage(ResourceLoader.loadResource(book.getImage()));
         });
-        model.addAttribute("books", bookPage.getContent());
-        model.addAttribute("totalPages", bookPage.getTotalPages());
-        model.addAttribute("page", page);
+            book.setImage(ResourceLoader.loadResource(book.getImage()));
+        bookPage.forEach(book -> {
+    public String getBooksView(Model model) {
+        List<Book> bookPage = bookService.findAll();
+        accessLogger.accessed("admin/books");
+        model.addAttribute("books", bookPage);
         return BOOKS_VIEW;
     }
 
@@ -100,21 +110,22 @@ public class AdminController {
             model.addAttribute("book", bookDTO);
         }else
             model.addAttribute("book", new BookDTO());
-
+            accessLogger.accessed("admin/books/form with new Book");
+        }
         return BOOKS_FORM;
     }
 
     @GetMapping("/books/delete/{id}")
     public String deleteBook(@PathVariable(required = true) Integer id, RedirectAttributes flash) {
         bookService.deleteById(id);
+        bookLogger.deleted(String.valueOf(id));
         flash.addFlashAttribute("success", "Book deleted successfully!");
         return "redirect:/admin/books";
     }
 
     @PostMapping(value = { "/books/add", "/books/edit" })
     public String addBook(@Valid @ModelAttribute("book") BookDTO bookDTO, BindingResult bResult,
-            @RequestParam("imageFile") MultipartFile imageFile, RedirectAttributes flash) {
-
+            @RequestParam MultipartFile imageFile, RedirectAttributes flash) {
         bookService.checkExistentBook(bookDTO, bResult);
 
         if (bResult.hasErrors()) {
