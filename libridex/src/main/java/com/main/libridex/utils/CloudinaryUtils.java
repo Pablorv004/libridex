@@ -5,44 +5,40 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Map;
 
+import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+import com.main.libridex.config.CloudinaryConfig;
 
-import io.github.cdimascio.dotenv.Dotenv;
-
+@Component
 public class CloudinaryUtils {
 
     private static Cloudinary instance;
 
-    private CloudinaryUtils() {
+    public CloudinaryUtils(CloudinaryConfig cloudinaryConfig) {
+        if (instance == null) {
+            instance = new Cloudinary(Map.of(
+                    "cloud_name", cloudinaryConfig.getCloudName(),
+                    "api_key", cloudinaryConfig.getApiKey(),
+                    "api_secret", cloudinaryConfig.getApiSecret()));
+            System.out.println("[CLOUDINARY] Initialized with cloud: " + instance.config.cloudName);
+        }
     }
 
     public static Cloudinary getInstance() {
-        if (instance == null) {
-            if (instance == null) {
-                Dotenv dotenv = Dotenv.load();
-                String cloudinaryUrl = dotenv.get("CLOUDINARY_URL");
-
-                if (cloudinaryUrl == null || cloudinaryUrl.isEmpty()) {
-                    throw new IllegalArgumentException("CLOUDINARY_URL is not set in the .env file");
-                }
-
-                instance = new Cloudinary(cloudinaryUrl);
-                System.out.println("[CLOUDINARY] Initialized with cloud: " + instance.config.cloudName);
-            }
-        }
-
         return instance;
     }
 
     /**
-     * Uploads an image to Cloudinary and returns the secure URL of the uploaded image.
+     * Uploads an image to Cloudinary and returns the secure URL of the uploaded
+     * image.
      *
      * @param multipartFile the image file to be uploaded
-     * @param id the identifier used to generate the filename
-     * @param type the type of the entity (e.g., "User", "Book") to determine the filename
+     * @param id            the identifier used to generate the filename
+     * @param type          the type of the entity (e.g., "User", "Book") to
+     *                      determine the filename
      * @return the secure URL of the uploaded image
      */
     public static String uploadImage(MultipartFile multipartFile, int id, String type) {
@@ -112,8 +108,9 @@ public class CloudinaryUtils {
     /**
      * Determines the file name based on the provided id, type, and file.
      *
-     * @param id the identifier used to generate the filename
-     * @param type the type of the entity (e.g., "User", "Book") to determine the filename
+     * @param id            the identifier used to generate the filename
+     * @param type          the type of the entity (e.g., "User", "Book") to
+     *                      determine the filename
      * @param multipartFile the image file to be uploaded
      * @return the generated filename
      */
