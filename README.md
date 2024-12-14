@@ -32,21 +32,14 @@ To install and run Libridex locally, follow these steps:
     cd libridex
     ```
 
-2. **Set up the database**:
-    - Install MySQL and create a database named `libridex`.
-    - Update the database configuration in `src/main/resources/application.properties`.
+2. **Download application.properties from trello dashboard**
 
-3. **Build the project**:
-    ```sh
-    ./mvnw clean install
-    ```
-
-4. **Run the application**:
+3. **Run the application**:
     ```sh
     ./mvnw spring-boot:run
     ```
 
-5. **Access the application**:
+4. **Access the application**:
     Open your browser and go to `http://localhost:8080`.
 
 ## Authors
