@@ -38,6 +38,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         if(user!=null){
             builder = org.springframework.security.core.userdetails.User.withUsername(email);
             builder.password(user.getPassword());
+            builder.disabled(!user.isActivated());
             builder.authorities(new SimpleGrantedAuthority(user.getRole()));
         } else {
             throw new UsernameNotFoundException("User not found");
