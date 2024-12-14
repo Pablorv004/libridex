@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.main.libridex.components.logger.AccessLogger;
@@ -24,6 +25,8 @@ import com.main.libridex.model.BookDTO;
 import com.main.libridex.model.SecureUserDTO;
 import com.main.libridex.service.BookService;
 import com.main.libridex.service.UserService;
+import com.main.libridex.utils.CloudinaryUtils;
+import com.main.libridex.utils.ResourceLoader;
 
 import jakarta.validation.Valid;
 
@@ -61,7 +64,6 @@ public class AdminController {
         return ADMIN_VIEW;
     }
 
-
     // USERS RELATED ENDPOINTS
 
     @GetMapping("/users")
@@ -88,7 +90,6 @@ public class AdminController {
         return "redirect:/admin/users";
     }
 
-
     // BOOKS RELATED ENDPOINTS
 
     @GetMapping("/books")
@@ -101,9 +102,9 @@ public class AdminController {
 
     @GetMapping(value = { "/books/form", "/books/form/{id}" })
     public String showForm(Model model, @PathVariable(required = false) Integer id) {
-        if (id != null){
-            model.addAttribute("book", bookService.findById(id));
-            accessLogger.accessed("admin/books/form with id: " + id);
+        if (id != null) {
+            BookDTO bookDTO = bookService.findById(id);
+            model.addAttribute("book", bookDTO);
         } else {
             model.addAttribute("book", new BookDTO());
             accessLogger.accessed("admin/books/form with new Book");
@@ -119,22 +120,23 @@ public class AdminController {
         return "redirect:/admin/books";
     }
 
-    @PostMapping(value = {"/books/add", "/books/edit"})
+    @PostMapping(value = { "/books/add", "/books/edit" })
     public String addBook(@Valid @ModelAttribute("book") BookDTO bookDTO, BindingResult bResult,
             @RequestParam MultipartFile imageFile, RedirectAttributes flash) {
         bookService.checkExistentBook(bookDTO, bResult);
-        if (!bResult.hasErrors()) {
+
+        if (bResult.hasErrors()) {
             flash.addFlashAttribute("error", "Oops! Something went wrong!");
             return BOOKS_FORM;
         }
-        
+
         bookService.setImage(bookDTO, imageFile);
         String message = bookDTO.getId() == null ? "Book created succesfully!" : "Book edited successfully!";
 
         bookService.save(bookDTO);
         flash.addFlashAttribute("success", message);
         return "redirect:/admin/books";
-        
+
     }
 
 }

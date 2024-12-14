@@ -26,10 +26,10 @@ public class StorageServiceImpl implements StorageService {
 	private final Path rootLocation;
 
 	public StorageServiceImpl(StorageProperties properties) {
-		if (properties.getLocation().trim().length() == 0) {
+		if (properties.getBook_storage().trim().length() == 0) {
 			throw new StorageException("File upload location can not be Empty.");
 		}
-		this.rootLocation = Paths.get(properties.getLocation());
+		this.rootLocation = Paths.get(properties.getBook_storage());
 	}
 
 	/**
@@ -43,28 +43,14 @@ public class StorageServiceImpl implements StorageService {
 	 *             subdirectory
 	 */
 	@Override
-	public void store(MultipartFile file, int id, String type) {
+	public String store(MultipartFile file, int id, String type) {
 		try {
 			if (file.isEmpty()) {
 				throw new StorageException("Failed to store empty file.");
 			}
 
-			// First we obtain the extension of the file
-			String originalFilename = file.getOriginalFilename();
-			String extension = "";
-			if (originalFilename != null && originalFilename.contains(".")) {
-				extension = originalFilename.substring(originalFilename.lastIndexOf("."));
-			}
-
-			// Then we obtain the complete route of the file, it'll be the absolute path
-			// including
-			// the name of the file
-			Path destinationFile = determineFilePathAndName(id, type, extension);
-
-			if (!destinationFile.getParent()
-					.equals(this.rootLocation.resolve(type.toLowerCase()).normalize().toAbsolutePath())) {
-				throw new StorageException("Cannot store file outside current directory.");
-			}
+			// We obtain the name of the file and the path of it
+			Path destinationFile = determineFilePathAndName(id, type, file);
 
 			// If the directory does not exist, we create it
 			if (!Files.exists(destinationFile.getParent())) {
@@ -74,6 +60,8 @@ public class StorageServiceImpl implements StorageService {
 			try (InputStream inputStream = file.getInputStream()) {
 				Files.copy(inputStream, destinationFile, StandardCopyOption.REPLACE_EXISTING);
 			}
+
+			return this.rootLocation.relativize(destinationFile).toString().replace("\\", "/");
 		} catch (IOException e) {
 			throw new StorageException("Failed to store file.", e);
 		}
@@ -81,38 +69,45 @@ public class StorageServiceImpl implements StorageService {
 
 	/**
 	 * Determines the file path and name based on the provided id, type, and
-	 * extension.
+	 * file.
 	 *
 	 * @param id        the identifier used to generate the filename
 	 * @param type      the type of the entity (e.g., "User", "Book") to determine
 	 *                  the subdirectory and filename pattern
-	 * @param extension the file extension to be appended to the filename
+	 * @param file 		the file we are working with
 	 * @return the complete file path including the directory and the generated
 	 *         filename
 	 */
-	private Path determineFilePathAndName(int id, String type, String extension) {
+	private Path determineFilePathAndName(int id, String type, MultipartFile file) {
+
+		// First we obtain the extension of the file
+		String originalFilename = file.getOriginalFilename();
+		String extension = "";
+		if (originalFilename != null && originalFilename.contains(".")) {
+			extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+		}
+
+		// Then we set the name
 		String newFilename = "";
-		String subDir = "";
 		switch (type) {
 			case "User": {
 				newFilename = "user_image_" + id + extension;
-				subDir = "users";
 				break;
 			}
 			case "Book": {
 				newFilename = "book_image_" + id + extension;
-				subDir = "books";
 				break;
 			}
 			default: {
 				newFilename = "default_image.png";
-				subDir = "default";
 				break;
 			}
 		}
 
-		Path destinationDir = this.rootLocation.resolve(subDir).normalize().toAbsolutePath();
-		return destinationDir.resolve(newFilename).normalize().toAbsolutePath();
+		// Here we create the full route and return it
+		// This will return something like "/images/books/book_image_1.png"
+		Path destinationDir = this.rootLocation.normalize();
+		return destinationDir.resolve(newFilename).normalize();
 	}
 
 	/**
@@ -193,7 +188,7 @@ public class StorageServiceImpl implements StorageService {
 				throw new StorageFileNotFoundException("Could not read file: " + filename);
 			}
 		} catch (MalformedURLException e) {
-			throw new StorageFileNotFoundException("Could not read file: " + filename, e);
+			throw new StorageFileNotFoundException("Could not read file (Malformed url): " + filename, e);
 		}
 	}
 

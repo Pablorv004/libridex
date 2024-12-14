@@ -22,7 +22,5 @@ public interface BookService {
 
     void checkExistentBook(BookDTO bookDTO, BindingResult bResult);
 
-    String saveImage(MultipartFile imageFile);
-
     void setImage(BookDTO bookDTO, MultipartFile imageFile);
 }

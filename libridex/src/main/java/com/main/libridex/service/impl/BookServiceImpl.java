@@ -1,11 +1,5 @@
 package com.main.libridex.service.impl;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
@@ -21,6 +15,8 @@ import com.main.libridex.entity.Book;
 import com.main.libridex.model.BookDTO;
 import com.main.libridex.repository.BookRepository;
 import com.main.libridex.service.BookService;
+import com.main.libridex.service.StorageService;
+import com.main.libridex.utils.CloudinaryUtils;
 
 @Service("bookService")
 public class BookServiceImpl implements BookService {
@@ -28,6 +24,10 @@ public class BookServiceImpl implements BookService {
     @Autowired
     @Qualifier("bookRepository")
     BookRepository bookRepository;
+
+    @Autowired
+    @Qualifier("storageService")
+    StorageService storageService;
 
     @Override
     public List<Book> findAll() {
@@ -45,39 +45,45 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Book save(BookDTO bookDTO) {  
+    public Book save(BookDTO bookDTO) {
         return bookRepository.save(toEntity(bookDTO));
     }
 
     @Override
     public void deleteById(Integer id) {
+        Book book = bookRepository.findById(id).orElse(null);
+        CloudinaryUtils.deleteImage(book.getImage());
         bookRepository.deleteById(id);
     }
 
     @Override
     public void setImage(BookDTO bookDTO, MultipartFile imageFile) {
+        Integer id = bookDTO.getId();
+
+        // If the book is new, set the id to the next available one
+        if (id == null) {
+            Integer newId = bookRepository.findMaxId();
+            if (newId != null) {
+                id = newId + 1;
+            } else 
+                id = 1;
+        }
+
+        // Upload the image to Cloudinary if there is one selected
         if (!imageFile.isEmpty()) {
-            String imageName = saveImage(imageFile);
-            bookDTO.setImage(imageName);
+            // Delete the previous image if it exists
+            if(!bookDTO.getImage().isBlank()){
+                Book book = bookRepository.findById(id).orElse(null);
+                CloudinaryUtils.deleteImage(book.getImage());
+            }
+
+            bookDTO.setImage(CloudinaryUtils.uploadImage(imageFile, id, "Book"));
         } else {
-            if(bookDTO.getId() == null)
-                bookDTO.setImage("default_image.png");
+            // If no image is selected, set the default image
+            if(bookDTO.getImage().isBlank()) {
+                bookDTO.setImage("https://res.cloudinary.com/dlmbw4who/image/upload/v1734182372/default_image.png");
+            }
         }
-    }
-
-    @Override
-    public String saveImage(MultipartFile imageFile) {
-        String uploadDir = "src/main/resources/static/images/";
-        String imageName = imageFile.getOriginalFilename();
-        Path uploadPath = Paths.get(uploadDir);
-
-        try (InputStream inputStream = imageFile.getInputStream()) {
-            Path filePath = uploadPath.resolve(imageName);
-            Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return imageName;
     }
 
     // VALIDATIONS
@@ -98,5 +104,4 @@ public class BookServiceImpl implements BookService {
         ModelMapper mapper = new ModelMapper();
         return mapper.map(bookDTO, Book.class);
     }
-
 }
