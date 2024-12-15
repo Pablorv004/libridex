@@ -4,8 +4,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-
-import com.main.libridex.service.StorageService;
 import com.main.libridex.utils.CloudinaryUtils;
 
 @SpringBootApplication
@@ -17,9 +15,9 @@ public class LibridexApplication {
 	}
 
 	@Bean
-	CommandLineRunner init(StorageService storageService, CloudinaryUtils cloudinaryUtils) {
+	CommandLineRunner init(CloudinaryUtils cloudinaryUtils) {
 		return (_) -> {
-			storageService.init();
+
 		};
 	}
 }

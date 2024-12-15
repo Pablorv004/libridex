@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.min.css">
     <header th:replace="~{fragments :: navbar}"></header>
     <img src="https://trello-backgrounds.s3.amazonaws.com/SharedBackground/2215x2048/5fa9c73355b096b1e1786af0510a6fc4/photo-1481627834876-b7833e8f5570.webp"
-        alt="Image" class="img-fluid w-100" style="height: 25vh; object-fit: cover;">
+        alt="Image" class="img-fluid w-100 object-fit-cover" style="height: 25vh;">
     <div class="container text-center mt-5">
         <div class="alert alert-info" th:if= "${success != null}" th:text="${success}"></div>
         <h1 style="color: rgb(103, 75, 29);">Users</h1>
@@ -32,10 +32,11 @@
                         <td th:text="${user.role}"></td>
                         <td th:text="${user.activated ? '✔' : '✘'}"></td>
                         <td>
-                            <a th:href="@{/admin/users/toggleactivation/{id}(id=${user.id})}" class="text-decoration-none">
-                                <i class="fa-solid fa-toggle-on d-inline me-3" style="color: #FFD43B;"></i>
+                            <a th:href="@{/admin/users/toggleactivation/{id}(id=${user.id})}" class="text-decoration-none" title="Toggle Activation">
+                                <i th:if="${!user.activated}"class="fa-solid fa-toggle-off d-inline me-3" style="color: red;"></i>
+                                <i th:if= "${user.activated}" class="fa-solid fa-toggle-on d-inline me-3" style="color: green;"></i>
                             </a>
-                            <a th:href="@{/admin/users/delete/{id}(id=${user.id})}" class="text-decoration-none" onclick="return confirm('Are you sure you want to delete this user? WARNING: This action cannot be undone!');">
+                            <a th:href="@{/admin/users/delete/{id}(id=${user.id})}" class="text-decoration-none" title="User Deletion" onclick="return confirm('Are you sure you want to delete this user? WARNING: This action cannot be undone!');">
                                 <i class="fa-solid fa-trash-can d-inline" style="color: #fd3535;"></i>
                             </a>
                         </td>

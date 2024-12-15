@@ -15,7 +15,6 @@ import com.main.libridex.entity.Book;
 import com.main.libridex.model.BookDTO;
 import com.main.libridex.repository.BookRepository;
 import com.main.libridex.service.BookService;
-import com.main.libridex.service.StorageService;
 import com.main.libridex.utils.CloudinaryUtils;
 
 @Service("bookService")
@@ -24,10 +23,6 @@ public class BookServiceImpl implements BookService {
     @Autowired
     @Qualifier("bookRepository")
     BookRepository bookRepository;
-
-    @Autowired
-    @Qualifier("storageService")
-    StorageService storageService;
 
     @Override
     public List<Book> findAll() {
@@ -56,18 +51,19 @@ public class BookServiceImpl implements BookService {
         bookRepository.deleteById(id);
     }
 
+    private Integer getLastId(BookDTO bookDTO) {
+        Integer id = bookDTO.getId();
+        if (id != null) 
+            return id;
+        Integer newId = bookRepository.findMaxId();
+        if (newId != null)
+            return ++newId;
+        return 1;
+    }
+
     @Override
     public void setImage(BookDTO bookDTO, MultipartFile imageFile) {
-        Integer id = bookDTO.getId();
-
-        // If the book is new, set the id to the next available one
-        if (id == null) {
-            Integer newId = bookRepository.findMaxId();
-            if (newId != null) {
-                id = newId + 1;
-            } else 
-                id = 1;
-        }
+        Integer id = getLastId(bookDTO);
 
         // Upload the image to Cloudinary if there is one selected
         if (!imageFile.isEmpty()) {

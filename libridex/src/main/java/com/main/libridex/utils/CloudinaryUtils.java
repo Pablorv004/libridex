@@ -54,7 +54,8 @@ public class CloudinaryUtils {
 
         String imageUrl = "";
         try {
-            Map params1 = ObjectUtils.asMap(
+            @SuppressWarnings("unchecked")
+            Map<String, Object> params1 = ObjectUtils.asMap(
                     "use_filename", true,
                     "unique_filename", false,
                     "overwrite", true,
@@ -94,15 +95,16 @@ public class CloudinaryUtils {
      */
     public static void deleteImage(String url) {
         String publicId = getPublicId(url);
-        if (!publicId.equals("default_image.png")) {
-            Cloudinary cloudinary = CloudinaryUtils.getInstance();
+        if (publicId.equals("default_image.png"))
+            return;
+        Cloudinary cloudinary = CloudinaryUtils.getInstance();
 
-            try {
-                cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        try {
+            cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+
     }
 
     /**

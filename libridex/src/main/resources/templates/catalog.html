@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{fragments :: head}">
+</head>
+<style>
+    .card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    a {
+        text-decoration: none;
+    }
+</style>
+<body>
+    <header th:replace="~{fragments :: navbar}"></header>
+    <img src="https://trello-backgrounds.s3.amazonaws.com/SharedBackground/2215x2048/5fa9c73355b096b1e1786af0510a6fc4/photo-1481627834876-b7833e8f5570.webp"
+        alt="Image" class="img-fluid w-100 object-fit-cover" style="height: 25vh;">
+    <div class="container mt-5">
+        <h1 class="text-center" style="color: rgb(103, 75, 29);">Catalog</h1>
+        <hr class="border-black border-2">
+        <div class="row d-flex flex-wrap justify-content-center">
+            <div class="col-md-4 mb-4" th:each="book : ${books}">
+                <a th:href="@{/book/{id}(id=${book.id})}">
+                    <div class="card card-hover">
+                        <img th:src="${book.image}" alt="Book Cover" class="pt-3 mx-auto d-block" style="width: 15vh;">
+                        <div class="card-body d-flex flex-column gap-4">
+                            <div class="d-flex flex-column gap-2">
+                                <div>
+                                    <span class="badge text-light-emphasis bg-light-subtle border border-light-subtle rounded-pill" th:text="${book.genre}">Genre</span>
+                                </div>
+                                <h3 class="mb-0 h4">
+                                    <p class="text-inherit" th:text="${book.title}">Book Title</p>
+                                </h3>
+                                <small class="text-secondary" th:text="${book.publishing_date}">Date</small>
+                            </div>
+                            <div>
+                                <span class="fw-semibold text-dark" th:text="${book.author}"></span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
