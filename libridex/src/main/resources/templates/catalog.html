@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{fragments :: head}">
+</head>
+<style>
+    .card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    a {
+        text-decoration: none;
+    }
+</style>
+<body>
+    <header th:replace="~{fragments :: navbar}"></header>
+    <img src="https://trello-backgrounds.s3.amazonaws.com/SharedBackground/2215x2048/5fa9c73355b096b1e1786af0510a6fc4/photo-1481627834876-b7833e8f5570.webp"
+        alt="Image" class="img-fluid w-100 object-fit-cover" style="height: 25vh;">
+    <div class="container mt-5">
+        <h1 class="text-center" style="color: rgb(103, 75, 29);">Catalog</h1>
+        <hr class="border-black border-2">
+        <div class="d-flex">
+            <div class="flex-grow-1">
+                <div class="row d-flex flex-wrap justify-content-center">
+                    <div class="col-md-4 mb-4" th:each="book : ${books}">
+                        <a th:href="@{/book/{id}(id=${book.id})}">
+                            <div class="card card-hover">
+                                <img th:src="${book.image}" alt="Book Cover" class="pt-3 mx-auto d-block" style="width: 15vh; height: 17vh;">
+                                <div class="card-body d-flex flex-column gap-4">
+                                    <div class="d-flex flex-column gap-2">
+                                        <div>
+                                            <span class="badge text-light-emphasis bg-light-subtle border border-light-subtle rounded-pill" th:text="${book.genre}">Genre</span>
+                                        </div>
+                                        <h3 class="mb-0 h4">
+                                            <p class="text-inherit" th:text="${book.title}">Book Title</p>
+                                        </h3>
+                                        <small class="text-secondary" th:text="${book.publishing_date}">Date</small>
+                                    </div>
+                                    <div>
+                                        <span class="fw-semibold text-dark" th:text="${book.author}"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4 ms-4">
+                <div class="p-3 border-start">
+                    <h5>Sort By</h5>
+                    <select class="form-select mb-3">
+                        <option value="title_asc">Title (A-Z)</option>
+                        <option value="release_date_desc">Release Date (Newest to Oldest)</option>
+                        <option value="release_date_asc">Release Date (Oldest to Newest)</option>
+                        <option value="author_asc">Author (A-Z)</option>
+                        <option value="upload_date_desc">Upload Date (Newest to Oldest)</option>
+                        <option value="reservations_desc">Most Reservations (Most to Least)</option>
+                        <option value="genre_asc">Genre (A-Z)</option>
+                        <option value="availability_asc">Availability (Less queue to most queue)</option>
+                    </select>
+                    <h5>Filters</h5>
+                    <div class="mb-3">
+                        <label>Genre</label>
+                        <div>
+                            <!--Do a foreach here-->
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="genre1" id="genre1">
+                                <label class="form-check-label" for="genre1">
+                                    Genre 1 (10)
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="genre2" id="genre2">
+                                <label class="form-check-label" for="genre2">
+                                    Genre 2 (5)
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label>Publishing Date</label>
+                        <input type="date" class="form-control mb-2" placeholder="From">
+                        <input type="date" class="form-control" placeholder="To">
+                    </div>
+                    <div class="mb-3">
+                        <label>Upload Date</label>
+                        <input type="date" class="form-control mb-2" placeholder="From">
+                        <input type="date" class="form-control" placeholder="To">
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="isLent">
+                        <label class="form-check-label" for="isLent">Is Lent</label>
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="isReserved">
+                        <label class="form-check-label" for="isReserved">Is Reserved</label>
+                    </div>
+                    <div class="mb-3">
+                        <!--Do a for each here-->
+                        <label>Authors</label>
+                        <div class="form-check" style="max-height: 150px; overflow-y: auto;">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="author1" id="author1">
+                                <label class="form-check-label" for="author1">
+                                    Author 1
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="author2" id="author2">
+                                <label class="form-check-label" for="author2">
+                                    Author 2
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.main.libridex.components.logger.AccessLogger;
@@ -25,7 +24,6 @@ import com.main.libridex.model.BookDTO;
 import com.main.libridex.model.SecureUserDTO;
 import com.main.libridex.service.BookService;
 import com.main.libridex.service.UserService;
-import com.main.libridex.utils.ResourceLoader;
 
 import jakarta.validation.Valid;
 
@@ -92,9 +90,6 @@ public class AdminController {
     // BOOKS RELATED ENDPOINTS
 
     @GetMapping("/books")
-        });
-            book.setImage(ResourceLoader.loadResource(book.getImage()));
-        bookPage.forEach(book -> {
     public String getBooksView(Model model) {
         List<Book> bookPage = bookService.findAll();
         accessLogger.accessed("admin/books");
@@ -104,11 +99,11 @@ public class AdminController {
 
     @GetMapping(value = { "/books/form", "/books/form/{id}" })
     public String showForm(Model model, @PathVariable(required = false) Integer id) {
-        if (id != null){
+        if (id != null) {
             BookDTO bookDTO = bookService.findById(id);
-            bookDTO.setImage(ResourceLoader.loadResource(bookDTO.getImage()));
             model.addAttribute("book", bookDTO);
-        }else
+            accessLogger.accessed("admin/books/form with Book: " + id);
+        } else {
             model.addAttribute("book", new BookDTO());
             accessLogger.accessed("admin/books/form with new Book");
         }
@@ -130,6 +125,7 @@ public class AdminController {
 
         if (bResult.hasErrors()) {
             flash.addFlashAttribute("error", "Oops! Something went wrong!");
+            bookLogger.failedToAdd(bookDTO.getTitle(), new Exception("Invalid book data. Check the fields."));
             return BOOKS_FORM;
         }
 
@@ -137,6 +133,7 @@ public class AdminController {
         String message = bookDTO.getId() == null ? "Book created succesfully!" : "Book edited successfully!";
 
         bookService.save(bookDTO);
+        bookLogger.added(bookDTO.getTitle());
         flash.addFlashAttribute("success", message);
         return "redirect:/admin/books";
 

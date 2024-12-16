@@ -13,9 +13,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.main.libridex.components.logger.AccessLogger;
 import com.main.libridex.components.logger.UserLogger;
-import com.main.libridex.converters.UserMapper;
 import com.main.libridex.model.UserDTO;
-import com.main.libridex.service.impl.UserServiceImpl;
+import com.main.libridex.service.UserService;
 
 import jakarta.validation.Valid;
 
@@ -27,7 +26,7 @@ public class RegisterController {
 
     @Autowired
     @Qualifier("userService")
-    private UserServiceImpl userService;
+    private UserService userService;
 
     @Autowired
     @Qualifier("accessLogger")
@@ -50,7 +49,7 @@ public class RegisterController {
             userLogger.failedToRegister(userDTO.getEmail(), new Exception("Invalid registration data"));
             return REGISTER_VIEW;
         }
-        userService.register(UserMapper.toUser(userDTO));
+        userService.register(userService.toEntity(userDTO));
         userLogger.registered(userDTO.getEmail());
         flash.addFlashAttribute("success", SUCCESS_MESSAGE);
         return "redirect:/login";

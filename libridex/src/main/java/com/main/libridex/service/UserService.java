@@ -23,4 +23,10 @@ public interface UserService {
     void edit(UserDTO userDTO);
     boolean isEditValid(UserDTO userDTO, BindingResult bindingResult);
     void toggleActivation(Integer id);
+    User toEntity(UserDTO userDTO);
+    User toEntity(SecureUserDTO secureUserDTO);
+    UserDTO toDTO(User user);
+    SecureUserDTO toSecureDTO(User user);
+    User register(User user);
+    boolean isRegisterValid(UserDTO userDTO, BindingResult bindingResult);
 }

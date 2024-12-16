@@ -38,6 +38,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         if(user!=null){
             builder = org.springframework.security.core.userdetails.User.withUsername(email);
             builder.password(user.getPassword());
+            builder.disabled(!user.isActivated());
             builder.authorities(new SimpleGrantedAuthority(user.getRole()));
         } else {
             throw new UsernameNotFoundException("User not found");
@@ -86,11 +87,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return userRepository.existsByEmailAndIdNot(email, id);
     }
 
+    @Override
     public User register(User user) {
         user.setSurname("");
         user.setRole("ROLE_USER");
         user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
-        user.setActivated(false); // Ensure user is deactivated by default
+        user.setActivated(false);
         return userRepository.save(user);
     }
 
@@ -111,22 +113,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         //Name Requirements
         if (userDTO.getName().isEmpty() || userDTO.getName() == null)
             bindingResult.rejectValue("name", "error.user", "Name is required.");
-
-        //Surname Requirements
-        if (!userDTO.getSurname().matches("([A-Za-z]+\\s)*[A-Za-z]*"))
-            bindingResult.rejectValue("surname", "error.surname", "Surname is invalid.");
-
-        //Email Requirements
-        if (userDTO.getEmail().isEmpty() || userDTO.getEmail() == null)
-            bindingResult.rejectValue("email", "error.user", "Email is required.");
-        else if (existsByEmailExceptCurrent(userDTO.getEmail(), userDTO.getId()))
-            bindingResult.rejectValue("email", "error.user", "An account with this email already exists.");
-        else if (!isEmailValid(userDTO.getEmail()))
-            bindingResult.rejectValue("email", "error.user", "Invalid email format.");
-
         return !bindingResult.hasErrors();
     }
 
+    @Override
     public boolean isRegisterValid(UserDTO userDTO, BindingResult bindingResult) {
         //Name Requirement
         if (userDTO.getName().isEmpty() || userDTO.getName() == null)
@@ -192,24 +182,28 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     // MODEL MAPPER
 
     // From UserDTO to User
+    @Override
     public User toEntity(UserDTO userDTO) {
         ModelMapper mapper = new ModelMapper();
         return mapper.map(userDTO, User.class);
     }
 
     // From secureUserDTO to User
+    @Override
     public User toEntity(SecureUserDTO secureUserDTO) {
         ModelMapper mapper = new ModelMapper();
         return mapper.map(secureUserDTO, User.class);
     }
 
     // From User to UserDTO
+    @Override
     public UserDTO toDTO(User user) {
         ModelMapper mapper = new ModelMapper();
         return mapper.map(user, UserDTO.class);
     }
 
     // From User to secureUserDTO
+    @Override
     public SecureUserDTO toSecureDTO(User user) {
         ModelMapper mapper = new ModelMapper();
         return mapper.map(user, SecureUserDTO.class);

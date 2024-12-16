@@ -16,20 +16,8 @@ public class UserLogger {
         logger.error("Failed to Register: " + email + ". Here's the exception: "  + e.toString());
     }
 
-    public void loggedIn(String email) {
-        logger.info("Successfully Logged In: " + email);
-    }
-
-    public void failedToLogIn(String email, Exception e) {
-        logger.error("Failed to Log In: " + email + ". Here's the exception: "  + e.toString());
-    }
-
     public void loggedOut(String email) {
         logger.info("Successfully Logged Out: " + email);
-    }
-
-    public void failedToLogOut(String email, Exception e) {
-        logger.error("Failed to Log Out: " + email + ". Here's the exception: "  + e.toString());
     }
 
     public void updatedProfile(String email) {
@@ -50,9 +38,5 @@ public class UserLogger {
 
     public void changedStatus(String email) {
         logger.info("Successfully Changed Activation Status of User: " + email);
-    }
-
-    public void failedToChangeStatus(String email, Exception e) {
-        logger.error("Failed to Change Status of User: " + email + ". Here's the exception: "  + e.toString());
     }
 }
