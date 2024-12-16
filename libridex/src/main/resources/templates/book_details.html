@@ -4,16 +4,25 @@
 <head th:replace="~{fragments :: head}">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
 </head>
+<style>
+    .zoom {
+        transition: transform 0.5s ease;
+    }
+
+    .zoom:hover {
+        transform: scale(1.5);
+    }
+</style>
 
 <body>
     <header th:replace="~{fragments :: navbar}"></header>
     <img src="https://trello-backgrounds.s3.amazonaws.com/SharedBackground/2215x2048/5fa9c73355b096b1e1786af0510a6fc4/photo-1481627834876-b7833e8f5570.webp"
         alt="Image" class="img-fluid w-100 object-fit-cover" style="height: 100vh;">
-    <div class="position-absolute w-100 bg-white pb-5 top-50 start-50 translate-middle" style="opacity: 0.96;">
+    <div class="position-absolute w-100 bg-white pb-5 top-50 start-50 translate-middle">
         <div class="container mt-5">
             <div class="row">
                 <div class="col-md-5 text-center">
-                    <img th:src="${book.image}" class="img-fluid rounded mb-4 w-50" alt="Book Image">
+                    <img th:src="${book.image}" class="img-fluid rounded mb-4 w-50 zoom" style="max-height: 25vh;" alt="Book Image">
                     <div class="d-flex justify-content-center">
                         <hr class="w-50">
                     </div>
