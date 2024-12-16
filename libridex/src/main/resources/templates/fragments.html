@@ -1,7 +1,7 @@
 <header class="sticky-top" th:fragment="navbar">
     <div class="navbar navbar-expand-md navbar-light bg-light" role="navigation">
         <a class="navbar-brand ps-5 fw-bold" href="/" style="color:rgb(103, 75, 29)">Libridex</a>
-        <a class="navbar-brand ps-5" th:href="@{/catalog}">Catalog</a>
+        <a class="navbar-brand ps-5" th:href="@{/books/catalog}">Catalog</a>
         <a class="navbar-brand ps-5" th:href="@{/reservations}" sec:authorize="hasRole('ROLE_USER')" >Your Reservations</a>
         <a class="navbar-brand ps-5" th:href="@{/admin}" sec:authorize="hasRole('ROLE_ADMIN')" >Admin Menu</a>
         <a class="navbar-brand ps-5" th:href="@{/about}">About</a>
