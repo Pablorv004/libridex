@@ -26,6 +26,7 @@
                         <th>Author</th>
                         <th>Genre</th>
                         <th>Publishing Date</th>
+                        <th>Created At</th>
                         <th>Lent</th>
                         <th>Reserved</th>
                         <th>Actions</th>
@@ -38,6 +39,7 @@
                         <td th:text="${book.author}"></td>
                         <td th:text="${book.genre}"></td>
                         <td th:text="${book.publishing_date}"></td>
+                        <td th:text="${book.created_at}"></td>
                         <td th:text="${book.lent ? '✔' : '✘'}"></td>
                         <td th:text="${book.reserved ? '✔' : '✘'}"></td>
                         <td>

@@ -1,6 +1,7 @@
 package com.main.libridex.model;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -42,7 +43,7 @@ public class BookDTO {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate publishing_date;
 
-    private LocalDate created_at;
+    private LocalDateTime created_at;
 
     private boolean lent;
 

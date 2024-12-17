@@ -1,5 +1,6 @@
 package com.main.libridex.service.impl;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
@@ -39,6 +40,8 @@ public class BookServiceImpl implements BookService {
         return bookRepository.findAll(PageRequest.of(pageNumber, 6));
     }
 
+
+
     @Override
     public BookDTO findById(Integer id) {
         return toDTO(bookRepository.findById(id).orElse(null));
@@ -46,6 +49,9 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Book save(BookDTO bookDTO) {
+        if(bookDTO.getId() == null) {
+            bookDTO.setCreated_at(LocalDateTime.now());
+        }
         return bookRepository.save(toEntity(bookDTO));
     }
 

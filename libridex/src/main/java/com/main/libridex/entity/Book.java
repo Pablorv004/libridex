@@ -1,6 +1,7 @@
 package com.main.libridex.entity;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,8 +35,8 @@ public class Book {
     @Column(nullable = false)
     private LocalDate publishing_date;
 
-    @Column(name = "created_at")
-    private LocalDate created_at;
+    @Column(nullable = false)
+    private LocalDateTime created_at;
 
     @Column(nullable = false)
     private boolean lent;
