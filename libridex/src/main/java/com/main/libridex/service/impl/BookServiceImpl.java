@@ -35,6 +35,11 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    public Page<Book> findPaginated(int pageNumber) {
+        return bookRepository.findAll(PageRequest.of(pageNumber, 6));
+    }
+
+    @Override
     public BookDTO findById(Integer id) {
         return toDTO(bookRepository.findById(id).orElse(null));
     }

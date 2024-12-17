@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head th:replace="~{fragments :: head}">
 </head>
 <style>
@@ -16,6 +17,7 @@
         text-decoration: none;
     }
 </style>
+
 <body>
     <header th:replace="~{fragments :: navbar}"></header>
     <img src="https://trello-backgrounds.s3.amazonaws.com/SharedBackground/2215x2048/5fa9c73355b096b1e1786af0510a6fc4/photo-1481627834876-b7833e8f5570.webp"
@@ -29,11 +31,14 @@
                     <div class="col-md-4 mb-4" th:each="book : ${books}">
                         <a th:href="@{/books/details/{id}(id=${book.id})}">
                             <div class="card card-hover">
-                                <img th:src="${book.image}" alt="Book Cover" class="pt-3 mx-auto d-block" style="width: 15vh; height: 17vh;">
+                                <img th:src="${book.image}" alt="Book Cover" class="pt-3 mx-auto d-block"
+                                    style="width: 15vh; height: 17vh;">
                                 <div class="card-body d-flex flex-column gap-4">
                                     <div class="d-flex flex-column gap-2">
                                         <div>
-                                            <span class="badge text-light-emphasis bg-light-subtle border border-light-subtle rounded-pill" th:text="${book.genre}">Genre</span>
+                                            <span
+                                                class="badge text-light-emphasis bg-light-subtle border border-light-subtle rounded-pill"
+                                                th:text="${book.genre}">Genre</span>
                                         </div>
                                         <h3 class="mb-0 h4">
                                             <p class="text-inherit" th:text="${book.title}">Book Title</p>
@@ -47,6 +52,43 @@
                             </div>
                         </a>
                     </div>
+                </div>
+                <div class="d-flex justify-content-center mt-4">
+                    <ul class="pagination">
+                        <li class="page-item">
+                            <a class="page-link" th:href="@{/books/catalog(page=0)}"
+                                th:classappend="${currentPage == 0} ? 'disabled'">&laquo;</a>
+                        </li>
+                        <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                            <a class="page-link" th:href="@{/books/catalog(page=${currentPage - 1})}">&lt;</a>
+                        </li>
+                        <!--If there's too little pages-->
+                        <li class="page-item" th:if="${totalPages <= 5}" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                            th:classappend="${i == currentPage} ? 'active'">
+                            <a class="page-link" th:href="@{/books/catalog(page=${i})}" th:text="${i + 1}">1</a>
+                        <!--If close to start-->
+                        <li class="page-item" th:if="${currentPage <= 1 and totalPages > 5}" th:each="i : ${#numbers.sequence(0, 4)}"
+                            th:classappend="${i == currentPage} ? 'active'">
+                            <a class="page-link" th:href="@{/books/catalog(page=${i})}" th:text="${i + 1}">1</a>
+                        </li>
+                        <!--If in the middle-->
+                        <li class="page-item" th:if="${currentPage > 1 and currentPage < totalPages - 2 and totalPages > 5}" th:each="i : ${#numbers.sequence(currentPage - 2, currentPage + 2)}"
+                            th:classappend="${i == currentPage} ? 'active'">
+                            <a class="page-link" th:href="@{/books/catalog(page=${i})}" th:text="${i + 1}">1</a>
+                        </li>
+                        <!--If close to end-->
+                        <li class="page-item" th:if="${currentPage >= totalPages - 2 and totalPages > 5}" th:each="i : ${#numbers.sequence(totalPages - 5, totalPages - 1)}"
+                            th:classappend="${i == currentPage} ? 'active'">
+                            <a class="page-link" th:href="@{/books/catalog(page=${i})}" th:text="${i + 1}">1</a>
+                        </li>
+                        <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                            <a class="page-link" th:href="@{/books/catalog(page=${currentPage + 1})}">&gt;</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" th:href="@{/books/catalog(page=${totalPages - 1})}"
+                                th:classappend="${currentPage == totalPages - 1} ? 'disabled'">&raquo;</a>
+                        </li>
+                    </ul>
                 </div>
             </div>
             <div class="col-md-4 mb-4 ms-4">
@@ -65,7 +107,7 @@
                     <h5>Filters</h5>
                     <div class="mb-3">
                         <label>Genre</label>
-                        <div>
+                        <div class="form-check" style="max-height: 150px; overflow-y: auto;">
                             <!--Do a foreach here-->
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" value="genre1" id="genre1">
@@ -122,4 +164,5 @@
         </div>
     </div>
 </body>
+
 </html>

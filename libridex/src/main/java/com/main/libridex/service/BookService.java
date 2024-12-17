@@ -23,4 +23,6 @@ public interface BookService {
     void checkExistentBook(BookDTO bookDTO, BindingResult bResult);
 
     void setImage(BookDTO bookDTO, MultipartFile imageFile);
+
+    Page<Book> findPaginated(int pageNumber);
 }

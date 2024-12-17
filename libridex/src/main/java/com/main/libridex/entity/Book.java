@@ -34,6 +34,9 @@ public class Book {
     @Column(nullable = false)
     private LocalDate publishing_date;
 
+    @Column(name = "created_at")
+    private LocalDate created_at;
+
     @Column(nullable = false)
     private boolean lent;
 

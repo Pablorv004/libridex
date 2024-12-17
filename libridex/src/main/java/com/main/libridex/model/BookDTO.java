@@ -42,6 +42,8 @@ public class BookDTO {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate publishing_date;
 
+    private LocalDate created_at;
+
     private boolean lent;
 
     private boolean reserved;
