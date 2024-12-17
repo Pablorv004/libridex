@@ -37,9 +37,6 @@ public class Book {
     @Column(nullable = false)
     private boolean lent;
 
-    @Column(nullable = false)
-    private boolean reserved;
-
     @OneToMany(mappedBy = "book")
     public List<Reservation> reservations = new ArrayList<>();
 

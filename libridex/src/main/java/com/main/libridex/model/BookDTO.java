@@ -43,6 +43,4 @@ public class BookDTO {
     private LocalDate publishing_date;
 
     private boolean lent;
-
-    private boolean reserved;
 }
