@@ -27,7 +27,7 @@
             <div class="flex-grow-1">
                 <div class="row d-flex flex-wrap justify-content-center">
                     <div class="col-md-4 mb-4" th:each="book : ${books}">
-                        <a th:href="@{/book/{id}(id=${book.id})}">
+                        <a th:href="@{/books/details/{id}(id=${book.id})}">
                             <div class="card card-hover">
                                 <img th:src="${book.image}" alt="Book Cover" class="pt-3 mx-auto d-block" style="width: 15vh; height: 17vh;">
                                 <div class="card-body d-flex flex-column gap-4">

@@ -24,7 +24,7 @@ public class BookDTO {
     private Integer id;
 
     @NotBlank(message = "The title must not be empty")
-    @Size(max = 20, message = "The title cannot be more than 20 characters long")
+    @Size(max = 30, message = "The title cannot be more than 20 characters long")
     private String title;
 
     private String image;
