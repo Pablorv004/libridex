@@ -9,4 +9,5 @@ import com.main.libridex.entity.Lending;
 
 @Repository("lendingRepository")
 public interface LendingRepository extends JpaRepository<Lending,Serializable>{
+    Lending findByBookId(Integer id);
 }

@@ -20,6 +20,8 @@
         alt="Image" class="img-fluid w-100 object-fit-cover" style="height: 100vh;">
     <div class="position-absolute w-100 bg-white pb-5 top-50 start-50 translate-middle">
         <div class="container mt-5">
+            <div th:if="${success != null}" th:text="${success}"></div>
+            <div th:if= "${error != null}" th:text="${error}"></div>
             <div class="row">
                 <div class="col-md-5 text-center">
                     <img th:src="${book.image}" class="img-fluid rounded mb-4 w-50 zoom" style="max-height: 25vh;" alt="Book Image">

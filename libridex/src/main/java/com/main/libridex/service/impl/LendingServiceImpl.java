@@ -36,7 +36,8 @@ public class LendingServiceImpl implements LendingService {
     @Override
     public void save(Integer bookId, String userEmail) {
         User user = userRepository.findByEmail(userEmail);
-        Book book = bookRepository.findById(bookId).orElse(null);
+        System.out.println(user.getLendings().size());
+        Book book = bookRepository.findById(bookId);
         LocalDate start_date = LocalDate.now();
         LocalDate end_date = start_date.plusWeeks(1);
         Lending lending = new Lending(user, book, start_date, end_date);
@@ -47,7 +48,8 @@ public class LendingServiceImpl implements LendingService {
 
     @Override
     public void delete(Integer id) {
-        lendingRepository.deleteById(id);
+        bookRepository.findById(id).setLent(false);
+        lendingRepository.deleteById(lendingRepository.findByBookId(id).getId());
     }
 
     @Override

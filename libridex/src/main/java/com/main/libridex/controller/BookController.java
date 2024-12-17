@@ -14,6 +14,8 @@ import com.main.libridex.components.logger.AccessLogger;
 import com.main.libridex.model.BookDTO;
 import com.main.libridex.service.BookService;
 import com.main.libridex.service.LendingService;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @Controller
 @RequestMapping("/books")
@@ -47,6 +49,14 @@ public class BookController {
         flash.addFlashAttribute("success", "Book lent successfully!");
         return "redirect:/books/catalog";
     }
+
+    @GetMapping("/return/{bookId}")
+    public String returnBook(@PathVariable int bookId, RedirectAttributes flash) {
+        lendingService.delete(bookId);
+        flash.addFlashAttribute("success", "Book returned successfully!");
+        return "redirect:/books/catalog";
+    }
+    
 
     @GetMapping("/catalog")
     public String catalog(Model model) {
