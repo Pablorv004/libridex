@@ -20,15 +20,13 @@
         alt="Image" class="img-fluid w-100 object-fit-cover" style="height: 100vh;">
     <div class="position-absolute w-100 bg-white pb-5 top-50 start-50 translate-middle">
         <div class="container mt-5">
-            <div th:if="${success != null}" th:text="${success}"></div>
-            <div th:if= "${error != null}" th:text="${error}"></div>
             <div class="row">
-                <div class="col-md-5 text-center">
+                <div class="col-md-5 text-center d-flex flex-column align-items-center justify-content-center">
                     <img th:src="${book.image}" class="img-fluid rounded mb-4 w-50 zoom" style="max-height: 25vh;" alt="Book Image">
-                    <div class="d-flex justify-content-center">
+                    <h2 class="d-block" th:text="${book.title}">Book Title</h2>
+                    <div class="d-block justify-content-center">
                         <hr class="w-50">
                     </div>
-                    <h2 th:text="${book.title}">Book Title</h2>
                 </div>
                 <div class="col-md-5 ps-4">
                     <h3 class="text-center" style="color: rgb(103, 75, 29);">Details</h3>
@@ -46,7 +44,7 @@
                         <h5><span th:text="${book.publishingDate}">Publishing Date</span></h5>
                     </div>
                     <hr>
-                    <div class="d-flex flex-column align-items-center mt-5">
+                    <div th:if= "${!existsInUserLendings}" class="d-flex flex-column align-items-center mt- mb-3">
                         <div class="d-block mb-3" th:if="${book.lent}">
                             This book is actually lent. But you can make a reserve for it.
                         </div>
@@ -56,6 +54,17 @@
                             <span th:text="${book.lent ? 'Reserve' : 'Lend'}"></span>
                         </a>
                     </div>
+                    <div class="alert alert-info text-center mb-0" th:if="${existsInUserLendings}">
+                        <p class="fw-bold" >It look's like you're actually lending this book! Use the button below if you want to return it!</p>
+                        <p><span class="fw-bold">Return date: </span><span th:text="${returnDate}"></span></p>
+                        <a class="btn btn-dark rounded-2 p-2" 
+                            th:href="@{/books/return/{id}(id=${book.id})}"
+                            style="background-color: rgb(103, 75, 29); border-color: rgb(103, 75, 29); width: 10vh;">
+                            Return book
+                        </a>
+                    </div>
+                    <div class="alert alert-info" th:if="${success != null}" th:text="${success}"></div>
+                    <div class="alert alert-danger" th:if= "${error != null}" th:text="${error}"></div>
                 </div>
             </div>
         </div>

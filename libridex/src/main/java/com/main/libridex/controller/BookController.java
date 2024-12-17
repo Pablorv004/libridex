@@ -1,5 +1,6 @@
 package com.main.libridex.controller;
 
+import java.time.LocalDate;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import com.main.libridex.entity.Book;
 import com.main.libridex.model.BookDTO;
 import com.main.libridex.service.BookService;
 import com.main.libridex.service.LendingService;
+import com.main.libridex.service.UserService;
 
 
 @Controller
@@ -41,22 +43,36 @@ public class BookController {
 
     @GetMapping("/details/{id}")
     public String showBookDetails(@PathVariable int id, Model model) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        boolean existsInUserLendings = lendingService.existsInUserLendings(email, id);
         BookDTO bookDTO = bookService.findById(id);
+
+        if(existsInUserLendings)
+            model.addAttribute("returnDate", lendingService.findByBookId(id).getEnd_date());
+            
         model.addAttribute("book", bookDTO);
+        model.addAttribute("existsInUserLendings", existsInUserLendings);
+
         return DETAILS;
     }
 
     @GetMapping("/lend/{bookId}")
     public String lendBook(@PathVariable int bookId, RedirectAttributes flash) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        lendingService.save(bookId, email);
-        flash.addFlashAttribute("success", "Book lent successfully!");
-        return "redirect:/books/catalog";
+        boolean lentSuccessfully = lendingService.createLending(bookId, email);
+
+        if(lentSuccessfully){
+            flash.addFlashAttribute("success", "Book lent successfully!");
+            return "redirect:/books/catalog";
+        }
+
+        flash.addFlashAttribute("error", "You have too many lendings! Return a book first, please.");
+        return "redirect:/books/details/" + bookId;
     }
 
     @GetMapping("/return/{bookId}")
     public String returnBook(@PathVariable int bookId, RedirectAttributes flash) {
-        lendingService.delete(bookId);
+        lendingService.deleteLending(bookId);
         flash.addFlashAttribute("success", "Book returned successfully!");
         return "redirect:/books/catalog";
     }
