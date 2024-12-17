@@ -1,9 +1,11 @@
 package com.main.libridex.controller;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.data.domain.Page;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +19,6 @@ import com.main.libridex.entity.Book;
 import com.main.libridex.model.BookDTO;
 import com.main.libridex.service.BookService;
 import com.main.libridex.service.LendingService;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 @Controller
@@ -64,6 +65,10 @@ public class BookController {
     @GetMapping("/catalog")
     public String catalog(@RequestParam(defaultValue = "0") int page, Model model){
         Page<Book> bookPage = bookService.findPaginated(page);
+        Map<String, Integer> genresWithAmount = bookService.findGenresWithAmountByBook();
+        Map<String, Integer> authorsWithAmount = bookService.findAuthorsWithAmountByBook();
+        model.addAttribute("genresWithAmount", genresWithAmount);
+        model.addAttribute("authorsWithAmount", authorsWithAmount);
         model.addAttribute("books", bookPage.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", bookPage.getTotalPages());

@@ -1,6 +1,7 @@
 package com.main.libridex.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.domain.Page;
 import org.springframework.validation.BindingResult;
@@ -19,6 +20,10 @@ public interface BookService {
     Book save(BookDTO bookDTO);
 
     void deleteById(Integer id);
+
+    Map<String, Integer> findGenresWithAmountByBook();
+
+    Map<String, Integer> findAuthorsWithAmountByBook();
 
     void checkExistentBook(BookDTO bookDTO, BindingResult bResult);
 

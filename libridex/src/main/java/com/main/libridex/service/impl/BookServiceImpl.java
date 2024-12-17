@@ -1,7 +1,10 @@
 package com.main.libridex.service.impl;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,8 +42,37 @@ public class BookServiceImpl implements BookService {
     public Page<Book> findPaginated(int pageNumber) {
         return bookRepository.findAll(PageRequest.of(pageNumber, 6));
     }
+    /**
+     * Method to order a map by values in reverse order
+     */
+    public static Map<String, Integer> sortByValue(Map<String, Integer> unsortedMap) {
+        Map<String, Integer> sortedMap = new LinkedHashMap<>();
+        unsortedMap.entrySet().stream().sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
+                .forEachOrdered(x -> sortedMap.put(x.getKey(), x.getValue()));
+        return sortedMap;
+    }
 
+    @Override
+    public Map<String, Integer> findGenresWithAmountByBook() {
+        Map<String, Integer> genresWithAmount = new HashMap<>();
+        List<Book> books = bookRepository.findAll();
+        for (Book book : books) {
+            String genre = book.getGenre();
+            genresWithAmount.put(genre, 1 + genresWithAmount.getOrDefault(genre, 0));
+        }
+        return sortByValue(genresWithAmount);
+    }
 
+    @Override
+    public Map<String, Integer> findAuthorsWithAmountByBook() {
+        Map<String, Integer> authorsWithAmount = new HashMap<>();
+        List<Book> books = bookRepository.findAll();
+        for (Book book : books) {
+            String author = book.getAuthor();
+            authorsWithAmount.put(author, 1 + authorsWithAmount.getOrDefault(author, 0));
+        }
+        return sortByValue(authorsWithAmount);
+    }
 
     @Override
     public BookDTO findById(Integer id) {
@@ -49,7 +81,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Book save(BookDTO bookDTO) {
-        if(bookDTO.getId() == null) {
+        if (bookDTO.getId() == null) {
             bookDTO.setCreated_at(LocalDateTime.now());
         }
         return bookRepository.save(toEntity(bookDTO));
@@ -64,7 +96,7 @@ public class BookServiceImpl implements BookService {
 
     private Integer getLastId(BookDTO bookDTO) {
         Integer id = bookDTO.getId();
-        if (id != null) 
+        if (id != null)
             return id;
         Integer newId = bookRepository.findMaxId();
         if (newId != null)
@@ -79,7 +111,7 @@ public class BookServiceImpl implements BookService {
         // Upload the image to Cloudinary if there is one selected
         if (!imageFile.isEmpty()) {
             // Delete the previous image if it exists
-            if(!bookDTO.getImage().isBlank()){
+            if (!bookDTO.getImage().isBlank()) {
                 Book book = bookRepository.findById(id);
                 CloudinaryUtils.deleteImage(book.getImage());
             }
@@ -87,7 +119,7 @@ public class BookServiceImpl implements BookService {
             bookDTO.setImage(CloudinaryUtils.uploadImage(imageFile, id, "Book"));
         } else {
             // If no image is selected, set the default image
-            if(bookDTO.getImage().isBlank()) {
+            if (bookDTO.getImage().isBlank()) {
                 bookDTO.setImage("https://res.cloudinary.com/dlmbw4who/image/upload/v1734182372/default_image.png");
             }
         }
