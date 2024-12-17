@@ -46,6 +46,4 @@ public class BookDTO {
     private LocalDateTime created_at;
 
     private boolean lent;
-
-    private boolean reserved;
 }

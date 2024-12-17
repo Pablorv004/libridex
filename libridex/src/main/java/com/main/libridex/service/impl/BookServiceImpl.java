@@ -44,7 +44,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public BookDTO findById(Integer id) {
-        return toDTO(bookRepository.findById(id).orElse(null));
+        return toDTO(bookRepository.findById(id));
     }
 
     @Override
@@ -57,7 +57,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public void deleteById(Integer id) {
-        Book book = bookRepository.findById(id).orElse(null);
+        Book book = bookRepository.findById(id);
         CloudinaryUtils.deleteImage(book.getImage());
         bookRepository.deleteById(id);
     }
@@ -80,7 +80,7 @@ public class BookServiceImpl implements BookService {
         if (!imageFile.isEmpty()) {
             // Delete the previous image if it exists
             if(!bookDTO.getImage().isBlank()){
-                Book book = bookRepository.findById(id).orElse(null);
+                Book book = bookRepository.findById(id);
                 CloudinaryUtils.deleteImage(book.getImage());
             }
 

@@ -20,6 +20,8 @@
         alt="Image" class="img-fluid w-100 object-fit-cover" style="height: 100vh;">
     <div class="position-absolute w-100 bg-white pb-5 top-50 start-50 translate-middle">
         <div class="container mt-5">
+            <div th:if="${success != null}" th:text="${success}"></div>
+            <div th:if= "${error != null}" th:text="${error}"></div>
             <div class="row">
                 <div class="col-md-5 text-center">
                     <img th:src="${book.image}" class="img-fluid rounded mb-4 w-50 zoom" style="max-height: 25vh;" alt="Book Image">
@@ -45,24 +47,14 @@
                     </div>
                     <hr>
                     <div class="d-flex flex-column align-items-center mt-5">
-                        <div class="d-block mb-3" th:if="${book.lent && !book.reserved}">
+                        <div class="d-block mb-3" th:if="${book.lent}">
                             This book is actually lent. But you can make a reserve for it.
                         </div>
-                        <div class="d-block mb-3" th:if="${book.lent && book.reserved}">
-                            This book is actually lent and reserved. It will open for reservations at: ----
-                        </div>
-                        <button class="btn btn-dark rounded-2 mb-3 fw-bold"
-                            th:if="${book.lent && book.reserved}"
-                            style="background-color: rgb(123, 123, 123); border-color: rgb(123, 123, 123); width: 10vh;"
-                            disabled>
-                            Out of order
-                        </button>
-                        <button class="btn btn-dark rounded-2" 
-                            th:if="${!book.lent || (book.lent && !book.reserved)}"
+                        <a class="btn btn-dark rounded-2 p-2" 
+                            th:href="@{${book.lent} ? '/books/reserve/' + ${book.id} : '/books/lend/' + ${book.id}}"
                             style="background-color: rgb(103, 75, 29); border-color: rgb(103, 75, 29); width: 10vh;">
-                            <span th:if="${book.lent && !book.reserved}">Reserve</span>
-                            <span th:if="${!book.lent && !book.reserved}">Lend</span>
-                        </button>
+                            <span th:text="${book.lent ? 'Reserve' : 'Lend'}"></span>
+                        </a>
                     </div>
                 </div>
             </div>
