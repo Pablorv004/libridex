@@ -33,10 +33,10 @@ public class Book {
     private String genre;
 
     @Column(nullable = false)
-    private LocalDate publishing_date;
+    private LocalDate publishingDate;
 
     @Column(nullable = false)
-    private LocalDateTime created_at;
+    private LocalDateTime createdAt;
 
     @Column(nullable = false)
     private boolean lent;

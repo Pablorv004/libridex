@@ -40,9 +40,9 @@
                     <div class="text-danger" th:if="${#fields.hasErrors('genre')}" th:errors="*{genre}"></div>
                 </div>
                 <div class="mb-3">
-                    <label for="publishing_date" class="form-label text-white">Publishing Date</label>
-                    <input type="date" th:field="*{publishing_date}" class="form-control" id="publishing_date" name="publishing_date">
-                    <div class="text-danger" th:if="${#fields.hasErrors('publishing_date')}" th:errors="*{publishing_date}"></div>
+                    <label for="publishingDate" class="form-label text-white">Publishing Date</label>
+                    <input type="date" th:field="*{publishingDate}" class="form-control" id="publishingDate" name="publishingDate">
+                    <div class="text-danger" th:if="${#fields.hasErrors('publishingDate')}" th:errors="*{publishingDate}"></div>
                 </div>
                 <!-- <div class="mb-4" th:if= "${book.id != null}">
                     <label class="form-label text-white d-block">Status</label>

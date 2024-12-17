@@ -14,7 +14,9 @@ public interface BookService {
     List<Book> findAll();
 
     Page<Book> findFirstN(int elementsNumber);
-    
+
+    Page<Book> findFirstNSortedByCreatedAt(int elementsNumber);
+
     BookDTO findById(Integer id);
 
     Book save(BookDTO bookDTO);

@@ -43,7 +43,7 @@
                                         <h3 class="mb-0 h4">
                                             <p class="text-inherit" th:text="${book.title}">Book Title</p>
                                         </h3>
-                                        <small class="text-secondary" th:text="${book.publishing_date}">Date</small>
+                                        <small class="text-secondary" th:text="${book.publishingDate}">Date</small>
                                     </div>
                                     <div>
                                         <span class="fw-semibold text-dark" th:text="${book.author}"></span>
@@ -96,7 +96,7 @@
                     <h5>Sort By</h5>
                     <select class="form-select mb-3">
                         <option value="title_asc">Title (A-Z)</option>
-                        <option value="publishing_date_desc">Publishing Date (Newest to Oldest)</option>
+                        <option value="publishingDate_desc">Publishing Date (Newest to Oldest)</option>
                         <option value="author_asc">Author (A-Z)</option>
                         <option value="upload_date_desc">Upload Date (Newest to Oldest)</option>
                         <option value="reservations_desc">Most Reservations (Most to Least)</option>

@@ -41,9 +41,9 @@ public class BookDTO {
     @NotNull(message = "You must select a publishing date")
     @PastOrPresent(message = "You cannot select a future date")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate publishing_date;
+    private LocalDate publishingDate;
 
-    private LocalDateTime created_at;
+    private LocalDateTime createdAt;
 
     private boolean lent;
 }

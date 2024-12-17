@@ -82,7 +82,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public Book save(BookDTO bookDTO) {
         if (bookDTO.getId() == null) {
-            bookDTO.setCreated_at(LocalDateTime.now());
+            bookDTO.setCreatedAt(LocalDateTime.now());
         }
         return bookRepository.save(toEntity(bookDTO));
     }
@@ -142,5 +142,10 @@ public class BookServiceImpl implements BookService {
     public Book toEntity(BookDTO bookDTO) {
         ModelMapper mapper = new ModelMapper();
         return mapper.map(bookDTO, Book.class);
+    }
+
+    @Override
+    public Page<Book> findFirstNSortedByCreatedAt(int elementsNumber) {
+        return bookRepository.findFirstNSortedByCreatedAt(PageRequest.of(0, elementsNumber));
     }
 }
