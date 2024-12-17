@@ -1,6 +1,7 @@
 package com.main.libridex.model;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -40,7 +41,9 @@ public class BookDTO {
     @NotNull(message = "You must select a publishing date")
     @PastOrPresent(message = "You cannot select a future date")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate publishing_date;
+    private LocalDate publishingDate;
+
+    private LocalDateTime createdAt;
 
     private boolean lent;
 }

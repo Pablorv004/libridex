@@ -131,7 +131,6 @@ public class AdminController {
 
         bookService.setImage(bookDTO, imageFile);
         String message = bookDTO.getId() == null ? "Book created succesfully!" : "Book edited successfully!";
-
         bookService.save(bookDTO);
         bookLogger.added(bookDTO.getTitle());
         flash.addFlashAttribute("success", message);

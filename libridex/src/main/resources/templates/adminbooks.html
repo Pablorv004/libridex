@@ -26,6 +26,7 @@
                         <th>Author</th>
                         <th>Genre</th>
                         <th>Publishing Date</th>
+                        <th>Created At</th>
                         <th>Lent</th>
                         <th>Actions</th>
                     </tr>
@@ -36,7 +37,8 @@
                         <td th:text="${book.title}"></td>
                         <td th:text="${book.author}"></td>
                         <td th:text="${book.genre}"></td>
-                        <td th:text="${book.publishing_date}"></td>
+                        <td th:text="${book.publishingDate}"></td>
+                        <td th:text="${book.createdAt}"></td>
                         <td th:text="${book.lent ? '✔' : '✘'}"></td>
                         <td>
                             <a th:href= "@{/admin/books/form/{id}(id=${book.id})}"><i class="fa-solid fa-pen-to-square d-inline me-3" style="color: #74C0FC;"></i></a>

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head th:replace="~{fragments :: head}">
 </head>
 <style>
@@ -16,6 +17,7 @@
         text-decoration: none;
     }
 </style>
+
 <body>
     <header th:replace="~{fragments :: navbar}"></header>
     <img src="https://trello-backgrounds.s3.amazonaws.com/SharedBackground/2215x2048/5fa9c73355b096b1e1786af0510a6fc4/photo-1481627834876-b7833e8f5570.webp"
@@ -29,16 +31,19 @@
                     <div class="col-md-4 mb-4" th:each="book : ${books}">
                         <a th:href="@{/books/details/{id}(id=${book.id})}">
                             <div class="card card-hover">
-                                <img th:src="${book.image}" alt="Book Cover" class="pt-3 mx-auto d-block" style="width: 15vh; height: 17vh;">
+                                <img th:src="${book.image}" alt="Book Cover" class="pt-3 mx-auto d-block"
+                                    style="width: 15vh; height: 17vh;">
                                 <div class="card-body d-flex flex-column gap-4">
                                     <div class="d-flex flex-column gap-2">
                                         <div>
-                                            <span class="badge text-light-emphasis bg-light-subtle border border-light-subtle rounded-pill" th:text="${book.genre}">Genre</span>
+                                            <span
+                                                class="badge text-light-emphasis bg-light-subtle border border-light-subtle rounded-pill"
+                                                th:text="${book.genre}">Genre</span>
                                         </div>
                                         <h3 class="mb-0 h4">
                                             <p class="text-inherit" th:text="${book.title}">Book Title</p>
                                         </h3>
-                                        <small class="text-secondary" th:text="${book.publishing_date}">Date</small>
+                                        <small class="text-secondary" th:text="${book.publishingDate}">Date</small>
                                     </div>
                                     <div>
                                         <span class="fw-semibold text-dark" th:text="${book.author}"></span>
@@ -48,78 +53,122 @@
                         </a>
                     </div>
                 </div>
+                <div class="d-flex justify-content-center mt-4">
+                    <ul class="pagination">
+                        <li class="page-item">
+                            <a class="page-link" th:href="@{/books/catalog(page=0)}"
+                                th:classappend="${currentPage == 0} ? 'disabled'">&laquo;</a>
+                        </li>
+                        <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                            <a class="page-link" th:href="@{/books/catalog(page=${currentPage - 1})}">&lt;</a>
+                        </li>
+                        <!--If there's too little pages-->
+                        <li class="page-item" th:if="${totalPages <= 5}" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                            th:classappend="${i == currentPage} ? 'active'">
+                            <a class="page-link" th:href="@{/books/catalog(page=${i})}" th:text="${i + 1}">1</a>
+                        <!--If close to start-->
+                        <li class="page-item" th:if="${currentPage <= 1 and totalPages > 5}" th:each="i : ${#numbers.sequence(0, 4)}"
+                            th:classappend="${i == currentPage} ? 'active'">
+                            <a class="page-link" th:href="@{/books/catalog(page=${i})}" th:text="${i + 1}">1</a>
+                        </li>
+                        <!--If in the middle-->
+                        <li class="page-item" th:if="${currentPage > 1 and currentPage < totalPages - 2 and totalPages > 5}" th:each="i : ${#numbers.sequence(currentPage - 2, currentPage + 2)}"
+                            th:classappend="${i == currentPage} ? 'active'">
+                            <a class="page-link" th:href="@{/books/catalog(page=${i})}" th:text="${i + 1}">1</a>
+                        </li>
+                        <!--If close to end-->
+                        <li class="page-item" th:if="${currentPage >= totalPages - 2 and totalPages > 5}" th:each="i : ${#numbers.sequence(totalPages - 5, totalPages - 1)}"
+                            th:classappend="${i == currentPage} ? 'active'">
+                            <a class="page-link" th:href="@{/books/catalog(page=${i})}" th:text="${i + 1}">1</a>
+                        </li>
+                        <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                            <a class="page-link" th:href="@{/books/catalog(page=${currentPage + 1})}">&gt;</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" th:href="@{/books/catalog(page=${totalPages - 1})}"
+                                th:classappend="${currentPage == totalPages - 1} ? 'disabled'">&raquo;</a>
+                        </li>
+                    </ul>
+                </div>
             </div>
             <div class="col-md-4 mb-4 ms-4">
                 <div class="p-3 border-start">
                     <h5>Sort By</h5>
                     <select class="form-select mb-3">
                         <option value="title_asc">Title (A-Z)</option>
-                        <option value="release_date_desc">Release Date (Newest to Oldest)</option>
-                        <option value="release_date_asc">Release Date (Oldest to Newest)</option>
+                        <option value="publishingDate_desc">Publishing Date (Newest to Oldest)</option>
                         <option value="author_asc">Author (A-Z)</option>
                         <option value="upload_date_desc">Upload Date (Newest to Oldest)</option>
                         <option value="reservations_desc">Most Reservations (Most to Least)</option>
                         <option value="genre_asc">Genre (A-Z)</option>
                         <option value="availability_asc">Availability (Less queue to most queue)</option>
                     </select>
-                    <h5>Filters</h5>
+                    <h5 class="d-flex">Filters</h5>
+                    <div class="d-flex justify-content-end mb-3">
+                        <button type="button" class="btn btn-secondary" onclick="resetFilters()">Reset</button>
+                    </div>
                     <div class="mb-3">
                         <label>Genre</label>
-                        <div>
-                            <!--Do a foreach here-->
-                            <div class="form-check">
+                        <div class="form-check" style="max-height: 150px; overflow-y: auto;">
+                            <div class="form-check" th:each= "entry:${genresWithAmount}">
                                 <input class="form-check-input" type="checkbox" value="genre1" id="genre1">
-                                <label class="form-check-label" for="genre1">
-                                    Genre 1 (10)
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="genre2" id="genre2">
-                                <label class="form-check-label" for="genre2">
-                                    Genre 2 (5)
+                                <label class="form-check-label" for="genre1" th:text="${entry.key} + ' (' + ${entry.value} + ')'">
                                 </label>
                             </div>
                         </div>
-                    </div>
-                    <div class="mb-3">
-                        <label>Publishing Date</label>
-                        <input type="date" class="form-control mb-2" placeholder="From">
-                        <input type="date" class="form-control" placeholder="To">
                     </div>
                     <div class="mb-3">
                         <label>Upload Date</label>
-                        <input type="date" class="form-control mb-2" placeholder="From">
-                        <input type="date" class="form-control" placeholder="To">
+                        <div class="form-check" style="max-height: 150px; overflow-y: auto;">
+                            <input class="form-check-input" type="radio" name="uploadDate" id="lessThanWeek" value="lessThanWeek">
+                            <label class="form-check-label" for="lessThanWeek">
+                                Less than a week ago
+                            </label>
+                        </div>
+                        <div class="form-check" style="max-height: 150px; overflow-y: auto;">
+                            <input class="form-check-input" type="radio" name="uploadDate" id="oneMonth" value="oneMonth">
+                            <label class="form-check-label" for="oneMonth">
+                                Up To One Month Ago
+                            </label>
+                        </div>
+                        <div class="form-check" style="max-height: 150px; overflow-y: auto;">
+                            <input class="form-check-input" type="radio" name="uploadDate" id="thisYear" value="thisYear">
+                            <label class="form-check-label" for="thisYear">
+                                Up To This Year
+                            </label>
+                        </div>
+                        <div class="form-check" style="max-height: 150px; overflow-y: auto;">
+                            <input class="form-check-input" type="radio" name="uploadDate" id="moreThanYear" value="moreThanYear">
+                            <label class="form-check-label" for="moreThanYear">
+                                More than a year ago
+                            </label>
+                        </div>
                     </div>
                     <div class="mb-3 form-check">
-                        <input type="checkbox" class="form-check-input" id="isLent">
-                        <label class="form-check-label" for="isLent">Is Lent</label>
-                    </div>
-                    <div class="mb-3 form-check">
-                        <input type="checkbox" class="form-check-input" id="isReserved">
-                        <label class="form-check-label" for="isReserved">Is Reserved</label>
+                        <input type="checkbox" class="form-check-input" id="isLent" checked>
+                        <label class="form-check-label" for="isLent">Is Available</label>
                     </div>
                     <div class="mb-3">
-                        <!--Do a for each here-->
                         <label>Authors</label>
                         <div class="form-check" style="max-height: 150px; overflow-y: auto;">
-                            <div class="form-check">
+                            <div class="form-check" th:each= "entry:${authorsWithAmount}">
                                 <input class="form-check-input" type="checkbox" value="author1" id="author1">
-                                <label class="form-check-label" for="author1">
-                                    Author 1
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="author2" id="author2">
-                                <label class="form-check-label" for="author2">
-                                    Author 2
+                                <label class="form-check-label" for="author1" th:text="${entry.key} + ' (' + ${entry.value} + ')'">
                                 </label>
                             </div>
                         </div>
                     </div>
+                    
                 </div>
             </div>
         </div>
     </div>
 </body>
+<script>
+    function resetFilters() {
+        document.querySelectorAll('.form-check-input').forEach(input => input.checked = false);
+        document.querySelectorAll('.form-check-input[type="radio"]').forEach(input => input.checked = false);
+        document.getElementById('isLent').checked = true;
+    }
+</script>
 </html>

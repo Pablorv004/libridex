@@ -46,12 +46,12 @@
                                     <div class="card-body d-flex flex-column gap-4">
                                         <div class="d-flex flex-column gap-2">
                                             <div>
-                                                <span class="badge text-light-emphasis bg-light-subtle border border-light-subtle rounded-pill" th:text="${book.genre}">Most Reserved</span>
+                                                <span class="badge text-light-emphasis bg-light-subtle border border-light-subtle rounded-pill" th:text="${book.genre}"></span>
                                             </div>
                                             <h3 class="mb-0 h4">
                                                 <p class="text-inherit" th:text="${book.title}">Book Title</p>
                                             </h3>
-                                            <small class="text-secondary" th:text="${book.publishing_date}">Date</small>
+                                            <small class="text-secondary" th:text="'Released: ' + ${book.publishingDate}">Date</small>
                                         </div>
                                         <div>
                                             <span class="fw-semibold text-dark" th:text="${book.author}"></span>
@@ -74,12 +74,13 @@
                                     <div class="card-body d-flex flex-column gap-4">
                                         <div class="d-flex flex-column gap-2">
                                             <div>
-                                                <span class="badge text-light-emphasis bg-light-subtle border border-light-subtle rounded-pill" th:text="${book.genre}">Most Reserved</span>
+                                                <span class="badge text-light-emphasis bg-light-subtle border border-light-subtle rounded-pill" th:text="${book.genre}"></span>
                                             </div>
                                             <h3 class="mb-0 h4">
                                                 <p class="text-inherit" th:text="${book.title}">Book Title</p>
                                             </h3>
-                                            <small class="text-secondary" th:text="${book.publishing_date}">Date</small>
+                                            <small class="text-secondary" th:text="'Released: ' + ${book.publishingDate}">Date</small>
+                                        
                                         </div>
                                         <div>
                                             <span class="fw-semibold text-dark" th:text="${book.author}"></span>
