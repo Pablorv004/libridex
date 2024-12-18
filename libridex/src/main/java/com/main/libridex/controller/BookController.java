@@ -1,6 +1,5 @@
 package com.main.libridex.controller;
 
-import java.time.LocalDate;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +16,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.main.libridex.components.logger.AccessLogger;
 import com.main.libridex.entity.Book;
+import com.main.libridex.entity.Lending;
 import com.main.libridex.model.BookDTO;
 import com.main.libridex.service.BookService;
 import com.main.libridex.service.LendingService;
-import com.main.libridex.service.UserService;
 
 
 @Controller
@@ -46,9 +45,10 @@ public class BookController {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         boolean existsInUserLendings = lendingService.existsInUserLendings(email, id);
         BookDTO bookDTO = bookService.findById(id);
+        Lending lending = lendingService.findBookCurrentLending(id);
 
-        if(existsInUserLendings)
-            model.addAttribute("returnDate", lendingService.findByBookId(id).getEnd_date());
+        if(existsInUserLendings && lending != null)
+            model.addAttribute("returnDate", lending.getStart_date().plusWeeks(1));
             
         model.addAttribute("book", bookDTO);
         model.addAttribute("existsInUserLendings", existsInUserLendings);
@@ -72,7 +72,7 @@ public class BookController {
 
     @GetMapping("/return/{bookId}")
     public String returnBook(@PathVariable int bookId, RedirectAttributes flash) {
-        lendingService.deleteLending(bookId);
+        lendingService.endLending(bookId);
         flash.addFlashAttribute("success", "Book returned successfully!");
         return "redirect:/books/catalog";
     }
