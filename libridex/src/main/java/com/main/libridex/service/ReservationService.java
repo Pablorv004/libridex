@@ -6,7 +6,11 @@ import com.main.libridex.entity.Reservation;
 import com.main.libridex.model.ReservationDTO;
 
 public interface ReservationService {
-    void save(Reservation reservation);
-    void delete(Integer id);
-    List<ReservationDTO> getAllReservations();
+    List<Reservation> findByBookId(Integer id);
+    boolean createReservation(Integer bookId);
+    boolean endReservation(Integer id);
+    List<ReservationDTO> getAllReservationsDTO();
+    List<Reservation> getAllReservations();
+    boolean isAlreadyReserved(Integer bookId);
+    Reservation findBookCurrentReservation(Integer id);
 }

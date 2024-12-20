@@ -35,9 +35,11 @@ public class LendingServiceImpl implements LendingService {
     @Qualifier("bookRepository")
     BookRepository bookRepository;
 
+    // TODO: Check reservation date to see if is the oldest
     @Override
-    public boolean createLending(Integer bookId, String userEmail) {
-        User user = userRepository.findByEmail(userEmail);
+    public boolean createLending(Integer bookId) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByEmail(email);
 
         if (user.getLendings().size() < 5) {
             Book book = bookRepository.findById(bookId);
@@ -96,7 +98,8 @@ public void endLending(Integer bookId) {
     }
 
     @Override
-    public boolean existsInUserLendings(String email, Integer bookId) {
+    public boolean existsInUserLendings(Integer bookId) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByEmail(email);
         Book book = bookRepository.findById(bookId);
 

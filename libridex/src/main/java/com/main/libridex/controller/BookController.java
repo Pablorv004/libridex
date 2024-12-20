@@ -20,6 +20,7 @@ import com.main.libridex.entity.Lending;
 import com.main.libridex.model.BookDTO;
 import com.main.libridex.service.BookService;
 import com.main.libridex.service.LendingService;
+import com.main.libridex.service.ReservationService;
 
 
 @Controller
@@ -40,10 +41,14 @@ public class BookController {
     @Qualifier("lendingService")
     private LendingService lendingService;
 
+    @Autowired
+    @Qualifier("reservationService")
+    private ReservationService reservationService;
+
     @GetMapping("/details/{id}")
     public String showBookDetails(@PathVariable int id, Model model) {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        boolean existsInUserLendings = lendingService.existsInUserLendings(email, id);
+        boolean existsInUserLendings = lendingService.existsInUserLendings(id);
+        boolean isAlreadyReserved = reservationService.isAlreadyReserved(id);
         BookDTO bookDTO = bookService.findById(id);
         Lending lending = lendingService.findBookCurrentLending(id);
 
@@ -52,14 +57,44 @@ public class BookController {
             
         model.addAttribute("book", bookDTO);
         model.addAttribute("existsInUserLendings", existsInUserLendings);
+        model.addAttribute("isAlreadyReserved", isAlreadyReserved);
 
         return DETAILS;
     }
 
+    // RESERVATION ENDPOINTS
+
+    @GetMapping("/reserve/{bookId}")
+    public String reserveBook(@PathVariable int bookId, RedirectAttributes flash) {
+
+        if(!reservationService.isAlreadyReserved(bookId)){
+            reservationService.createReservation(bookId);
+            flash.addFlashAttribute("success", "Book reserved successfully!");
+            return "redirect:/books/catalog";
+        }
+
+        flash.addFlashAttribute("error", "You've already reserved this book!");
+        return "redirect:/books/details/" + bookId;
+    }
+    
+    @GetMapping("/cancelreserve/{bookId}")
+    public String cancelReserve(@PathVariable int bookId, RedirectAttributes flash) {
+
+        if(reservationService.endReservation(bookId)){
+            flash.addFlashAttribute("success", "Book reserve cancelled successfully!");
+            return "redirect:/books/catalog";
+        }
+
+        flash.addFlashAttribute("error", "Something went wrong! Plese contact an administrator.");
+        return "redirect:/books/details/" + bookId;
+    }
+
+
+    // LENDING ENDPOINTS
+
     @GetMapping("/lend/{bookId}")
     public String lendBook(@PathVariable int bookId, RedirectAttributes flash) {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        boolean lentSuccessfully = lendingService.createLending(bookId, email);
+        boolean lentSuccessfully = lendingService.createLending(bookId);
 
         if(lentSuccessfully){
             flash.addFlashAttribute("success", "Book lent successfully!");
@@ -77,6 +112,9 @@ public class BookController {
         return "redirect:/books/catalog";
     }
     
+
+
+    // CATALOG ENDPOINT
 
     @GetMapping("/catalog")
     public String catalog(@RequestParam(defaultValue = "0") int page, Model model){

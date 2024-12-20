@@ -44,7 +44,7 @@
                         <h5><span th:text="${book.publishingDate}">Publishing Date</span></h5>
                     </div>
                     <hr>
-                    <div th:if= "${!existsInUserLendings}" class="d-flex flex-column align-items-center mt- mb-3">
+                    <div th:if= "${!existsInUserLendings && !isAlreadyReserved}" class="d-flex flex-column align-items-center mt- mb-3">
                         <div class="d-block mb-3" th:if="${book.lent}">
                             This book is actually lent. But you can make a reserve for it.
                         </div>
@@ -61,6 +61,14 @@
                             th:href="@{/books/return/{id}(id=${book.id})}"
                             style="background-color: rgb(103, 75, 29); border-color: rgb(103, 75, 29); width: 10vh;">
                             Return book
+                        </a>
+                    </div>
+                    <div class="alert alert-info text-center mb-0" th:if="${isAlreadyReserved}">
+                        <p class="fw-bold" >It look's like you've already reserved this book! Use the button below if you want to cancel the reserve!</p>
+                        <a class="btn btn-dark rounded-2 p-2" 
+                            th:href="@{/books/cancelreserve/{id}(id=${book.id})}"
+                            style="background-color: rgb(103, 75, 29); border-color: rgb(103, 75, 29); width: 10vh;">
+                            Cancel reserve
                         </a>
                     </div>
                     <div class="alert alert-info" th:if="${success != null}" th:text="${success}"></div>

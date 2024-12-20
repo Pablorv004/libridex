@@ -6,9 +6,9 @@ import com.main.libridex.entity.Lending;
 
 public interface LendingService {
     List<Lending> findByBookId(Integer id);
-    boolean createLending(Integer bookId, String userEmail);
+    boolean createLending(Integer bookId);
     void endLending(Integer id);
     List<Lending> getAllLendings();
-    boolean existsInUserLendings(String email, Integer bookId);
+    boolean existsInUserLendings(Integer bookId);
     Lending findBookCurrentLending(Integer id);
 }
