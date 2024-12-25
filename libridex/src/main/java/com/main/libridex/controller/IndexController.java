@@ -36,7 +36,7 @@ public class IndexController {
     @GetMapping("/index")
     public String index(Model model){
         model.addAttribute("latestBooks", bookService.findFirstNSortedByCreatedAt(6));
-        model.addAttribute("mostReservedBooks", bookService.findFirstN(6));
+        model.addAttribute("mostReservedBooks", bookService.findFirstNMostReserved(6));
         model.addAttribute("mostActiveUsers", userService.findFirstN(6));
         accessLogger.accessed("index");
         return INDEX;
