@@ -45,19 +45,25 @@ public class BookController {
     @Qualifier("reservationService")
     private ReservationService reservationService;
 
-    @GetMapping("/details/{id}")
-    public String showBookDetails(@PathVariable int id, Model model) {
-        boolean existsInUserLendings = lendingService.existsInUserLendings(id);
-        boolean isAlreadyReserved = reservationService.isAlreadyReserved(id);
-        BookDTO bookDTO = bookService.findById(id);
-        Lending lending = lendingService.findBookCurrentLending(id);
+    @GetMapping("/details/{bookId}")
+    public String showBookDetails(@PathVariable int bookId, Model model) {
+        boolean isLendByUser = lendingService.isLendByUser(bookId);
+        boolean isReserved = reservationService.isReserved(bookId);
+        boolean isReservedByUser = reservationService.isReservedByUser(bookId);
+        boolean isUserTurn = reservationService.isUserTurn(bookId);
+        BookDTO bookDTO = bookService.findById(bookId);
+        Lending lending = lendingService.findBookCurrentLending(bookId);
 
-        if(existsInUserLendings && lending != null)
+        if(isLendByUser && lending != null)
             model.addAttribute("returnDate", lending.getStart_date().plusWeeks(1));
             
         model.addAttribute("book", bookDTO);
-        model.addAttribute("existsInUserLendings", existsInUserLendings);
-        model.addAttribute("isAlreadyReserved", isAlreadyReserved);
+        model.addAttribute("isReserved", isReserved);
+        model.addAttribute("isReservedByUser", isReservedByUser);
+        model.addAttribute("isLendByUser", isLendByUser);
+        model.addAttribute("isUserTurn", isUserTurn);
+
+        System.out.println(isUserTurn);
 
         return DETAILS;
     }
@@ -67,7 +73,7 @@ public class BookController {
     @GetMapping("/reserve/{bookId}")
     public String reserveBook(@PathVariable int bookId, RedirectAttributes flash) {
 
-        if(!reservationService.isAlreadyReserved(bookId)){
+        if(!reservationService.isReservedByUser(bookId)){
             reservationService.createReservation(bookId);
             flash.addFlashAttribute("success", "Book reserved successfully!");
             return "redirect:/books/catalog";
@@ -98,6 +104,7 @@ public class BookController {
 
         if(lentSuccessfully){
             flash.addFlashAttribute("success", "Book lent successfully!");
+            reservationService.endReservation(bookId);
             return "redirect:/books/catalog";
         }
 

@@ -11,6 +11,8 @@ public interface ReservationService {
     boolean endReservation(Integer id);
     List<ReservationDTO> getAllReservationsDTO();
     List<Reservation> getAllReservations();
-    boolean isAlreadyReserved(Integer bookId);
+    boolean isReserved(Integer bookId);
+    boolean isReservedByUser(Integer bookId);
+    boolean isUserTurn(Integer bookId);
     Reservation findBookCurrentReservation(Integer id);
 }

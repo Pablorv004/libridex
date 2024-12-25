@@ -80,7 +80,7 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    public boolean isAlreadyReserved(Integer bookId) {
+    public boolean isReservedByUser(Integer bookId) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByEmail(email);
 
@@ -92,17 +92,48 @@ public class ReservationServiceImpl implements ReservationService {
         return false;
     }
 
-    // TODO: When calling this method, ensure that the null is controlled (If there's no reserves, it'll return null)
-    @SuppressWarnings("null")
+    @Override
+    public boolean isReserved(Integer bookId) {
+        List<Reservation> reservations = reservationRepository.findByBookId(bookId);
+
+        for(Reservation res : reservations)
+            if(res.getStatus().equalsIgnoreCase("Pending"))
+                return true;
+
+        return false;
+    }
+
+    // This method searchs for the oldest reserve available of a specific book, and then returns it
     @Override
     public Reservation findBookCurrentReservation(Integer bookId) {
         Reservation oldestReservation = null;
 
-        for (Reservation reservation : reservationRepository.findByBookId(bookId))
-            if (reservation.getReservation_date().isBefore(oldestReservation.getReservation_date()) && reservation.getStatus().equalsIgnoreCase("Pending"))
+        for (Reservation reservation : reservationRepository.findByBookId(bookId)) {
+            if (reservation.getStatus().equalsIgnoreCase("Pending") && 
+                (oldestReservation == null || reservation.getReservation_date().isBefore(oldestReservation.getReservation_date()))) {
                 oldestReservation = reservation;
+            }
+        }
 
         return oldestReservation;
+    }
+
+    // This method determines if it's the user's turn to lend the book based on the oldest reservation date of the passed book and the user's reservation
+    // date for that book
+    @Override
+    public boolean isUserTurn(Integer bookId) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByEmail(email);
+        Reservation reservation = findBookCurrentReservation(bookId);
+
+        if(reservation != null){
+            for(Reservation userReservation : user.getReservations()){
+                if(userReservation.getReservation_date().equals(reservation.getReservation_date()) && userReservation.getStatus().equalsIgnoreCase("Pending"))
+                    return true;
+            }
+        }
+
+        return false;
     }
 
     // MODEL MAPPERS
