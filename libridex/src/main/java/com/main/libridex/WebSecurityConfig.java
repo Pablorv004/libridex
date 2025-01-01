@@ -17,7 +17,7 @@ public class WebSecurityConfig {
         @Bean
         public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
                 http.authorizeHttpRequests((requests) -> requests
-                                .requestMatchers("/", "/index","/login/**" ,"/register", "/register/send", "/books/catalog", "/books/details/**", "/about").permitAll()
+                                .requestMatchers("/", "/index","/login/**" ,"/register", "/register/send", "/books/catalog", "/books/details/**", "/about", "/books/search").permitAll()
                                 // Users allowed accesses
                                 // Admin only accesses
                                 .requestMatchers("/admin/**").hasRole("ADMIN")

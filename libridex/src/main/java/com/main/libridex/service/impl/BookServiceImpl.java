@@ -58,6 +58,11 @@ public class BookServiceImpl implements BookService {
         return bookRepository.findAllWithFilters(PageRequest.of(pageNumber, 6, sort), genres, authors);
     }
 
+    @Override
+    public Page<Book> searchBooks(String query, int pageNumber) {
+        return bookRepository.searchByTitleOrAuthor(query, PageRequest.of(pageNumber, 6));
+    }
+
     /**
      * Method to order a map by values in reverse order
      */

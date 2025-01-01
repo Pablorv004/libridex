@@ -27,4 +27,7 @@ public interface BookRepository extends JpaRepository<Book, Serializable> {
 
     @Query("SELECT b FROM Book b WHERE (:genres IS NULL OR b.genre IN :genres) AND (:authors IS NULL OR b.author IN :authors)")
     Page<Book> findAllWithFilters(PageRequest pageRequest, List<String> genres, List<String> authors);
+
+    @Query("SELECT b FROM Book b WHERE LOWER(b.title) LIKE LOWER(CONCAT('%', :query, '%')) OR LOWER(b.author) LIKE LOWER(CONCAT('%', :query, '%'))")
+    Page<Book> searchByTitleOrAuthor(String query, PageRequest pageRequest);
 }

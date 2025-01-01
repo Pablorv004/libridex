@@ -34,4 +34,6 @@ public interface BookService {
     Page<Book> findPaginated(int pageNumber);
 
     Page<Book> findPaginatedWithFilters(int pageNumber, List<String> genres, List<String> authors, String sortBy);
+
+    Page<Book> searchBooks(String query, int pageNumber);
 }

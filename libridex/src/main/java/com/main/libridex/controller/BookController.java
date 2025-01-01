@@ -79,4 +79,27 @@ public class BookController {
         accessLogger.accessed("catalog");
         return CATALOG;
     }
+
+    @GetMapping("/search")
+    public String search(@RequestParam String query,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(required = false) List<String> genres,
+            @RequestParam(required = false) List<String> authors,
+            @RequestParam(defaultValue = "title_asc") String sortBy,
+            Model model) {
+        Page<Book> bookPage = bookService.searchBooks(query, page);
+        Map<String, Integer> genresWithAmount = bookService.findGenresWithAmountByBook();
+        Map<String, Integer> authorsWithAmount = bookService.findAuthorsWithAmountByBook();
+        model.addAttribute("genresWithAmount", genresWithAmount);
+        model.addAttribute("authorsWithAmount", authorsWithAmount);
+        model.addAttribute("books", bookPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", bookPage.getTotalPages());
+        model.addAttribute("query", query);
+        model.addAttribute("genres", genres);
+        model.addAttribute("authors", authors);
+        model.addAttribute("sortBy", sortBy);
+        accessLogger.accessed("search");
+        return CATALOG;
+    }
 }
