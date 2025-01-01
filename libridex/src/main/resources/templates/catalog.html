@@ -56,36 +56,36 @@
                 <div class="d-flex justify-content-center mt-4">
                     <ul class="pagination">
                         <li class="page-item">
-                            <a class="page-link" th:href="@{/books/catalog(page=0)}"
+                            <a class="page-link" th:href="@{/books/catalog(page=0, sortBy=${sortBy})}"
                                 th:classappend="${currentPage == 0} ? 'disabled'">&laquo;</a>
                         </li>
                         <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                            <a class="page-link" th:href="@{/books/catalog(page=${currentPage - 1})}">&lt;</a>
+                            <a class="page-link" th:href="@{/books/catalog(page=${currentPage - 1}, sortBy=${sortBy})}">&lt;</a>
                         </li>
                         <!--If there's too little pages-->
                         <li class="page-item" th:if="${totalPages <= 5}" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
                             th:classappend="${i == currentPage} ? 'active'">
-                            <a class="page-link" th:href="@{/books/catalog(page=${i})}" th:text="${i + 1}">1</a>
+                            <a class="page-link" th:href="@{/books/catalog(page=${i}, sortBy=${sortBy})}" th:text="${i + 1}">1</a>
                         <!--If close to start-->
                         <li class="page-item" th:if="${currentPage <= 1 and totalPages > 5}" th:each="i : ${#numbers.sequence(0, 4)}"
                             th:classappend="${i == currentPage} ? 'active'">
-                            <a class="page-link" th:href="@{/books/catalog(page=${i})}" th:text="${i + 1}">1</a>
+                            <a class="page-link" th:href="@{/books/catalog(page=${i}, sortBy=${sortBy})}" th:text="${i + 1}">1</a>
                         </li>
                         <!--If in the middle-->
                         <li class="page-item" th:if="${currentPage > 1 and currentPage < totalPages - 2 and totalPages > 5}" th:each="i : ${#numbers.sequence(currentPage - 2, currentPage + 2)}"
                             th:classappend="${i == currentPage} ? 'active'">
-                            <a class="page-link" th:href="@{/books/catalog(page=${i})}" th:text="${i + 1}">1</a>
+                            <a class="page-link" th:href="@{/books/catalog(page=${i}, sortBy=${sortBy})}" th:text="${i + 1}">1</a>
                         </li>
                         <!--If close to end-->
                         <li class="page-item" th:if="${currentPage >= totalPages - 2 and totalPages > 5}" th:each="i : ${#numbers.sequence(totalPages - 5, totalPages - 1)}"
                             th:classappend="${i == currentPage} ? 'active'">
-                            <a class="page-link" th:href="@{/books/catalog(page=${i})}" th:text="${i + 1}">1</a>
+                            <a class="page-link" th:href="@{/books/catalog(page=${i}, sortBy=${sortBy})}" th:text="${i + 1}">1</a>
                         </li>
                         <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
-                            <a class="page-link" th:href="@{/books/catalog(page=${currentPage + 1})}">&gt;</a>
+                            <a class="page-link" th:href="@{/books/catalog(page=${currentPage + 1}, sortBy=${sortBy})}">&gt;</a>
                         </li>
                         <li class="page-item">
-                            <a class="page-link" th:href="@{/books/catalog(page=${totalPages - 1})}"
+                            <a class="page-link" th:href="@{/books/catalog(page=${totalPages - 1}, sortBy=${sortBy})}"
                                 th:classappend="${currentPage == totalPages - 1} ? 'disabled'">&raquo;</a>
                         </li>
                     </ul>
@@ -94,14 +94,13 @@
             <div class="col-md-4 mb-4 ms-4">
                 <div class="p-3 border-start">
                     <h5>Sort By</h5>
-                    <select class="form-select mb-3">
-                        <option value="title_asc">Title (A-Z)</option>
-                        <option value="publishingDate_desc">Publishing Date (Newest to Oldest)</option>
-                        <option value="author_asc">Author (A-Z)</option>
-                        <option value="upload_date_desc">Upload Date (Newest to Oldest)</option>
-                        <option value="reservations_desc">Most Reservations (Most to Least)</option>
-                        <option value="genre_asc">Genre (A-Z)</option>
-                        <option value="availability_asc">Availability (Less queue to most queue)</option>
+                    <select class="form-select mb-3" id="sortBy" onchange="applyFilters()">
+                        <option value="title_asc" th:selected="${sortBy == 'title_asc'}">Title (A-Z)</option>
+                        <option value="author_asc" th:selected="${sortBy == 'author_asc'}">Author (A-Z)</option>
+                        <option value="genre_asc" th:selected="${sortBy == 'genre_asc'}">Genre (A-Z)</option>
+                        <option value="publishingDate_desc" th:selected="${sortBy == 'publishingDate_desc'}">Publishing Date (Newest to Oldest)</option>
+                        <option value="upload_date_desc" th:selected="${sortBy == 'upload_date_desc'}">Upload Date (Newest to Oldest)</option>
+                        <option value="reservations_desc" th:selected="${sortBy == 'reservations_desc'}">Most Reservations (Most to Least)</option>
                     </select>
                     <h5 class="d-flex">Filters</h5>
                     <div class="d-flex mb-3">
@@ -142,9 +141,11 @@
     function applyFilters() {
         const genres = Array.from(document.querySelectorAll('.form-check-input[name="genres"]:checked')).map(input => input.value);
         const authors = Array.from(document.querySelectorAll('.form-check-input[name="authors"]:checked')).map(input => input.value);
+        const sortBy = document.getElementById('sortBy').value;
         const params = new URLSearchParams();
         if (genres.length > 0) genres.forEach(genre => params.append('genres', genre));
         if (authors.length > 0) authors.forEach(author => params.append('authors', author));
+        if (sortBy) params.append('sortBy', sortBy);
         window.location.href = `/books/catalog?${params.toString()}`;
     }
 
@@ -152,6 +153,7 @@
         const params = new URLSearchParams(window.location.search);
         const genres = params.getAll('genres');
         const authors = params.getAll('authors');
+        const sortBy = params.get('sortBy');
         genres.forEach(genre => {
             const checkbox = document.querySelector(`.form-check-input[name="genres"][value="${genre}"]`);
             if (checkbox) checkbox.checked = true;
@@ -160,6 +162,9 @@
             const checkbox = document.querySelector(`.form-check-input[name="authors"][value="${author}"]`);
             if (checkbox) checkbox.checked = true;
         });
+        if (sortBy) {
+            document.getElementById('sortBy').value = sortBy;
+        }
     }
 
     document.addEventListener('DOMContentLoaded', setFiltersFromURL);

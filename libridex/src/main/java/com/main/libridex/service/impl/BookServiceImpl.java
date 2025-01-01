@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
@@ -44,8 +45,17 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Page<Book> findPaginatedWithFilters(int pageNumber, List<String> genres, List<String> authors) {
-        return bookRepository.findAllWithFilters(PageRequest.of(pageNumber, 6), genres, authors);
+    public Page<Book> findPaginatedWithFilters(int pageNumber, List<String> genres, List<String> authors, String sortBy) {
+        Sort sort = switch (sortBy) {
+            case "title_asc" -> Sort.by("title").ascending();
+            case "author_asc" -> Sort.by("author").ascending();
+            case "genre_asc" -> Sort.by("genre").ascending();
+            case "publishingDate_desc" -> Sort.by("publishingDate").descending();
+            case "upload_date_desc" -> Sort.by("createdAt").descending();
+            case "reservations_desc" -> Sort.by("reservations.size").descending();
+            default -> Sort.by("title").ascending();
+        };
+        return bookRepository.findAllWithFilters(PageRequest.of(pageNumber, 6, sort), genres, authors);
     }
 
     /**

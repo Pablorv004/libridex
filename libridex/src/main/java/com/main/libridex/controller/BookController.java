@@ -65,8 +65,9 @@ public class BookController {
     public String catalog(@RequestParam(defaultValue = "0") int page,
             @RequestParam(required = false) List<String> genres,
             @RequestParam(required = false) List<String> authors,
+            @RequestParam(defaultValue = "title_asc") String sortBy,
             Model model) {
-        Page<Book> bookPage = bookService.findPaginatedWithFilters(page, genres, authors);
+        Page<Book> bookPage = bookService.findPaginatedWithFilters(page, genres, authors, sortBy);
         Map<String, Integer> genresWithAmount = bookService.findGenresWithAmountByBook();
         Map<String, Integer> authorsWithAmount = bookService.findAuthorsWithAmountByBook();
         model.addAttribute("genresWithAmount", genresWithAmount);
@@ -74,6 +75,7 @@ public class BookController {
         model.addAttribute("books", bookPage.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", bookPage.getTotalPages());
+        model.addAttribute("sortBy", sortBy);
         accessLogger.accessed("catalog");
         return CATALOG;
     }
