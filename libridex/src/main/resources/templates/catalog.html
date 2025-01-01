@@ -27,7 +27,10 @@
         <hr class="border-black border-2">
         <div class="d-flex">
             <div class="flex-grow-1">
-                <div class="row d-flex flex-wrap justify-content-center">
+                <div class="row d-flex flex-wrap justify-content-center mt-5">
+                    <div th:if="${books.isEmpty()}" class="text-center display-4">
+                        <p>No books match filter criteria.</p>
+                    </div>
                     <div class="col-md-4 mb-4" th:each="book : ${books}">
                         <a th:href="@{/books/details/{id}(id=${book.id})}">
                             <div class="card card-hover">
@@ -57,13 +60,13 @@
                     <ul class="pagination">
                         <li class="page-item">
                             <a class="page-link" th:href="@{/books/catalog(page=0, sortBy=${sortBy})}"
-                                th:classappend="${currentPage == 0} ? 'disabled'">&laquo;</a>
+                                th:classappend="${currentPage == 0} ? 'disabled'" th:if= "${totalPages >= 1}">&laquo;</a>
                         </li>
                         <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                            <a class="page-link" th:href="@{/books/catalog(page=${currentPage - 1}, sortBy=${sortBy})}">&lt;</a>
+                            <a class="page-link" th:href="@{/books/catalog(page=${currentPage - 1}, sortBy=${sortBy})}" th:if= "${totalPages >= 1}">&lt;</a>
                         </li>
                         <!--If there's too little pages-->
-                        <li class="page-item" th:if="${totalPages <= 5}" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                        <li class="page-item" th:if="${totalPages <= 5 and totalPages >= 1}" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
                             th:classappend="${i == currentPage} ? 'active'">
                             <a class="page-link" th:href="@{/books/catalog(page=${i}, sortBy=${sortBy})}" th:text="${i + 1}">1</a>
                         <!--If close to start-->
@@ -81,12 +84,11 @@
                             th:classappend="${i == currentPage} ? 'active'">
                             <a class="page-link" th:href="@{/books/catalog(page=${i}, sortBy=${sortBy})}" th:text="${i + 1}">1</a>
                         </li>
-                        <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                        <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'" th:if= "${totalPages >= 1}">
                             <a class="page-link" th:href="@{/books/catalog(page=${currentPage + 1}, sortBy=${sortBy})}">&gt;</a>
                         </li>
-                        <li class="page-item">
-                            <a class="page-link" th:href="@{/books/catalog(page=${totalPages - 1}, sortBy=${sortBy})}"
-                                th:classappend="${currentPage == totalPages - 1} ? 'disabled'">&raquo;</a>
+                        <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'" th:if= "${totalPages >= 1}">
+                            <a class="page-link" th:href="@{/books/catalog(page=${totalPages - 1}, sortBy=${sortBy})}">&raquo;</a>
                         </li>
                     </ul>
                 </div>
@@ -125,6 +127,7 @@
                                 <label class="form-check-label" th:for="'author_' + ${entry.key}" th:text="${entry.key} + ' (' + ${entry.value} + ')'"></label>
                             </div>
                         </div>
+                    
                     </div>
                     
                 </div>
