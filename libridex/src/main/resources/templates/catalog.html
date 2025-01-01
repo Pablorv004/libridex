@@ -104,57 +104,26 @@
                         <option value="availability_asc">Availability (Less queue to most queue)</option>
                     </select>
                     <h5 class="d-flex">Filters</h5>
-                    <div class="d-flex justify-content-end mb-3">
+                    <div class="d-flex mb-3">
                         <button type="button" class="btn btn-secondary" onclick="resetFilters()">Reset</button>
+                        <button type="button" class="btn btn-primary ms-2" onclick="applyFilters()">Apply</button>
                     </div>
                     <div class="mb-3">
-                        <label>Genre</label>
+                        <label>Genres</label>
                         <div class="form-check" style="max-height: 150px; overflow-y: auto;">
-                            <div class="form-check" th:each= "entry:${genresWithAmount}">
-                                <input class="form-check-input" type="checkbox" value="genre1" id="genre1">
-                                <label class="form-check-label" for="genre1" th:text="${entry.key} + ' (' + ${entry.value} + ')'">
-                                </label>
+                            <div class="form-check" th:each="entry : ${genresWithAmount}">
+                                <input class="form-check-input" type="checkbox" name="genres" th:value="${entry.key}" th:id="'genre_' + ${entry.key}">
+                                <label class="form-check-label" th:for="'genre_' + ${entry.key}" th:text="${entry.key} + ' (' + ${entry.value} + ')'"></label>
                             </div>
                         </div>
                     </div>
-                    <div class="mb-3">
-                        <label>Upload Date</label>
-                        <div class="form-check" style="max-height: 150px; overflow-y: auto;">
-                            <input class="form-check-input" type="radio" name="uploadDate" id="lessThanWeek" value="lessThanWeek">
-                            <label class="form-check-label" for="lessThanWeek">
-                                Less than a week ago
-                            </label>
-                        </div>
-                        <div class="form-check" style="max-height: 150px; overflow-y: auto;">
-                            <input class="form-check-input" type="radio" name="uploadDate" id="oneMonth" value="oneMonth">
-                            <label class="form-check-label" for="oneMonth">
-                                Up To One Month Ago
-                            </label>
-                        </div>
-                        <div class="form-check" style="max-height: 150px; overflow-y: auto;">
-                            <input class="form-check-input" type="radio" name="uploadDate" id="thisYear" value="thisYear">
-                            <label class="form-check-label" for="thisYear">
-                                Up To This Year
-                            </label>
-                        </div>
-                        <div class="form-check" style="max-height: 150px; overflow-y: auto;">
-                            <input class="form-check-input" type="radio" name="uploadDate" id="moreThanYear" value="moreThanYear">
-                            <label class="form-check-label" for="moreThanYear">
-                                More than a year ago
-                            </label>
-                        </div>
-                    </div>
-                    <div class="mb-3 form-check">
-                        <input type="checkbox" class="form-check-input" id="isLent" checked>
-                        <label class="form-check-label" for="isLent">Is Available</label>
-                    </div>
+                    
                     <div class="mb-3">
                         <label>Authors</label>
                         <div class="form-check" style="max-height: 150px; overflow-y: auto;">
-                            <div class="form-check" th:each= "entry:${authorsWithAmount}">
-                                <input class="form-check-input" type="checkbox" value="author1" id="author1">
-                                <label class="form-check-label" for="author1" th:text="${entry.key} + ' (' + ${entry.value} + ')'">
-                                </label>
+                            <div class="form-check" th:each="entry : ${authorsWithAmount}">
+                                <input class="form-check-input" type="checkbox" name="authors" th:value="${entry.key}" th:id="'author_' + ${entry.key}">
+                                <label class="form-check-label" th:for="'author_' + ${entry.key}" th:text="${entry.key} + ' (' + ${entry.value} + ')'"></label>
                             </div>
                         </div>
                     </div>
@@ -167,8 +136,32 @@
 <script>
     function resetFilters() {
         document.querySelectorAll('.form-check-input').forEach(input => input.checked = false);
-        document.querySelectorAll('.form-check-input[type="radio"]').forEach(input => input.checked = false);
-        document.getElementById('isLent').checked = true;
+        window.location.href = '/books/catalog?page=0';
     }
+
+    function applyFilters() {
+        const genres = Array.from(document.querySelectorAll('.form-check-input[name="genres"]:checked')).map(input => input.value);
+        const authors = Array.from(document.querySelectorAll('.form-check-input[name="authors"]:checked')).map(input => input.value);
+        const params = new URLSearchParams();
+        if (genres.length > 0) genres.forEach(genre => params.append('genres', genre));
+        if (authors.length > 0) authors.forEach(author => params.append('authors', author));
+        window.location.href = `/books/catalog?${params.toString()}`;
+    }
+
+    function setFiltersFromURL() {
+        const params = new URLSearchParams(window.location.search);
+        const genres = params.getAll('genres');
+        const authors = params.getAll('authors');
+        genres.forEach(genre => {
+            const checkbox = document.querySelector(`.form-check-input[name="genres"][value="${genre}"]`);
+            if (checkbox) checkbox.checked = true;
+        });
+        authors.forEach(author => {
+            const checkbox = document.querySelector(`.form-check-input[name="authors"][value="${author}"]`);
+            if (checkbox) checkbox.checked = true;
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', setFiltersFromURL);
 </script>
 </html>

@@ -1,5 +1,6 @@
 package com.main.libridex.controller;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,6 @@ import com.main.libridex.entity.Book;
 import com.main.libridex.model.BookDTO;
 import com.main.libridex.service.BookService;
 import com.main.libridex.service.LendingService;
-
 
 @Controller
 @RequestMapping("/books")
@@ -60,11 +60,13 @@ public class BookController {
         flash.addFlashAttribute("success", "Book returned successfully!");
         return "redirect:/books/catalog";
     }
-    
 
     @GetMapping("/catalog")
-    public String catalog(@RequestParam(defaultValue = "0") int page, Model model){
-        Page<Book> bookPage = bookService.findPaginated(page);
+    public String catalog(@RequestParam(defaultValue = "0") int page,
+            @RequestParam(required = false) List<String> genres,
+            @RequestParam(required = false) List<String> authors,
+            Model model) {
+        Page<Book> bookPage = bookService.findPaginatedWithFilters(page, genres, authors);
         Map<String, Integer> genresWithAmount = bookService.findGenresWithAmountByBook();
         Map<String, Integer> authorsWithAmount = bookService.findAuthorsWithAmountByBook();
         model.addAttribute("genresWithAmount", genresWithAmount);

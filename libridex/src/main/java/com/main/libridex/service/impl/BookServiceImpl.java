@@ -42,6 +42,12 @@ public class BookServiceImpl implements BookService {
     public Page<Book> findPaginated(int pageNumber) {
         return bookRepository.findAll(PageRequest.of(pageNumber, 6));
     }
+
+    @Override
+    public Page<Book> findPaginatedWithFilters(int pageNumber, List<String> genres, List<String> authors) {
+        return bookRepository.findAllWithFilters(PageRequest.of(pageNumber, 6), genres, authors);
+    }
+
     /**
      * Method to order a map by values in reverse order
      */

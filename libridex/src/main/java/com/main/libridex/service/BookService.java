@@ -32,4 +32,6 @@ public interface BookService {
     void setImage(BookDTO bookDTO, MultipartFile imageFile);
 
     Page<Book> findPaginated(int pageNumber);
+
+    Page<Book> findPaginatedWithFilters(int pageNumber, List<String> genres, List<String> authors);
 }
