@@ -17,9 +17,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.main.libridex.components.logger.AccessLogger;
 import com.main.libridex.entity.Book;
+import com.main.libridex.entity.Lending;
 import com.main.libridex.model.BookDTO;
 import com.main.libridex.service.BookService;
 import com.main.libridex.service.LendingService;
+import com.main.libridex.service.ReservationService;
 
 @Controller
 @RequestMapping("/books")
@@ -39,27 +41,86 @@ public class BookController {
     @Qualifier("lendingService")
     private LendingService lendingService;
 
-    @GetMapping("/details/{id}")
-    public String showBookDetails(@PathVariable int id, Model model) {
-        BookDTO bookDTO = bookService.findById(id);
+    @Autowired
+    @Qualifier("reservationService")
+    private ReservationService reservationService;
+
+    @GetMapping("/details/{bookId}")
+    public String showBookDetails(@PathVariable int bookId, Model model) {
+        boolean isLendByUser = lendingService.isLendByUser(bookId);
+        boolean isReserved = reservationService.isReserved(bookId);
+        boolean isReservedByUser = reservationService.isReservedByUser(bookId);
+        boolean isUserTurn = reservationService.isUserTurn(bookId);
+        BookDTO bookDTO = bookService.findById(bookId);
+        Lending lending = lendingService.findBookCurrentLending(bookId);
+
+        if(isLendByUser && lending != null)
+            model.addAttribute("returnDate", lending.getStart_date().plusWeeks(1));
+            
         model.addAttribute("book", bookDTO);
+        model.addAttribute("isReserved", isReserved);
+        model.addAttribute("isReservedByUser", isReservedByUser);
+        model.addAttribute("isLendByUser", isLendByUser);
+        model.addAttribute("isUserTurn", isUserTurn);
+
+        System.out.println(isUserTurn);
+
         return DETAILS;
     }
 
+    // RESERVATION ENDPOINTS
+
+    @GetMapping("/reserve/{bookId}")
+    public String reserveBook(@PathVariable int bookId, RedirectAttributes flash) {
+
+        if(!reservationService.isReservedByUser(bookId)){
+            reservationService.createReservation(bookId);
+            flash.addFlashAttribute("success", "Book reserved successfully!");
+            return "redirect:/books/catalog";
+        }
+
+        flash.addFlashAttribute("error", "You've already reserved this book!");
+        return "redirect:/books/details/" + bookId;
+    }
+    
+    @GetMapping("/cancelreserve/{bookId}")
+    public String cancelReserve(@PathVariable int bookId, RedirectAttributes flash) {
+
+        if(reservationService.endReservation(bookId)){
+            flash.addFlashAttribute("success", "Book reserve cancelled successfully!");
+            return "redirect:/books/catalog";
+        }
+
+        flash.addFlashAttribute("error", "Something went wrong! Plese contact an administrator.");
+        return "redirect:/books/details/" + bookId;
+    }
+
+
+    // LENDING ENDPOINTS
+
     @GetMapping("/lend/{bookId}")
     public String lendBook(@PathVariable int bookId, RedirectAttributes flash) {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        lendingService.save(bookId, email);
-        flash.addFlashAttribute("success", "Book lent successfully!");
-        return "redirect:/books/catalog";
+        boolean lentSuccessfully = lendingService.createLending(bookId);
+
+        if(lentSuccessfully){
+            flash.addFlashAttribute("success", "Book lent successfully!");
+            reservationService.endReservation(bookId);
+            return "redirect:/books/catalog";
+        }
+
+        flash.addFlashAttribute("error", "You have too many lendings! Return a book first, please.");
+        return "redirect:/books/details/" + bookId;
     }
 
     @GetMapping("/return/{bookId}")
     public String returnBook(@PathVariable int bookId, RedirectAttributes flash) {
-        lendingService.delete(bookId);
+        lendingService.endLending(bookId);
         flash.addFlashAttribute("success", "Book returned successfully!");
         return "redirect:/books/catalog";
     }
+
+
+    // CATALOG ENDPOINT
 
     @GetMapping("/catalog")
     public String catalog(@RequestParam(defaultValue = "0") int page,

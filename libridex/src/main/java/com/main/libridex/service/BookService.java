@@ -17,6 +17,10 @@ public interface BookService {
 
     Page<Book> findFirstNSortedByCreatedAt(int elementsNumber);
 
+    List<Book> findFirstNMostReserved(int elementsNumber);
+
+    List<Book> findMostReservedBooks();
+
     BookDTO findById(Integer id);
 
     Book save(BookDTO bookDTO);

@@ -27,6 +27,8 @@
         <hr class="border-black border-2">
         <div class="d-flex">
             <div class="flex-grow-1">
+                <div class="alert alert-danger" th:if= "${error != null}" th:text="${error}"></div>
+                <div class="alert alert-info" th:if="${success != null}" th:text="${success}"></div>
                 <div class="row d-flex flex-wrap justify-content-center mt-5">
                     <div th:if="${books.isEmpty()}" class="text-center display-4">
                         <p>No books match filter criteria.</p>
