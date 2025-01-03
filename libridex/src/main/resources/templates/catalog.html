@@ -110,7 +110,6 @@
                         <option value="genre_asc" th:selected="${sortBy == 'genre_asc'}">Genre (A-Z)</option>
                         <option value="publishingDate_desc" th:selected="${sortBy == 'publishingDate_desc'}">Publishing Date (Newest to Oldest)</option>
                         <option value="upload_date_desc" th:selected="${sortBy == 'upload_date_desc'}">Upload Date (Newest to Oldest)</option>
-                        <option value="reservations_desc" th:selected="${sortBy == 'reservations_desc'}">Most Reservations (Most to Least)</option>
                     </select>
                     <h5 class="d-flex">Filters</h5>
                     <div class="d-flex mb-3">
@@ -137,7 +136,25 @@
                         </div>
                     
                     </div>
-                    
+                    <div class="mb-3">
+                        <label>Publishing Date</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="publishingDateRange" value="all" id="publishingDate_all" checked>
+                            <label class="form-check-label" for="publishingDate_all">All</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="publishingDateRange" value="week" id="publishingDate_week">
+                            <label class="form-check-label" for="publishingDate_week">Less than a week old</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="publishingDateRange" value="month" id="publishingDate_month">
+                            <label class="form-check-label" for="publishingDate_month">Less than a month old</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="publishingDateRange" value="year" id="publishingDate_year">
+                            <label class="form-check-label" for="publishingDate_year">Less than a year old</label>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -146,6 +163,7 @@
 <script>
     function resetFilters() {
         document.querySelectorAll('.form-check-input').forEach(input => input.checked = false);
+        document.querySelector('input[name="publishingDateRange"][value="all"]').checked = true;
         window.location.href = '/books/catalog?page=0';
     }
 
@@ -153,10 +171,12 @@
         const genres = Array.from(document.querySelectorAll('.form-check-input[name="genres"]:checked')).map(input => input.value);
         const authors = Array.from(document.querySelectorAll('.form-check-input[name="authors"]:checked')).map(input => input.value);
         const sortBy = document.getElementById('sortBy').value;
+        const publishingDateRange = document.querySelector('input[name="publishingDateRange"]:checked').value;
         const params = new URLSearchParams();
         if (genres.length > 0) genres.forEach(genre => params.append('genres', genre));
         if (authors.length > 0) authors.forEach(author => params.append('authors', author));
         if (sortBy) params.append('sortBy', sortBy);
+        if (publishingDateRange) params.append('publishingDateRange', publishingDateRange);
         window.location.href = `/books/catalog?${params.toString()}`;
     }
 
@@ -165,6 +185,7 @@
         const genres = params.getAll('genres');
         const authors = params.getAll('authors');
         const sortBy = params.get('sortBy');
+        const publishingDateRange = params.get('publishingDateRange') || 'all';
         genres.forEach(genre => {
             const checkbox = document.querySelector(`.form-check-input[name="genres"][value="${genre}"]`);
             if (checkbox) checkbox.checked = true;
@@ -176,6 +197,7 @@
         if (sortBy) {
             document.getElementById('sortBy').value = sortBy;
         }
+        document.querySelector(`input[name="publishingDateRange"][value="${publishingDateRange}"]`).checked = true;
     }
 
     document.addEventListener('DOMContentLoaded', setFiltersFromURL);

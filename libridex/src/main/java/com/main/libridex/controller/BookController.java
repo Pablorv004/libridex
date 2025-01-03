@@ -6,7 +6,6 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -127,8 +126,9 @@ public class BookController {
             @RequestParam(required = false) List<String> genres,
             @RequestParam(required = false) List<String> authors,
             @RequestParam(defaultValue = "title_asc") String sortBy,
+            @RequestParam(defaultValue = "all") String publishingDateRange,
             Model model) {
-        Page<Book> bookPage = bookService.findPaginatedWithFilters(page, genres, authors, sortBy);
+        Page<Book> bookPage = bookService.findPaginatedWithFilters(page, genres, authors, sortBy, publishingDateRange);
         Map<String, Integer> genresWithAmount = bookService.findGenresWithAmountByBook();
         Map<String, Integer> authorsWithAmount = bookService.findAuthorsWithAmountByBook();
         model.addAttribute("genresWithAmount", genresWithAmount);
@@ -137,6 +137,7 @@ public class BookController {
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", bookPage.getTotalPages());
         model.addAttribute("sortBy", sortBy);
+        model.addAttribute("publishingDateRange", publishingDateRange);
         accessLogger.accessed("catalog");
         return CATALOG;
     }

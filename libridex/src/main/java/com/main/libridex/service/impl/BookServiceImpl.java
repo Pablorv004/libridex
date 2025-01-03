@@ -1,5 +1,6 @@
 package com.main.libridex.service.impl;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -52,17 +53,24 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Page<Book> findPaginatedWithFilters(int pageNumber, List<String> genres, List<String> authors, String sortBy) {
+    public Page<Book> findPaginatedWithFilters(int pageNumber, List<String> genres, List<String> authors,
+            String sortBy, String publishingDateRange) {
         Sort sort = switch (sortBy) {
             case "title_asc" -> Sort.by("title").ascending();
             case "author_asc" -> Sort.by("author").ascending();
             case "genre_asc" -> Sort.by("genre").ascending();
             case "publishingDate_desc" -> Sort.by("publishingDate").descending();
             case "upload_date_desc" -> Sort.by("createdAt").descending();
-            case "reservations_desc" -> Sort.by("reservations.size").descending();
             default -> Sort.by("title").ascending();
         };
-        return bookRepository.findAllWithFilters(PageRequest.of(pageNumber, 6, sort), genres, authors);
+        LocalDate now = LocalDate.now();
+        LocalDate startDate = switch (publishingDateRange) {
+            case "week" -> now.minusWeeks(1);
+            case "month" -> now.minusMonths(1);
+            case "year" -> now.minusYears(1);
+            default -> null;
+        };
+        return bookRepository.findAllWithFilters(PageRequest.of(pageNumber, 6, sort), genres, authors, startDate);
     }
 
     @Override
@@ -124,7 +132,6 @@ public class BookServiceImpl implements BookService {
 
         return mostReservedBooks;
     }
-
     /**
      * Method to order a map by values in reverse order
      */
