@@ -33,7 +33,7 @@
                         <p>No reservations found.</p>
                     </div>
                     <div class="col-md-6 mb-4" th:each="reservation : ${reservations}">
-                        <a th:href="@{/books/details/{id}(id=${reservation.book.id})}">
+                        <a th:href="@{/books/details/{id}(id=${reservation.book.id})}" th:if= "${reservation.status != 'Ended'}">
                             <div class="card card-hover">
                                 <img th:src="${reservation.book.image}" alt="Book Cover" class="pt-3 mx-auto d-block"
                                     style="width: 15vh; height: 17vh;">
