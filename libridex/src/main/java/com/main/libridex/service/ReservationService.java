@@ -15,4 +15,5 @@ public interface ReservationService {
     boolean isReservedByUser(Integer bookId);
     boolean isUserTurn(Integer bookId);
     Reservation findBookCurrentReservation(Integer id);
+    List<Reservation> findByUserId(Integer userId);
 }

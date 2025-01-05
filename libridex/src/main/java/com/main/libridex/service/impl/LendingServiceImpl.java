@@ -121,6 +121,11 @@ public class LendingServiceImpl implements LendingService {
         return lendings;
     }
 
+    @Override
+    public List<Lending> findByUserId(Integer userId) {
+        return lendingRepository.findByUserId(userId);
+    }
+
     // MODEL MAPPERS
 
     public Lending toEntity(LendingDTO dto) {

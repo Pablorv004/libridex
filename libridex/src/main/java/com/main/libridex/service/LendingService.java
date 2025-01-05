@@ -13,4 +13,5 @@ public interface LendingService {
     int countUserActiveLendings(User user, int bookId);
     boolean isLendByUser(Integer bookId);
     Lending findBookCurrentLending(Integer id);
+    List<Lending> findByUserId(Integer userId);
 }

@@ -119,7 +119,7 @@ public class BookController {
     }
 
 
-    // CATALOG ENDPOINT
+    // CATALOG ENDPOINTS
 
     @GetMapping("/catalog")
     public String catalog(@RequestParam(defaultValue = "0") int page,
