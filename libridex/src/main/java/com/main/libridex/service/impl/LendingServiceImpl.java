@@ -126,6 +126,11 @@ public class LendingServiceImpl implements LendingService {
         return lendingRepository.findByUserId(userId);
     }
 
+    @Override
+    public List<Lending> findByUserIdAndEndDateIsNull(Integer userId) {
+        return lendingRepository.findByUserIdAndEndDateIsNull(userId);
+    }
+
     // MODEL MAPPERS
 
     public Lending toEntity(LendingDTO dto) {

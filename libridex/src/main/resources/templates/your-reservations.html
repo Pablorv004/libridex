@@ -65,7 +65,7 @@
                         <p>No lendings found.</p>
                     </div>
                     <div class="col-md-6 mb-4" th:each="lending : ${lendings}">
-                        <a th:href="@{/books/details/{id}(id=${lending.book.id})}" th:if="${#dates.isAfterOrEqual(lending.endDate, #dates.createNow())}">
+                        <a th:href="@{/books/details/{id}(id=${lending.book.id})}">
                             <div class="card card-hover">
                                 <img th:src="${lending.book.image}" alt="Book Cover" class="pt-3 mx-auto d-block"
                                     style="width: 15vh; height: 17vh;">

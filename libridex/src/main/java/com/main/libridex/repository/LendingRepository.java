@@ -13,4 +13,5 @@ public interface LendingRepository extends JpaRepository<Lending,Serializable>{
     Lending findById(Integer id);
     List<Lending> findByBookId(Integer id);
     List<Lending> findByUserId(Integer id);
+    List<Lending> findByUserIdAndEndDateIsNull(Integer id);
 }

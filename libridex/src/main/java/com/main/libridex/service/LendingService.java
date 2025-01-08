@@ -14,4 +14,5 @@ public interface LendingService {
     boolean isLendByUser(Integer bookId);
     Lending findBookCurrentLending(Integer id);
     List<Lending> findByUserId(Integer userId);
+    List<Lending> findByUserIdAndEndDateIsNull(Integer userId);
 }
