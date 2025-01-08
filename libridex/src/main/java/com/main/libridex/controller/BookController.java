@@ -6,6 +6,8 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +21,7 @@ import com.main.libridex.entity.Book;
 import com.main.libridex.entity.Lending;
 import com.main.libridex.model.BookDTO;
 import com.main.libridex.service.BookService;
+import com.main.libridex.service.EmailService;
 import com.main.libridex.service.LendingService;
 import com.main.libridex.service.ReservationService;
 
@@ -44,6 +47,10 @@ public class BookController {
     @Qualifier("reservationService")
     private ReservationService reservationService;
 
+    @Autowired
+    @Qualifier("emailService")
+    private EmailService emailService;
+    
     @GetMapping("/details/{bookId}")
     public String showBookDetails(@PathVariable int bookId, Model model) {
         boolean isLendByUser = lendingService.isLendByUser(bookId);
@@ -54,7 +61,7 @@ public class BookController {
         Lending lending = lendingService.findBookCurrentLending(bookId);
 
         if(isLendByUser && lending != null)
-            model.addAttribute("returnDate", lending.getStart_date().plusWeeks(1));
+            model.addAttribute("returnDate", lending.getStartDate().plusWeeks(1));
             
         model.addAttribute("book", bookDTO);
         model.addAttribute("isReserved", isReserved);
@@ -114,6 +121,7 @@ public class BookController {
     @GetMapping("/return/{bookId}")
     public String returnBook(@PathVariable int bookId, RedirectAttributes flash) {
         lendingService.endLending(bookId);
+        emailService.sendEmailWithImage(reservationService.findUserCurrentReservation(bookId).getEmail(), "Book Reservation Availability", "", bookService.findById(bookId).getTitle(), bookService.findById(bookId).getImage());
         flash.addFlashAttribute("success", "Book returned successfully!");
         return "redirect:/books/catalog";
     }
