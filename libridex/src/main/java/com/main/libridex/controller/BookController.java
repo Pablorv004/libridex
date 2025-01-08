@@ -110,7 +110,6 @@ public class BookController {
 
         if(lentSuccessfully){
             flash.addFlashAttribute("success", "Book lent successfully!");
-            emailService.sendEmailWithImage(((UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername(), "Book Successfully Lent", "", bookService.findById(bookId).getTitle(), bookService.findById(bookId).getImage());
             reservationService.endReservation(bookId);
             return "redirect:/books/catalog";
         }
@@ -122,6 +121,7 @@ public class BookController {
     @GetMapping("/return/{bookId}")
     public String returnBook(@PathVariable int bookId, RedirectAttributes flash) {
         lendingService.endLending(bookId);
+        emailService.sendEmailWithImage(reservationService.findUserCurrentReservation(bookId).getEmail(), "Book Reservation Availability", "", bookService.findById(bookId).getTitle(), bookService.findById(bookId).getImage());
         flash.addFlashAttribute("success", "Book returned successfully!");
         return "redirect:/books/catalog";
     }

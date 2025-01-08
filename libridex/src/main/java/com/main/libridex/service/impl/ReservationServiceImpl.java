@@ -80,6 +80,12 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
+    public User findUserCurrentReservation(Integer bookId) {
+        Reservation reservation = findBookCurrentReservation(bookId);
+        return reservation != null ? reservation.getUser() : null;
+    }
+
+    @Override
     public boolean isReservedByUser(Integer bookId) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByEmail(email);

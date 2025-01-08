@@ -1,6 +1,6 @@
 package com.main.libridex.model;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import com.main.libridex.entity.Book;
 import com.main.libridex.entity.User;
@@ -19,7 +19,7 @@ import lombok.ToString;
 public class ReservationDTO {
     private Integer id;
 
-    private LocalDate reservationDate;
+    private LocalDateTime reservationDate;
 
     User user;
 

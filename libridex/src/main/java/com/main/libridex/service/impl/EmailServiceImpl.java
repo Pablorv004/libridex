@@ -36,9 +36,16 @@ public class EmailServiceImpl implements EmailService{
             String[] parts = to.split("@");
             String username = parts[0];
             String htmlMsg = "<html><body>"
-                    + "<h3>Dear " + username + ",</h3>"
-                    + "<p>Your book <b>" + bookName + "</b> is now available as a lent book.</p>"
+                    + "<h1>Libridex</h1>"
+                    + "<br>"
+                    + "<h2>Dear " + username + ",</h2>"
+                    + "<h3>Congrats!</h3>"
                     + "<img src='" + bookImageUrl + "' alt='Book Image' />"
+                    + "<p>Your reserved book <b>" + bookName + "</b> is now available for lending. You have a total of one week to return it.</p>"
+                    + "<p>You may find more information on how to return it and your profile on our site.</p>"
+                    + "<p>Thank you for using our services!</p>"
+                    + "<p>Best regards,</p>"
+                    + "<p>Libridex Team</p>"
                     + "</body></html>";
             helper.setText(htmlMsg, true);
             emailSender.send(message);
