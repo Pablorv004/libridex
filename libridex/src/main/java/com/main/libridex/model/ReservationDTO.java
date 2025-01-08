@@ -19,7 +19,7 @@ import lombok.ToString;
 public class ReservationDTO {
     private Integer id;
 
-    private LocalDate reservation_date;
+    private LocalDate reservationDate;
 
     User user;
 

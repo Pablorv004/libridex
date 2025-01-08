@@ -26,7 +26,7 @@ public class Reservation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private LocalDateTime reservation_date;
+    private LocalDateTime reservationDate;
     
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -42,7 +42,7 @@ public class Reservation {
     public Reservation(User user, Book book) {
         this.user = user;
         this.book = book;
-        this.reservation_date = LocalDateTime.now();
+        this.reservationDate = LocalDateTime.now();
         this.status = "Pending";
     }
 }

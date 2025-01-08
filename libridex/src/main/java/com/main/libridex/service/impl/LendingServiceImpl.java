@@ -42,9 +42,9 @@ public class LendingServiceImpl implements LendingService {
 
         if (countUserActiveLendings(user, bookId) < 5) {
             Book book = bookRepository.findById(bookId);
-            LocalDate start_date = LocalDate.now();
+            LocalDate startDate = LocalDate.now();
             LocalDate end_date = null;
-            Lending lending = new Lending(user, book, start_date, end_date);
+            Lending lending = new Lending(user, book, startDate, end_date);
 
             book.setLent(true);
             lendingRepository.save(lending);
@@ -60,8 +60,8 @@ public class LendingServiceImpl implements LendingService {
         User user = userRepository.findByEmail(email);
 
         for (Lending lending : user.getLendings()) {
-            if (bookId == lending.getBook().getId() && lending.getEnd_date() == null) {
-                lending.setEnd_date(LocalDate.now());
+            if (bookId == lending.getBook().getId() && lending.getEndDate() == null) {
+                lending.setEndDate(LocalDate.now());
                 lendingRepository.save(lending);
                 break;
             }
@@ -82,7 +82,7 @@ public class LendingServiceImpl implements LendingService {
     @Override
     public Lending findBookCurrentLending(Integer id) {
         for (Lending l : findByBookId(id))
-            if (l.getBook().getId() == id && l.getEnd_date() == null)
+            if (l.getBook().getId() == id && l.getEndDate() == null)
                 return l;
 
         return null;
@@ -103,7 +103,7 @@ public class LendingServiceImpl implements LendingService {
         Book book = bookRepository.findById(bookId);
 
         for (Lending lending : user.getLendings()) {
-            if (lending.getBook().getId() == bookId && book.isLent() && lending.getEnd_date() == null)
+            if (lending.getBook().getId() == bookId && book.isLent() && lending.getEndDate() == null)
                 return true;
         }
 
@@ -115,7 +115,7 @@ public class LendingServiceImpl implements LendingService {
         int lendings = 0;
 
         for(Lending lending : user.getLendings())
-            if(lending.getBook().getId() == bookId && lending.getEnd_date() == null)
+            if(lending.getBook().getId() == bookId && lending.getEndDate() == null)
                 lendings++;
 
         return lendings;

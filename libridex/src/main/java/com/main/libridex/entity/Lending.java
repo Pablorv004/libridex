@@ -33,14 +33,14 @@ public class Lending {
     @JoinColumn(name = "book_id", nullable = false)
     private Book book;
 
-    private LocalDate start_date;
+    private LocalDate startDate;
 
-    private LocalDate end_date;
+    private LocalDate endDate;
 
-    public Lending(User user, Book book, LocalDate start_date, LocalDate end_date) {
+    public Lending(User user, Book book, LocalDate startDate, LocalDate endDate) {
         this.user = user;
         this.book = book;
-        this.start_date = start_date;
-        this.end_date = end_date;
+        this.startDate = startDate;
+        this.endDate = endDate;
     }
 }

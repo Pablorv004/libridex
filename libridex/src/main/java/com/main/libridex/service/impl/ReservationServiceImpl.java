@@ -110,7 +110,7 @@ public class ReservationServiceImpl implements ReservationService {
 
         for (Reservation reservation : reservationRepository.findByBookId(bookId)) {
             if (reservation.getStatus().equalsIgnoreCase("Pending") && 
-                (oldestReservation == null || reservation.getReservation_date().isBefore(oldestReservation.getReservation_date()))) {
+                (oldestReservation == null || reservation.getReservationDate().isBefore(oldestReservation.getReservationDate()))) {
                 oldestReservation = reservation;
             }
         }
@@ -128,7 +128,7 @@ public class ReservationServiceImpl implements ReservationService {
 
         if(reservation != null){
             for(Reservation userReservation : user.getReservations()){
-                if(userReservation.getReservation_date().equals(reservation.getReservation_date()) && userReservation.getStatus().equalsIgnoreCase("Pending"))
+                if(userReservation.getReservationDate().equals(reservation.getReservationDate()) && userReservation.getStatus().equalsIgnoreCase("Pending"))
                     return true;
             }
         }
