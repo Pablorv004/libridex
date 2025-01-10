@@ -34,6 +34,10 @@ public class ReservationServiceImpl implements ReservationService {
     BookRepository bookRepository;
 
     @Override
+    public List<Reservation> findAll() {
+        return reservationRepository.findAll();
+    }
+    @Override
     public List<Reservation> findByBookId(Integer id) {
         return reservationRepository.findByBookId(id);
     }

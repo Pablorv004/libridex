@@ -7,6 +7,7 @@ import com.main.libridex.entity.User;
 import com.main.libridex.model.ReservationDTO;
 
 public interface ReservationService {
+    List<Reservation> findAll();
     List<Reservation> findByBookId(Integer id);
     boolean createReservation(Integer bookId);
     boolean endReservation(Integer id);
