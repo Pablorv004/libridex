@@ -2,7 +2,10 @@ package com.main.libridex.service.impl;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +36,6 @@ public class LendingServiceImpl implements LendingService {
     @Autowired
     @Qualifier("bookRepository")
     BookRepository bookRepository;
-
 
     @Override
     public boolean createLending(Integer bookId) {
@@ -114,8 +116,8 @@ public class LendingServiceImpl implements LendingService {
     public int countUserActiveLendings(User user, int bookId) {
         int lendings = 0;
 
-        for(Lending lending : user.getLendings())
-            if(lending.getBook().getId() == bookId && lending.getEndDate() == null)
+        for (Lending lending : user.getLendings())
+            if (lending.getBook().getId() == bookId && lending.getEndDate() == null)
                 lendings++;
 
         return lendings;
@@ -129,6 +131,22 @@ public class LendingServiceImpl implements LendingService {
     @Override
     public List<Lending> findByUserIdAndEndDateIsNull(Integer userId) {
         return lendingRepository.findByUserIdAndEndDateIsNull(userId);
+    }
+
+    @Override
+    public Map<User, Long> countLendingsGroupedByUser() {
+        List<Object[]> results = lendingRepository.countLendingsGroupedByUserId();
+        return results.stream()
+                .collect(Collectors.toMap(
+                        result -> userRepository.findById((Integer) result[0]).orElse(null),
+                        result -> (Long) result[1]))
+                .entrySet().stream()
+                .sorted(Map.Entry.<User, Long>comparingByValue().reversed())
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (e1, _) -> e1,
+                        LinkedHashMap::new));
     }
 
     // MODEL MAPPERS
