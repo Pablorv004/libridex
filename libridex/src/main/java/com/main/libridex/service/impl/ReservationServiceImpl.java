@@ -70,6 +70,19 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
+    public boolean endReservationByForce(Integer id) {
+        Reservation reservation = reservationRepository.findById(id);
+
+        if(reservation != null){
+            reservation.setStatus("Ended");
+            reservationRepository.save(reservation);
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
     public List<ReservationDTO> getAllReservationsDTO() {
         List<ReservationDTO> reservationList = new ArrayList<>();
         for (Reservation r : reservationRepository.findAll())

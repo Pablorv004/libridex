@@ -153,4 +153,10 @@ public class AdminController {
         return RESERVATIONS_VIEW;
     }
 
+    @GetMapping("/reservations/delete/{id}")
+    public String endUserReservation(@PathVariable(required = true) Integer id , Model model) {
+        reservationService.endReservationByForce(id);
+        return "redirect:/admin/reservations";
+    }
+
 }

@@ -33,8 +33,8 @@
                             <td th:text="${reservation.reservationDate}"></td>
                             <td th:text="${reservation.status}"></td>
                             <td>
-                                <a th:href= "@{/admin/reservations/edit/{id}(id=${reservation.id})}"><i class="fa-solid fa-edit me-3" style="color: #74C0FC;"></i></a>
-                                <a th:href= "@{/admin/reservations/delete/{id}(id=${reservation.id})}" onclick="return confirm('Are you sure you want to reject this reservation?');"><i class="fa-solid fa-trash" style="color: #fd3535;"></i></a>
+                                <!-- <a th:href= "@{/admin/reservations/edit/{id}(id=${reservation.id})}"><i class="fa-solid fa-edit me-3" style="color: #74C0FC;"></i></a> -->
+                                <a th:if="${reservation.status == 'Pending'}" th:href= "@{/admin/reservations/delete/{id}(id=${reservation.id})}" onclick="return confirm('Are you sure you want to manually end this reservation?');"><i class="fa-solid fa-trash" style="color: #fd3535;"></i></a>
                             </td>
                         </tr>
                     </tbody>

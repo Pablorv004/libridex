@@ -119,7 +119,8 @@ public class BookController {
     @GetMapping("/return/{bookId}")
     public String returnBook(@PathVariable int bookId, RedirectAttributes flash) {
         lendingService.endLending(bookId);
-        emailService.sendEmailWithImage(reservationService.findUserCurrentReservation(bookId).getEmail(), "Book Reservation Availability", "", bookService.findById(bookId).getTitle(), bookService.findById(bookId).getImage());
+        if(reservationService.findUserCurrentReservation(bookId) != null)
+            emailService.sendEmailWithImage(reservationService.findUserCurrentReservation(bookId).getEmail(), "Book Reservation Availability", "", bookService.findById(bookId).getTitle(), bookService.findById(bookId).getImage());
         flash.addFlashAttribute("success", "Book returned successfully!");
         return "redirect:/books/catalog";
     }
