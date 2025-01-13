@@ -98,8 +98,11 @@
                     <h2 class="text-center" style="color: rgb(103, 75, 29);">Most Active Users</h2>
                     <hr>
                     <ul class="list-group">
-                        <li th:if= "${user.role != 'ROLE_ADMIN'}" class="list-group-item d-flex justify-content-between align-items-center" th:each="user : ${mostActiveUsers}">
-                            <span th:text="${user.name}">User Name</span>
+                        <li th:each="entry : ${mostActiveUsers}" th:if= "${entry.key.role != 'ROLE_ADMIN'}" class="list-group-item d-flex justify-content-between align-items-center">
+                            <span th:text="${entry.key.name}">User Name</span>
+                            <span class="badge rounded-pill" th:classappend="${entry.value < 10} ? 'bg-primary' : ''" th:if="${entry.value < 10}" th:text="${entry.value}">0</span>
+                            <span class="badge rounded-pill" th:classappend="${entry.value >= 10 && entry.value < 50} ? 'bg-danger' : ''" th:if="${entry.value >= 10 && entry.value < 50}" th:text="${entry.value}">0</span>
+                            <span class="badge rounded-pill" th:classappend="${entry.value >= 50} ? 'bg-warning' : ''" th:if="${entry.value >= 50}" th:text="${entry.value}">0</span>
                         </li>
                     </ul>
                 </section>

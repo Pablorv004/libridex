@@ -1,6 +1,8 @@
 package com.main.libridex.service.impl;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -11,13 +13,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.main.libridex.entity.Book;
+import com.main.libridex.entity.Reservation;
 import com.main.libridex.model.BookDTO;
 import com.main.libridex.repository.BookRepository;
+import com.main.libridex.repository.ReservationRepository;
 import com.main.libridex.service.BookService;
 import com.main.libridex.utils.CloudinaryUtils;
 
@@ -27,6 +32,10 @@ public class BookServiceImpl implements BookService {
     @Autowired
     @Qualifier("bookRepository")
     BookRepository bookRepository;
+
+    @Autowired
+    @Qualifier("reservationRepository")
+    ReservationRepository reservationRepository;
 
     @Override
     public List<Book> findAll() {
@@ -41,6 +50,87 @@ public class BookServiceImpl implements BookService {
     @Override
     public Page<Book> findPaginated(int pageNumber) {
         return bookRepository.findAll(PageRequest.of(pageNumber, 6));
+    }
+
+    @Override
+    public Page<Book> findPaginatedWithFilters(int pageNumber, List<String> genres, List<String> authors,
+            String sortBy, String publishingDateRange) {
+        Sort sort = switch (sortBy) {
+            case "title_asc" -> Sort.by("title").ascending();
+            case "author_asc" -> Sort.by("author").ascending();
+            case "genre_asc" -> Sort.by("genre").ascending();
+            case "publishingDate_desc" -> Sort.by("publishingDate").descending();
+            case "upload_date_desc" -> Sort.by("createdAt").descending();
+            default -> Sort.by("title").ascending();
+        };
+        LocalDate now = LocalDate.now();
+        LocalDate startDate = switch (publishingDateRange) {
+            case "week" -> now.minusWeeks(1);
+            case "month" -> now.minusMonths(1);
+            case "year" -> now.minusYears(1);
+            default -> null;
+        };
+        return bookRepository.findAllWithFilters(PageRequest.of(pageNumber, 6, sort), genres, authors, startDate);
+    }
+
+    @Override
+    public Page<Book> searchBooks(String query, int pageNumber) {
+        return bookRepository.searchByTitleOrAuthor(query, PageRequest.of(pageNumber, 6));
+    }
+
+    /**
+     * Retrieves the first N most reserved books.
+     * 
+     * This method calls the findMostReservedBooks method to get a list of the most
+     * reserved books and then selects the first N books from that list.
+     * 
+     * @param elementsNumber the number of most reserved books to retrieve
+     * @return a list of the first N most reserved books
+     */
+    @Override
+    public List<Book> findFirstNMostReserved(int elementsNumber) {
+        List<Book> mostReserved = new ArrayList<>();
+
+        for (Book book : findMostReservedBooks()) {
+            if (mostReserved.size() < 6)
+                mostReserved.add(book);
+        }
+
+        return mostReserved;
+    }
+
+    /**
+     * Finds the most reserved books.
+     * 
+     * This method retrieves all reservations from the reservation repository,
+     * counts the number of reservations for each book, sorts the books by the
+     * number of reservations in descending order, and then retrieves the book
+     * entities from the book repository based on the sorted reservation counts.
+     * 
+     * @return a list of the most reserved books
+     */
+    @Override
+    public List<Book> findMostReservedBooks() {
+        List<Book> mostReservedBooks = new ArrayList<>();
+        Map<Integer, Integer> bookReservationCount = new HashMap<>();
+
+        // First we get all the reserves of all the books and put them in a hashmap
+        for (Reservation reservation : reservationRepository.findAll()) {
+            Integer bookId = reservation.getBook().getId();
+            bookReservationCount.put(bookId, bookReservationCount.getOrDefault(bookId, 0) + 1);
+        }
+
+        // Secondly we sort the map by descendent order
+        Map<Integer, Integer> sortedBookReservationCount = bookReservationCount.entrySet().stream()
+                .sorted(Map.Entry.<Integer, Integer>comparingByValue().reversed())
+                .collect(LinkedHashMap::new, (m, e) -> m.put(e.getKey(), e.getValue()), LinkedHashMap::putAll);
+
+        // Then we add all the content of the map into the arraylist
+        for (Integer bookId : sortedBookReservationCount.keySet()) {
+            mostReservedBooks.add(bookRepository.findById(bookId));
+        }
+
+        return mostReservedBooks;
     }
     /**
      * Method to order a map by values in reverse order

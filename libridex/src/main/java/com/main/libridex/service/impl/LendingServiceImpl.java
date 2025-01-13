@@ -2,8 +2,10 @@ package com.main.libridex.service.impl;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,14 +38,15 @@ public class LendingServiceImpl implements LendingService {
     BookRepository bookRepository;
 
     @Override
-    public boolean createLending(Integer bookId, String userEmail) {
-        User user = userRepository.findByEmail(userEmail);
+    public boolean createLending(Integer bookId) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByEmail(email);
 
-        if (user.getLendings().size() < 5) {
+        if (countUserActiveLendings(user, bookId) < 5) {
             Book book = bookRepository.findById(bookId);
-            LocalDate start_date = LocalDate.now();
+            LocalDate startDate = LocalDate.now();
             LocalDate end_date = null;
-            Lending lending = new Lending(user, book, start_date, end_date);
+            Lending lending = new Lending(user, book, startDate, end_date);
 
             book.setLent(true);
             lendingRepository.save(lending);
@@ -54,24 +57,24 @@ public class LendingServiceImpl implements LendingService {
     }
 
     @Override
-public void endLending(Integer bookId) {
-    String email = SecurityContextHolder.getContext().getAuthentication().getName();
-    User user = userRepository.findByEmail(email);
+    public void endLending(Integer bookId) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByEmail(email);
 
-    for (Lending lending : user.getLendings()) {
-        if (bookId == lending.getBook().getId() && lending.getEnd_date() == null) {
-            lending.setEnd_date(LocalDate.now());
-            lendingRepository.save(lending);
-            break;
+        for (Lending lending : user.getLendings()) {
+            if (bookId == lending.getBook().getId() && lending.getEndDate() == null) {
+                lending.setEndDate(LocalDate.now());
+                lendingRepository.save(lending);
+                break;
+            }
+        }
+
+        Book book = bookRepository.findById(bookId);
+        if (book != null) {
+            book.setLent(false);
+            bookRepository.save(book);
         }
     }
-
-    Book book = bookRepository.findById(bookId);
-    if (book != null) {
-        book.setLent(false);
-        bookRepository.save(book);
-    }
-}
 
     @Override
     public List<Lending> findByBookId(Integer bookId) {
@@ -80,8 +83,8 @@ public void endLending(Integer bookId) {
 
     @Override
     public Lending findBookCurrentLending(Integer id) {
-        for(Lending l : findByBookId(id))
-            if(l.getBook().getId() == id)
+        for (Lending l : findByBookId(id))
+            if (l.getBook().getId() == id && l.getEndDate() == null)
                 return l;
 
         return null;
@@ -96,16 +99,54 @@ public void endLending(Integer bookId) {
     }
 
     @Override
-    public boolean existsInUserLendings(String email, Integer bookId) {
+    public boolean isLendByUser(Integer bookId) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByEmail(email);
         Book book = bookRepository.findById(bookId);
 
         for (Lending lending : user.getLendings()) {
-            if (lending.getBook().getId() == bookId && book.isLent())
+            if (lending.getBook().getId() == bookId && book.isLent() && lending.getEndDate() == null)
                 return true;
         }
 
         return false;
+    }
+
+    @Override
+    public int countUserActiveLendings(User user, int bookId) {
+        int lendings = 0;
+
+        for (Lending lending : user.getLendings())
+            if (lending.getBook().getId() == bookId && lending.getEndDate() == null)
+                lendings++;
+
+        return lendings;
+    }
+
+    @Override
+    public List<Lending> findByUserId(Integer userId) {
+        return lendingRepository.findByUserId(userId);
+    }
+
+    @Override
+    public List<Lending> findByUserIdAndEndDateIsNull(Integer userId) {
+        return lendingRepository.findByUserIdAndEndDateIsNull(userId);
+    }
+
+    @Override
+    public Map<User, Long> countLendingsGroupedByUser() {
+        List<Object[]> results = lendingRepository.countLendingsGroupedByUserId();
+        return results.stream()
+                .collect(Collectors.toMap(
+                        result -> userRepository.findById((Integer) result[0]).orElse(null),
+                        result -> (Long) result[1]))
+                .entrySet().stream()
+                .sorted(Map.Entry.<User, Long>comparingByValue().reversed())
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (e1, _) -> e1,
+                        LinkedHashMap::new));
     }
 
     // MODEL MAPPERS

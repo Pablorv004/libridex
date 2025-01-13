@@ -17,6 +17,10 @@ public interface BookService {
 
     Page<Book> findFirstNSortedByCreatedAt(int elementsNumber);
 
+    List<Book> findFirstNMostReserved(int elementsNumber);
+
+    List<Book> findMostReservedBooks();
+
     BookDTO findById(Integer id);
 
     Book save(BookDTO bookDTO);
@@ -32,4 +36,8 @@ public interface BookService {
     void setImage(BookDTO bookDTO, MultipartFile imageFile);
 
     Page<Book> findPaginated(int pageNumber);
+
+    Page<Book> findPaginatedWithFilters(int pageNumber, List<String> genres, List<String> authors, String sortBy, String publishingDateRange);
+
+    Page<Book> searchBooks(String query, int pageNumber);
 }

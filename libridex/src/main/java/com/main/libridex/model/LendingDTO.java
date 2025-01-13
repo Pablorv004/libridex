@@ -23,7 +23,7 @@ public class LendingDTO {
     
     private Book book;
 
-    private LocalDate start_date;
+    private LocalDate startDate;
 
-    private LocalDate end_date;
+    private LocalDate endDate;
 }
