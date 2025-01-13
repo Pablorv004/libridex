@@ -16,13 +16,23 @@
     a {
         text-decoration: none;
     }
+
+    .vertical-bar {
+        position: absolute;
+        left: 50%;
+        top: 45%;
+        transform: translateX(-50%);
+        border-left: 2px solid gray;
+        height: 100%;
+    }
 </style>
 
 <body>
+    <div class="vertical-bar"></div>
     <header th:replace="~{fragments :: navbar}"></header>
     <img src="https://trello-backgrounds.s3.amazonaws.com/SharedBackground/2215x2048/5fa9c73355b096b1e1786af0510a6fc4/photo-1481627834876-b7833e8f5570.webp"
         alt="Image" class="img-fluid w-100 object-fit-cover" style="height: 25vh;">
-    <div class="container mt-5">
+    <div class="container mt-5 position-relative">
         <h1 class="text-center" style="color: rgb(103, 75, 29);">Menu</h1>
         <hr class="border-black border-2">
         <div class="row">

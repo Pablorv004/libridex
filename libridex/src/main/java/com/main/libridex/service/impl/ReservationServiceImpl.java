@@ -164,6 +164,11 @@ public class ReservationServiceImpl implements ReservationService {
         return reservationRepository.findByUserId(userId);
     }
 
+    @Override
+    public List<Reservation> findByUserIdAndStatusNotEnded(Integer userId) {
+        return reservationRepository.findByUserIdAndStatusNotEnded(userId);
+    }
+
     // MODEL MAPPERS
 
     public Reservation toEntity(ReservationDTO dto) {

@@ -39,7 +39,7 @@ public class UserReservationsController {
     public String getUserReservations(Model model) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userService.findByEmail(email);
-        model.addAttribute("reservations", reservationService.findByUserId(user.getId()));
+        model.addAttribute("reservations", reservationService.findByUserIdAndStatusNotEnded(user.getId()));
         model.addAttribute("lendings", lendingService.findByUserIdAndEndDateIsNull(user.getId()));
         accessLogger.accessed("reservations");
         return YOUR_RESERVATIONS;
