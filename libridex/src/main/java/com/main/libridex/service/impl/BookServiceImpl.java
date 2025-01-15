@@ -210,7 +210,7 @@ public class BookServiceImpl implements BookService {
         } else {
             // If no image is selected, set the default image
             if (bookDTO.getImage().isBlank()) {
-                bookDTO.setImage("https://res.cloudinary.com/dlmbw4who/image/upload/v1734182372/default_image.png");
+                bookDTO.setImage("https://res.cloudinary.com/dlmbw4who/image/upload/v1736968304/default_image_vvjykw.png");
             }
         }
     }

@@ -36,7 +36,16 @@
                 </div>
                 <div class="mb-3">
                     <label for="genre" class="form-label text-white">Genre</label>
-                    <input type="text" th:field="*{genre}" class="form-control" id="genre" name="genre">
+                    <select th:field="*{genre}" class="form-select" id="genre" name="genre">
+                        <option value="" disabled selected>Select genre</option>
+                        <option value="Fiction">Fiction</option>
+                        <option value="Romance">Romance</option>
+                        <option value="Science Fiction">Science Fiction</option>
+                        <option value="Fantasy">Fantasy</option>
+                        <option value="Mystery">Mystery</option>
+                        <option value="Terror">Terror</option>
+                        <option value="History">History</option>
+                    </select>
                     <div class="text-danger" th:if="${#fields.hasErrors('genre')}" th:errors="*{genre}"></div>
                 </div>
                 <div class="mb-3">

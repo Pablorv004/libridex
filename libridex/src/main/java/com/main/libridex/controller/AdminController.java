@@ -118,6 +118,11 @@ public class AdminController {
 
     @GetMapping("/books/delete/{id}")
     public String deleteBook(@PathVariable(required = true) Integer id, RedirectAttributes flash) {
+        if(bookService.findById(id).isLent()){
+            flash.addFlashAttribute("error", "Book could not be deleted because it's being lent!");
+            return "redirect:/admin/books";
+        }
+
         bookService.deleteById(id);
         bookLogger.deleted(String.valueOf(id));
         flash.addFlashAttribute("success", "Book deleted successfully!");
