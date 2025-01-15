@@ -37,6 +37,7 @@ public class AdminController {
     private static final String BOOKS_FORM = "book_form";
     private static final String USERS_VIEW = "adminusers";
     private static final String RESERVATIONS_VIEW = "adminreservations";
+    private static final String STATISTICS_VIEW = "adminstatistics";
 
     @Autowired
     @Qualifier("userService")
@@ -163,5 +164,15 @@ public class AdminController {
         reservationService.endReservationByForce(id);
         return "redirect:/admin/reservations";
     }
+
+
+    // Statistics Endpoints
+
+    @GetMapping("/statistics")
+    public String getStatistics(Model model) {
+        accessLogger.accessed("admin/statistics");
+        return STATISTICS_VIEW;
+    }
+    
 
 }

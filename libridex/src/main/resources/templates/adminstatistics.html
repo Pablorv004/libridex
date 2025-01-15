@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}" />
+    <script src="https://kit.fontawesome.com/39fe04e284.js" crossorigin="anonymous"></script>
+    <script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+
+        // Load the Visualization API and the corechart package.
+        google.charts.load('current', {'packages':['corechart']});
+
+        // Set a callback to run when the Google Visualization API is loaded.
+        google.charts.setOnLoadCallback(drawChart);
+
+        // Callback that creates and populates a data table,
+        // instantiates the pie chart, passes in the data and
+        // draws it.
+        function drawChart() {
+
+            // Create the data table.
+            var data = new google.visualization.DataTable();
+            data.addColumn('string', 'Categories');
+            data.addColumn('number', 'Books');
+            data.addRows([
+                ['Science', 3],
+                ['Romance', 1],
+                ['Fantasy', 1],
+                ['Action', 1],
+            ]);
+
+            // Set chart options
+            var options = {'title':'Books per category',
+                'width':600,
+                'height':500};
+
+            // Instantiate and draw our chart, passing in some options.
+            var chart = new google.visualization.PieChart(document.getElementById('books_category'));
+            chart.draw(data, options);
+        }
+    </script>
+    <title>Libridex</title>
+</head>
+
+<body>
+    <header th:replace="~{fragments :: navbar}"></header>
+    <img src="https://trello-backgrounds.s3.amazonaws.com/SharedBackground/2215x2048/5fa9c73355b096b1e1786af0510a6fc4/photo-1481627834876-b7833e8f5570.webp"
+        alt="Image" class="img-fluid w-100 object-fit-cover" style="height: 100vh;">
+    <div class="position-absolute w-100 bg-white pb-5 top-50 start-50 translate-middle" style="opacity: 0.96;">
+        
+        <h1 class="display-1 text-center" style="color: rgb(103, 75, 29);">Statistics</h1>
+        <hr class="border-black border-2">
+
+        <div class="container text-center mt-4">
+            <div class="row justify-content-center gap-3">
+            
+                <div class="d-flex justify-content-center align-items-center">
+                    <p class="fw-bold mb-0 me-3">Please select a chart:</p>
+                    <select class="form-select w-auto" id="chart_type" name="chart_type">
+                        <option value="month_lendings" selected>Lendings per month</option>
+                        <option value="user_lendings">Lendings per user</option>
+                        <option value="books_category">Books by category</option>
+                    </select>
+                </div>
+
+                <div id="month_lendings" class="chart-div card border-3 mt-4">
+                    Content for Lendings per month
+                </div>
+                <div id="user_lendings" class="chart-div card border-3 mt-4" style="display: none;">
+                    Content for Lendings per user
+                </div>
+                <div id="books_category" class="chart-div card border-3 mt-4 w-auto" style="display: none;">
+                    Content for Books by category
+                </div>
+                
+            </div>
+        </div>
+
+    </div>
+</body>
+
+<script>
+    document.getElementById('chart_type').addEventListener('change', function() {
+        var selectedValue = this.value;
+        var chartDivs = document.querySelectorAll('.chart-div');
+        chartDivs.forEach(function(div) {
+            if (div.id === selectedValue) {
+                div.style.display = 'block';
+            } else {
+                div.style.display = 'none';
+            }
+        });
+    });
+</script>
+
+</html>
