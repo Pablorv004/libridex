@@ -23,6 +23,7 @@ import com.main.libridex.entity.Book;
 import com.main.libridex.model.BookDTO;
 import com.main.libridex.model.SecureUserDTO;
 import com.main.libridex.service.BookService;
+import com.main.libridex.service.ReservationService;
 import com.main.libridex.service.UserService;
 
 import jakarta.validation.Valid;
@@ -35,6 +36,7 @@ public class AdminController {
     private static final String BOOKS_VIEW = "adminbooks";
     private static final String BOOKS_FORM = "book_form";
     private static final String USERS_VIEW = "adminusers";
+    private static final String RESERVATIONS_VIEW = "adminreservations";
 
     @Autowired
     @Qualifier("userService")
@@ -43,6 +45,10 @@ public class AdminController {
     @Autowired
     @Qualifier("bookService")
     private BookService bookService;
+
+    @Autowired
+    @Qualifier("reservationService")
+    private ReservationService reservationService;
 
     @Autowired
     @Qualifier("accessLogger")
@@ -136,6 +142,21 @@ public class AdminController {
         flash.addFlashAttribute("success", message);
         return "redirect:/admin/books";
 
+    }
+
+    // Reservation Endpoints
+
+    @GetMapping("/reservations")
+    public String getReservationsView(Model model) {
+        model.addAttribute("reservations", reservationService.findAll());
+        accessLogger.accessed("admin/reservations");
+        return RESERVATIONS_VIEW;
+    }
+
+    @GetMapping("/reservations/delete/{id}")
+    public String endUserReservation(@PathVariable(required = true) Integer id , Model model) {
+        reservationService.endReservationByForce(id);
+        return "redirect:/admin/reservations";
     }
 
 }

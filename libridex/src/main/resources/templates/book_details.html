@@ -100,7 +100,7 @@
 
                     <!-- SHOW LEND BUTTON IF IS USER TURN TO LEND OR BOOK IS NOT RESERVED -->
                     <div th:if="${ (!book.lent && isUserTurn) || (!book.lent && !isReserved) }" class="d-flex flex-column align-items-center mt- mb-3">
-                        <p th:if= "${isUserTurn}" class="fw-bolder">Or you can lend it now, is your turn!</p>
+                        <p th:if= "${isUserTurn}" class="fw-bolder">Or you can lend it now, it's your turn!</p>
                         <p th:if= "${!book.lent && isUserTurn  || (!book.lent && !isReserved) }" class="fw-bolder">This book is available!</p>
                         <a class="btn btn-dark rounded-2 p-2" th:href="@{'/books/lend/' + ${book.id}}"
                             style="background-color: rgb(103, 75, 29); border-color: rgb(103, 75, 29); width: 10vh;">

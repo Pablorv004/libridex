@@ -1,5 +1,6 @@
 package com.main.libridex.service.impl;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
@@ -48,6 +50,32 @@ public class BookServiceImpl implements BookService {
     @Override
     public Page<Book> findPaginated(int pageNumber) {
         return bookRepository.findAll(PageRequest.of(pageNumber, 6));
+    }
+
+    @Override
+    public Page<Book> findPaginatedWithFilters(int pageNumber, List<String> genres, List<String> authors,
+            String sortBy, String publishingDateRange) {
+        Sort sort = switch (sortBy) {
+            case "title_asc" -> Sort.by("title").ascending();
+            case "author_asc" -> Sort.by("author").ascending();
+            case "genre_asc" -> Sort.by("genre").ascending();
+            case "publishingDate_desc" -> Sort.by("publishingDate").descending();
+            case "upload_date_desc" -> Sort.by("createdAt").descending();
+            default -> Sort.by("title").ascending();
+        };
+        LocalDate now = LocalDate.now();
+        LocalDate startDate = switch (publishingDateRange) {
+            case "week" -> now.minusWeeks(1);
+            case "month" -> now.minusMonths(1);
+            case "year" -> now.minusYears(1);
+            default -> null;
+        };
+        return bookRepository.findAllWithFilters(PageRequest.of(pageNumber, 6, sort), genres, authors, startDate);
+    }
+
+    @Override
+    public Page<Book> searchBooks(String query, int pageNumber) {
+        return bookRepository.searchByTitleOrAuthor(query, PageRequest.of(pageNumber, 6));
     }
 
     /**
@@ -104,7 +132,6 @@ public class BookServiceImpl implements BookService {
 
         return mostReservedBooks;
     }
-
     /**
      * Method to order a map by values in reverse order
      */
