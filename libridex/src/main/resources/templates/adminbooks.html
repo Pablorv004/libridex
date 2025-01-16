@@ -12,6 +12,7 @@
         alt="Image" class="img-fluid w-100 object-fit-cover" style="height: 25vh;">
     <div class="container text-center mt-5">
         <div class="alert alert-info" th:if= "${success != null}" th:text="${success}"></div>
+        <div class="alert alert-danger" th:if= "${error != null}" th:text="${error}"></div>
         <h1 style="color: rgb(103, 75, 29);">Books</h1>
         <hr class="border-black border-2">
         <div class="d-flex justify-content-center mt-4">
