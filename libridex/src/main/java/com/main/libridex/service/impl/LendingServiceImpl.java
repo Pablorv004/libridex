@@ -171,7 +171,7 @@ public class LendingServiceImpl implements LendingService {
         Map<String, Integer> lendingsPerMonth = new HashMap<>();
         List<Lending> lendings = lendingRepository.findAll();
         for(Lending lending : lendings) {
-            String month = lending.getStartDate().getMonth().toString();
+            String month = lending.getStartDate().getMonth().toString() + " (" + lending.getStartDate().getYear() + ")";
             lendingsPerMonth.put(month, 1 + lendingsPerMonth.getOrDefault(month, 0));
         }
         return lendingsPerMonth;
