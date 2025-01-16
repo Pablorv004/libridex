@@ -11,7 +11,7 @@
     <script type="text/javascript">
 
         // Load the Visualization API and the corechart package.
-        google.charts.load('current', {'packages':['corechart']});
+        google.charts.load('current', { 'packages': ['corechart'] });
 
         // Set a callback to run when the Google Visualization API is loaded.
         google.charts.setOnLoadCallback(drawChart);
@@ -33,15 +33,31 @@
             ]);
 
             // Set chart options
-            var options = {'title':'Books per category',
-                'width':750,
-                'height':500};
+            var options = {
+                'title': 'Books per category',
+                'width': 750,
+                'height': 500
+            };
 
             // Instantiate and draw our chart, passing in some options.
             var chart = new google.visualization.PieChart(document.getElementById('books_category'));
             chart.draw(data, options);
         }
     </script>
+    <style>
+        .hovercard {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .hovercard:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        a {
+            text-decoration: none;
+        }
+    </style>
     <title>Libridex</title>
 </head>
 
@@ -49,54 +65,143 @@
     <header th:replace="~{fragments :: navbar}"></header>
     <img src="https://trello-backgrounds.s3.amazonaws.com/SharedBackground/2215x2048/5fa9c73355b096b1e1786af0510a6fc4/photo-1481627834876-b7833e8f5570.webp"
         alt="Image" class="img-fluid w-100 object-fit-cover" style="height: 25vh;">
-        
-        <h1 class="display-1 text-center" style="color: rgb(103, 75, 29);">Statistics</h1>
-        <hr class="border-black border-2">
 
-        <div class="container text-center mt-5">
-            <div class="row justify-content-center gap-3">
-                <div class="col-md-1">
-                    <button id="btn_statistics" class="btn btn-transparent w-100 mb-3">Statistics</button>
-                    <button id="btn_graphs" class="btn btn-transparent w-100">Graphs</button>
-                </div>
-                <div class="col-md-1">
-                    <div class="vr h-100"></div>
-                </div>
-                <div class="col-md-8">
-                    <div id="statistics_section" class="card border-3 mt-4" style="display: none;">
-                        Content for Statistics. Temporarily here.
+    <h1 class="display-1 text-center" style="color: rgb(103, 75, 29);">Statistics</h1>
+    <hr class="border-black border-2">
+
+    <div class="container text-center mt-5">
+        <div class="row justify-content-center gap-3">
+            <div class="col-md-1">
+                <button id="btn_statistics" class="btn btn-transparent w-100 mb-3">Statistics</button>
+                <button id="btn_graphs" class="btn btn-transparent w-100">Graphs</button>
+            </div>
+            <div class="col-md-1">
+                <div class="vr h-100"></div>
+            </div>
+            <div class="col-md-8">
+                <div id="statistics_section" class="card border-0 mt-4" style="display: none;">
+                    <div class="row justify-content-between gap-4">
+                        <div class="col-md-3">
+                            <h2 class="text-center" style="color: rgb(103, 75, 29);">Total Stats</h2>
+                            <hr class="mb-0">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <p class="fw-bold mb-0">Lendings:</p>
+                                    <p class="mb-0" th:text="${lendingsCount}"></p>
+                                </div>
+                            </div>
+                            <hr class="mt-0 mb-0">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <p class="fw-bold mb-0">Reservations:</p>
+                                    <p class="mb-0" th:text="${reservationsCount}"></p>
+                                </div>
+                            </div>
+                            <hr class="mt-0 mb-0">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <p class="fw-bold mb-0">Users:</p>
+                                    <p class="mb-0" th:text="${usersCount}"></p>
+                                </div>
+                            </div>
+                            <hr class="mt-0 mb-0">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <p class="fw-bold mb-0">Books:</p>
+                                    <p class="mb-0" th:text="${booksCount}"></p>
+                                </div>
+                            </div>
+                            <hr class="mt-0 mb-0">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <p class="fw-bold mb-0">Authors:</p>
+                                    <p class="mb-0" th:text="${authorsCount}"></p>
+                                </div>
+                            </div>
+                            <hr class="mt-0 mb-0">
+                        </div>
+                        <div class="col-md-4">
+                            <hr class="d-md-none">
+                            <section>
+                                <h2 class="text-center" style="color: rgb(103, 75, 29);">Most Lent Books</h2>
+                                <hr>
+                                <ul class="list-group">
+                                    <li th:each="entry : ${mostLentBooks}"
+                                        class="list-group-item d-flex justify-content-between align-items-center">
+                                        <span th:text="${entry.key.title}"></span>
+                                        <span class="badge rounded-pill"
+                                            th:classappend="${entry.value < 10} ? 'bg-primary' : ''"
+                                            th:if="${entry.value < 10}" th:text="${entry.value}">0</span>
+                                        <span class="badge rounded-pill"
+                                            th:classappend="${entry.value >= 10 && entry.value < 50} ? 'bg-danger' : ''"
+                                            th:if="${entry.value >= 10 && entry.value < 50}"
+                                            th:text="${entry.value}">0</span>
+                                        <span class="badge rounded-pill"
+                                            th:classappend="${entry.value >= 50} ? 'bg-warning' : ''"
+                                            th:if="${entry.value >= 50}" th:text="${entry.value}">0</span>
+                                    </li>
+                                </ul>
+                            </section>
+                        </div>
+                        <div class="col-md-4">
+                            <hr class="d-md-none">
+                            <section>
+                                <h2 class="text-center" style="color: rgb(103, 75, 29);">Most Active Users</h2>
+                                <hr>
+                                <ul class="list-group">
+                                    <li th:each="entry : ${mostActiveUsers}" th:if="${entry.key.role != 'ROLE_ADMIN'}"
+                                        class="list-group-item d-flex justify-content-between align-items-center hovercard">
+                                        <a class="text-decoration-none text-black d-flex justify-content-between w-100"
+                                            th:href="@{/admin/userlendings/{id}(id=${entry.key.id})}">
+                                            <span th:text="${entry.key.name}">User Name</span>
+                                            <span class="badge rounded-pill"
+                                                th:classappend="${entry.value < 10} ? 'bg-primary' : ''"
+                                                th:if="${entry.value < 10}" th:text="${entry.value}">0</span>
+                                            <span class="badge rounded-pill"
+                                                th:classappend="${entry.value >= 10 && entry.value < 50} ? 'bg-danger' : ''"
+                                                th:if="${entry.value >= 10 && entry.value < 50}"
+                                                th:text="${entry.value}">0</span>
+                                            <span class="badge rounded-pill"
+                                                th:classappend="${entry.value >= 50} ? 'bg-warning' : ''"
+                                                th:if="${entry.value >= 50}" th:text="${entry.value}">0</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </section>
+                        </div>
                     </div>
-                    <div id="graphs_section" style="display: none;">
-                        <div class="d-flex justify-content-center align-items-center">
-                            <p class="fw-bold mb-0 me-3">Please select a chart:</p>
-                            <select class="form-select w-auto" id="chart_type" name="chart_type">
-                                <option value="month_lendings" selected>Lendings per month</option>
-                                <option value="user_lendings">Lendings per user</option>
-                                <option value="books_category">Books by category</option>
-                            </select>
-                        </div>
-                        <div id="month_lendings" class="chart-div card border-3 mt-4">
-                            Content for Lendings per month
-                        </div>
-                        <div id="user_lendings" class="chart-div card border-3 mt-4" style="display: none;">
-                            Content for Lendings per user
-                        </div>
-                        <div id="books_category" class="chart-div card border-3 mt-4 w-100" style="display: none;">
-                            Content for Books by category
-                        </div>
+                </div>
+                <div id="graphs_section" style="display: none;">
+                    <div class="d-flex justify-content-center align-items-center">
+                        <p class="fw-bold mb-0 me-3">Please select a chart:</p>
+                        <select class="form-select w-auto" id="chart_type" name="chart_type">
+                            <option value="month_lendings" selected>Lendings per month</option>
+                            <option value="user_lendings">Lendings per user</option>
+                            <option value="books_category">Books by category</option>
+                        </select>
+                    </div>
+                    <div id="month_lendings" class="chart-div card border-3 mt-4">
+                        Content for Lendings per month
+                    </div>
+                    <div id="user_lendings" class="chart-div card border-3 mt-4" style="display: none;">
+                        Content for Lendings per user
+                    </div>
+                    <div id="books_category" class="chart-div card border-3 mt-4 w-100" style="display: none;">
+                        Content for Books by category
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
     </div>
 </body>
 
 <script>
-    document.getElementById('chart_type').addEventListener('change', function() {
+    document.getElementById('chart_type').addEventListener('change', function () {
         var selectedValue = this.value;
         var chartDivs = document.querySelectorAll('.chart-div');
-        chartDivs.forEach(function(div) {
+        chartDivs.forEach(function (div) {
             if (div.id === selectedValue) {
                 div.style.display = 'block';
             } else {
@@ -105,12 +210,12 @@
         });
     });
 
-    document.getElementById('btn_statistics').addEventListener('click', function() {
+    document.getElementById('btn_statistics').addEventListener('click', function () {
         document.getElementById('statistics_section').style.display = 'block';
         document.getElementById('graphs_section').style.display = 'none';
     });
 
-    document.getElementById('btn_graphs').addEventListener('click', function() {
+    document.getElementById('btn_graphs').addEventListener('click', function () {
         document.getElementById('statistics_section').style.display = 'none';
         document.getElementById('graphs_section').style.display = 'block';
     });

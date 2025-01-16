@@ -116,6 +116,11 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
+    public long count() {
+        return reservationRepository.count();
+    }
+
+    @Override
     public boolean isReserved(Integer bookId) {
         List<Reservation> reservations = reservationRepository.findByBookId(bookId);
 

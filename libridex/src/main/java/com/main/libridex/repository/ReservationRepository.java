@@ -16,4 +16,5 @@ public interface ReservationRepository extends JpaRepository<Reservation,Seriali
     List<Reservation> findByUserId(Integer id);
     @Query("SELECT r FROM Reservation r WHERE r.user.id = :id AND r.status != 'Ended'")
     List<Reservation> findByUserIdAndStatusNotEnded(Integer id);
+    long count();
 }

@@ -178,6 +178,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return users.stream().map(this::toSecureDTO).toList();
     }
 
+    @Override
+    public long countByRoleNot(String role) {
+        return userRepository.countByRoleNot(role);
+    }
+
     
     // MODEL MAPPER
 

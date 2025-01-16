@@ -165,6 +165,16 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    public long count() {
+        return bookRepository.count();
+    }
+
+    @Override
+    public long countDistinctAuthors() {
+        return bookRepository.countDistinctAuthors();
+    }
+
+    @Override
     public BookDTO findById(Integer id) {
         return toDTO(bookRepository.findById(id));
     }

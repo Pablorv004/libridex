@@ -3,6 +3,7 @@ package com.main.libridex.service;
 import java.util.List;
 import java.util.Map;
 
+import com.main.libridex.entity.Book;
 import com.main.libridex.entity.Lending;
 import com.main.libridex.entity.User;
 
@@ -17,4 +18,6 @@ public interface LendingService {
     List<Lending> findByUserId(Integer userId);
     List<Lending> findByUserIdAndEndDateIsNull(Integer userId);
     Map<User, Long> countLendingsGroupedByUser();
+    Map<Book, Long> countLendingsGroupedByBook();
+    long count();
 }

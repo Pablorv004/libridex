@@ -31,4 +31,9 @@ public interface BookRepository extends JpaRepository<Book, Serializable> {
 
     @Query("SELECT b FROM Book b WHERE LOWER(b.title) LIKE LOWER(CONCAT('%', :query, '%')) OR LOWER(b.author) LIKE LOWER(CONCAT('%', :query, '%'))")
     Page<Book> searchByTitleOrAuthor(String query, PageRequest pageRequest);
+
+    @Query("SELECT COUNT(DISTINCT b.author) FROM Book b")
+    long countDistinctAuthors();
+    
+    long count();
 }

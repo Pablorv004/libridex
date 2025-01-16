@@ -129,6 +129,11 @@ public class LendingServiceImpl implements LendingService {
     }
 
     @Override
+    public long count() {
+        return lendingRepository.count();
+    }
+
+    @Override
     public List<Lending> findByUserIdAndEndDateIsNull(Integer userId) {
         return lendingRepository.findByUserIdAndEndDateIsNull(userId);
     }
@@ -142,6 +147,22 @@ public class LendingServiceImpl implements LendingService {
                         result -> (Long) result[1]))
                 .entrySet().stream()
                 .sorted(Map.Entry.<User, Long>comparingByValue().reversed())
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (e1, _) -> e1,
+                        LinkedHashMap::new));
+    }
+
+    @Override
+    public Map<Book, Long> countLendingsGroupedByBook() {
+        List<Object[]> results = lendingRepository.countLendingsGroupedByBookId();
+        return results.stream()
+                .collect(Collectors.toMap(
+                        result -> bookRepository.findById((Integer) result[0]),
+                        result -> (Long) result[1]))
+                .entrySet().stream()
+                .sorted(Map.Entry.<Book, Long>comparingByValue().reversed())
                 .collect(Collectors.toMap(
                         Map.Entry::getKey,
                         Map.Entry::getValue,
