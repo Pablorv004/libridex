@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head th:replace="~{fragments :: head}"></head>
+
+<body>
+    <header th:replace="~{fragments :: navbar}"></header>
+    <div class="hero-image position-relative text-center text-white">
+        <img th:src="@{images/libridex500.png}" alt="Image" class="img-fluid w-100" style="height: 100vh; object-fit: cover;">
+        <div class="hero-text position-absolute top-50 start-50 translate-middle">
+            <div class="card bg-dark p-5">
+                <h1 class="display-1 text-white mb-4">403</h1>
+                <p class="lead text-white mb-4 mt-5">Oops! Something went wrong!<br>You aren't authorized to be here. You should head back to where you can.</p>
+                <a class="btn btn-dark rounded-pill px-5 fs-6 m-0 w-30 align-self-center mt-3" th:href="@{/}" role="button" style="background-color: rgb(103, 75, 29); border-color: rgb(103, 75, 29);">Back to
+                    Home</a>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

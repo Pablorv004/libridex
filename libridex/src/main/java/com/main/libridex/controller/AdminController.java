@@ -23,6 +23,7 @@ import com.main.libridex.entity.Book;
 import com.main.libridex.model.BookDTO;
 import com.main.libridex.model.SecureUserDTO;
 import com.main.libridex.service.BookService;
+import com.main.libridex.service.LendingService;
 import com.main.libridex.service.ReservationService;
 import com.main.libridex.service.UserService;
 
@@ -38,6 +39,7 @@ public class AdminController {
     private static final String USERS_VIEW = "adminusers";
     private static final String RESERVATIONS_VIEW = "adminreservations";
     private static final String STATISTICS_VIEW = "adminstatistics";
+    private static final String USER_LENDINGS_VIEW = "adminuserlendings";
 
     @Autowired
     @Qualifier("userService")
@@ -50,6 +52,10 @@ public class AdminController {
     @Autowired
     @Qualifier("reservationService")
     private ReservationService reservationService;
+
+    @Autowired
+    @Qualifier("lendingService")
+    private LendingService lendingService;
 
     @Autowired
     @Qualifier("accessLogger")
@@ -171,7 +177,22 @@ public class AdminController {
     @GetMapping("/statistics")
     public String getStatistics(Model model) {
         accessLogger.accessed("admin/statistics");
+        model.addAttribute("mostActiveUsers", lendingService.countLendingsGroupedByUser());
+        model.addAttribute("mostLentBooks", lendingService.countLendingsGroupedByBook());
+        model.addAttribute("booksCount", bookService.count());
+        model.addAttribute("lendingsCount", lendingService.count());
+        model.addAttribute("reservationsCount", reservationService.count());
+        model.addAttribute("usersCount", userService.countByRoleNot("ROLE_ADMIN"));
+        model.addAttribute("authorsCount", bookService.countDistinctAuthors());
         return STATISTICS_VIEW;
+    }
+
+    @GetMapping("/userlendings/{id}")
+    public String getUserLendings(@PathVariable Integer id, Model model) {
+        model.addAttribute("user", userService.findById(id));
+        model.addAttribute("lendings", lendingService.findByUserId(id));
+        accessLogger.accessed("admin/userlendings");
+        return USER_LENDINGS_VIEW;
     }
     
 
