@@ -34,7 +34,7 @@
 
             // Set chart options
             var options = {'title':'Books per category',
-                'width':600,
+                'width':750,
                 'height':500};
 
             // Instantiate and draw our chart, passing in some options.
@@ -48,34 +48,44 @@
 <body>
     <header th:replace="~{fragments :: navbar}"></header>
     <img src="https://trello-backgrounds.s3.amazonaws.com/SharedBackground/2215x2048/5fa9c73355b096b1e1786af0510a6fc4/photo-1481627834876-b7833e8f5570.webp"
-        alt="Image" class="img-fluid w-100 object-fit-cover" style="height: 100vh;">
-    <div class="position-absolute w-100 bg-white pb-5 top-50 start-50 translate-middle" style="opacity: 0.96;">
+        alt="Image" class="img-fluid w-100 object-fit-cover" style="height: 25vh;">
         
         <h1 class="display-1 text-center" style="color: rgb(103, 75, 29);">Statistics</h1>
         <hr class="border-black border-2">
 
-        <div class="container text-center mt-4">
+        <div class="container text-center mt-5">
             <div class="row justify-content-center gap-3">
-            
-                <div class="d-flex justify-content-center align-items-center">
-                    <p class="fw-bold mb-0 me-3">Please select a chart:</p>
-                    <select class="form-select w-auto" id="chart_type" name="chart_type">
-                        <option value="month_lendings" selected>Lendings per month</option>
-                        <option value="user_lendings">Lendings per user</option>
-                        <option value="books_category">Books by category</option>
-                    </select>
+                <div class="col-md-1">
+                    <button id="btn_statistics" class="btn btn-transparent w-100 mb-3">Statistics</button>
+                    <button id="btn_graphs" class="btn btn-transparent w-100">Graphs</button>
                 </div>
-
-                <div id="month_lendings" class="chart-div card border-3 mt-4">
-                    Content for Lendings per month
+                <div class="col-md-1">
+                    <div class="vr h-100"></div>
                 </div>
-                <div id="user_lendings" class="chart-div card border-3 mt-4" style="display: none;">
-                    Content for Lendings per user
+                <div class="col-md-8">
+                    <div id="statistics_section" class="card border-3 mt-4" style="display: none;">
+                        Content for Statistics. Temporarily here.
+                    </div>
+                    <div id="graphs_section" style="display: none;">
+                        <div class="d-flex justify-content-center align-items-center">
+                            <p class="fw-bold mb-0 me-3">Please select a chart:</p>
+                            <select class="form-select w-auto" id="chart_type" name="chart_type">
+                                <option value="month_lendings" selected>Lendings per month</option>
+                                <option value="user_lendings">Lendings per user</option>
+                                <option value="books_category">Books by category</option>
+                            </select>
+                        </div>
+                        <div id="month_lendings" class="chart-div card border-3 mt-4">
+                            Content for Lendings per month
+                        </div>
+                        <div id="user_lendings" class="chart-div card border-3 mt-4" style="display: none;">
+                            Content for Lendings per user
+                        </div>
+                        <div id="books_category" class="chart-div card border-3 mt-4 w-100" style="display: none;">
+                            Content for Books by category
+                        </div>
+                    </div>
                 </div>
-                <div id="books_category" class="chart-div card border-3 mt-4 w-auto" style="display: none;">
-                    Content for Books by category
-                </div>
-                
             </div>
         </div>
 
@@ -93,6 +103,16 @@
                 div.style.display = 'none';
             }
         });
+    });
+
+    document.getElementById('btn_statistics').addEventListener('click', function() {
+        document.getElementById('statistics_section').style.display = 'block';
+        document.getElementById('graphs_section').style.display = 'none';
+    });
+
+    document.getElementById('btn_graphs').addEventListener('click', function() {
+        document.getElementById('statistics_section').style.display = 'none';
+        document.getElementById('graphs_section').style.display = 'block';
     });
 </script>
 
