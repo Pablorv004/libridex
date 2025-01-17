@@ -19,5 +19,7 @@ public interface LendingService {
     List<Lending> findByUserIdAndEndDateIsNull(Integer userId);
     Map<User, Long> countLendingsGroupedByUser();
     Map<Book, Long> countLendingsGroupedByBook();
+    Map<String, Integer> countLendingsPerUser();
+    Map<String, Integer> countLendingsPerMonth();
     long count();
 }

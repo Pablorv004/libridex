@@ -184,6 +184,9 @@ public class AdminController {
         model.addAttribute("reservationsCount", reservationService.count());
         model.addAttribute("usersCount", userService.countByRoleNot("ROLE_ADMIN"));
         model.addAttribute("authorsCount", bookService.countDistinctAuthors());
+        model.addAttribute("booksPerGenre", bookService.countBooksPerGenre());
+        model.addAttribute("lendingsPerUser", lendingService.countLendingsPerUser());
+        model.addAttribute("lendingsPerMonth", lendingService.countLendingsPerMonth());
         return STATISTICS_VIEW;
     }
 

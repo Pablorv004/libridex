@@ -8,42 +8,6 @@
     <script src="https://kit.fontawesome.com/39fe04e284.js" crossorigin="anonymous"></script>
     <script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script type="text/javascript">
-
-        // Load the Visualization API and the corechart package.
-        google.charts.load('current', { 'packages': ['corechart'] });
-
-        // Set a callback to run when the Google Visualization API is loaded.
-        google.charts.setOnLoadCallback(drawChart);
-
-        // Callback that creates and populates a data table,
-        // instantiates the pie chart, passes in the data and
-        // draws it.
-        function drawChart() {
-
-            // Create the data table.
-            var data = new google.visualization.DataTable();
-            data.addColumn('string', 'Categories');
-            data.addColumn('number', 'Books');
-            data.addRows([
-                ['Science', 3],
-                ['Romance', 1],
-                ['Fantasy', 1],
-                ['Action', 1],
-            ]);
-
-            // Set chart options
-            var options = {
-                'title': 'Books per category',
-                'width': 750,
-                'height': 500
-            };
-
-            // Instantiate and draw our chart, passing in some options.
-            var chart = new google.visualization.PieChart(document.getElementById('books_category'));
-            chart.draw(data, options);
-        }
-    </script>
     <style>
         .hovercard {
             transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -79,6 +43,9 @@
                 <div class="vr h-100"></div>
             </div>
             <div class="col-md-8">
+
+                <!-- STATISTICS SECTION -->
+
                 <div id="statistics_section" class="card border-0 mt-4" style="display: none;">
                     <div class="row justify-content-between gap-4">
                         <div class="col-md-3">
@@ -171,25 +138,40 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- GRAPHS SECTION -->
+
                 <div id="graphs_section" style="display: none;">
                     <div class="d-flex justify-content-center align-items-center">
                         <p class="fw-bold mb-0 me-3">Please select a chart:</p>
-                        <select class="form-select w-auto" id="chart_type" name="chart_type">
-                            <option value="month_lendings" selected>Lendings per month</option>
+                        <select class="form-select w-auto" id="chart_data" name="chart_data">
+                            <option value="" selected>Select a chart</option>
+                            <option value="month_lendings">Lendings per month</option>
                             <option value="user_lendings">Lendings per user</option>
-                            <option value="books_category">Books by category</option>
+                            <option value="books_genre">Books by genre</option>
                         </select>
+                        <div class="form-check form-check-inline ms-3">
+                            <input class="form-check-input" type="radio" name="chart_type" id="pie_chart"
+                                value="pie_chart" checked>
+                            <label class="form-check-label" for="pie_chart">Pie Chart</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="chart_type" id="bar_chart"
+                                value="bar_chart">
+                            <label class="form-check-label" for="bar_chart">Bar Chart</label>
+                        </div>
                     </div>
-                    <div id="month_lendings" class="chart-div card border-3 mt-4">
+                    <div id="month_lendings" class="chart-div card border-3 mt-4" style="display: none;">
                         Content for Lendings per month
                     </div>
                     <div id="user_lendings" class="chart-div card border-3 mt-4" style="display: none;">
                         Content for Lendings per user
                     </div>
-                    <div id="books_category" class="chart-div card border-3 mt-4 w-100" style="display: none;">
-                        Content for Books by category
+                    <div id="books_genre" class="chart-div card border-3 mt-4 w-100" style="display: none;">
+                        Content for Books by genre
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
@@ -197,19 +179,8 @@
     </div>
 </body>
 
+<!-- Buttons event listeners -->
 <script>
-    document.getElementById('chart_type').addEventListener('change', function () {
-        var selectedValue = this.value;
-        var chartDivs = document.querySelectorAll('.chart-div');
-        chartDivs.forEach(function (div) {
-            if (div.id === selectedValue) {
-                div.style.display = 'block';
-            } else {
-                div.style.display = 'none';
-            }
-        });
-    });
-
     document.getElementById('btn_statistics').addEventListener('click', function () {
         document.getElementById('statistics_section').style.display = 'block';
         document.getElementById('graphs_section').style.display = 'none';
@@ -219,6 +190,107 @@
         document.getElementById('statistics_section').style.display = 'none';
         document.getElementById('graphs_section').style.display = 'block';
     });
+</script>
+
+<!-- Chart scripts -->
+<script type="text/javascript" th:inline="javascript">
+
+    // Read the data from back-end
+    var booksPerGenre = /*[[${booksPerGenre}]]*/ 'noValue';
+    var lendingsPerUser = /*[[${lendingsPerUser}]]*/ 'noValue';
+    var lendingsPerMonth = /*[[${lendingsPerMonth}]]*/ 'noValue';
+
+    // Load the Visualization API and the corechart package.
+    google.charts.load('current', { 'packages': ['corechart'] });
+
+    document.getElementById('chart_data').addEventListener('change', function () {
+        updateChart();
+    });
+
+    document.querySelectorAll('input[name="chart_type"]').forEach(function (radio) {
+        radio.addEventListener('change', function () {
+            updateChart();
+        });
+    });
+
+    function updateChart() {
+        var selectedValue = document.getElementById('chart_data').value;
+        var selectedPieChart = document.getElementById('pie_chart').checked;
+        var chartDivs = document.querySelectorAll('.chart-div');
+
+        chartDivs.forEach(function (div) {
+            if (div.id === selectedValue) {
+                div.style.display = 'block';
+                if (selectedValue === 'books_genre') {
+                    if (selectedPieChart) {
+                        drawPieChart(booksPerGenre, 'Genres', 'Books', 'Books per genre', 'books_genre');
+                    } else {
+                        drawBarChart(booksPerGenre, 'Genres', 'Books', 'Books per genre', 'books_genre');
+                    }
+                } else if (selectedValue === 'user_lendings') {
+                    if (selectedPieChart) {
+                        drawPieChart(lendingsPerUser, 'Users', 'Lendings', 'Lendings per user', 'user_lendings');
+                    } else {
+                        drawBarChart(lendingsPerUser, 'Users', 'Lendings', 'Lendings per user', 'user_lendings');
+                    }
+                } else if (selectedValue === 'month_lendings') {
+                    if (selectedPieChart) {
+                        drawPieChart(lendingsPerMonth, 'Months', 'Lendings', 'Lendings per month', 'month_lendings');
+                    } else {
+                        drawBarChart(lendingsPerMonth, 'Months', 'Lendings', 'Lendings per month', 'month_lendings');
+                    }
+                }
+            } else {
+                div.style.display = 'none';
+            }
+        });
+    }
+
+    function drawPieChart(datasource, column1, column2, title, divId) {
+        var real_data = datasource;
+
+        // Create the data table.
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', column1);
+        data.addColumn('number', column2);
+        Object.keys(real_data).forEach(function (key) {
+            data.addRow([key, real_data[key]]);
+        });
+
+        // Set chart options
+        var options = {
+            'title': title,
+            'width': 750,
+            'height': 500
+        };
+
+        // Instantiate and draw our chart, passing in some options.
+        var chart = new google.visualization.PieChart(document.getElementById(divId));
+        chart.draw(data, options);
+    }
+
+    function drawBarChart(datasource, column1, column2, title, divId) {
+        var real_data = datasource;
+
+        // Create the data table.
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', column1);
+        data.addColumn('number', column2);
+        Object.keys(real_data).forEach(function (key) {
+            data.addRow([key, real_data[key]]);
+        });
+
+        // Set chart options
+        var options = {
+            'title': title,
+            'width': 750,
+            'height': 500
+        };
+
+        // Instantiate and draw our chart, passing in some options.
+        var chart = new google.visualization.ColumnChart(document.getElementById(divId));
+        chart.draw(data, options);
+    }
 </script>
 
 </html>

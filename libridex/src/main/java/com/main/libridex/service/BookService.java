@@ -31,6 +31,8 @@ public interface BookService {
 
     Map<String, Integer> findAuthorsWithAmountByBook();
 
+    Map<String, Integer> countBooksPerGenre();
+
     void checkExistentBook(BookDTO bookDTO, BindingResult bResult);
 
     void setImage(BookDTO bookDTO, MultipartFile imageFile);

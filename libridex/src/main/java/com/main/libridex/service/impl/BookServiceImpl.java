@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -172,6 +173,17 @@ public class BookServiceImpl implements BookService {
     @Override
     public long countDistinctAuthors() {
         return bookRepository.countDistinctAuthors();
+    }
+
+    @Override
+    public Map<String, Integer> countBooksPerGenre() {
+        Map<String, Integer> booksPerGenre = new HashMap<>();
+        List<Book> books = bookRepository.findAll();
+        for(Book book : books) {
+            String genre = book.getGenre();
+            booksPerGenre.put(genre, 1 + booksPerGenre.getOrDefault(genre, 0));
+        }
+        return booksPerGenre;
     }
 
     @Override

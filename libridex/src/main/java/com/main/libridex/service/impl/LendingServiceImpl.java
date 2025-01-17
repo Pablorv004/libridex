@@ -2,6 +2,7 @@ package com.main.libridex.service.impl;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -152,6 +153,28 @@ public class LendingServiceImpl implements LendingService {
                         Map.Entry::getValue,
                         (e1, _) -> e1,
                         LinkedHashMap::new));
+    }
+
+    @Override
+    public Map<String, Integer> countLendingsPerUser() {
+        Map<String, Integer> lendingsPerUser = new HashMap<>();
+        List<Lending> lendings = lendingRepository.findAll();
+        for(Lending lending : lendings) {
+            String userName = lending.getUser().getName();
+            lendingsPerUser.put(userName, 1 + lendingsPerUser.getOrDefault(userName, 0));
+        }
+        return lendingsPerUser;
+    }
+
+    @Override
+    public Map<String, Integer> countLendingsPerMonth() {
+        Map<String, Integer> lendingsPerMonth = new HashMap<>();
+        List<Lending> lendings = lendingRepository.findAll();
+        for(Lending lending : lendings) {
+            String month = lending.getStartDate().getMonth().toString() + " (" + lending.getStartDate().getYear() + ")";
+            lendingsPerMonth.put(month, 1 + lendingsPerMonth.getOrDefault(month, 0));
+        }
+        return lendingsPerMonth;
     }
 
     @Override
