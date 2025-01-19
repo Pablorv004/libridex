@@ -199,13 +199,25 @@
         document.getElementById('graphs_section').style.display = 'block';
     });
 
-    document.getElementById('btn_search_user').addEventListener('click', function () {
+    function searchUser() {
         var searchInput = document.getElementById('user_search_input').value;
-        window.location.href = '/admin/statistics/' + searchInput;
+        if (searchInput.trim() === "") {
+            window.location.href = '/admin/statistics';
+        } else {
+            window.location.href = '/admin/statistics/' + searchInput;
+        }
+    }
+
+    document.getElementById('btn_search_user').addEventListener('click', searchUser);
+
+    document.getElementById('user_search_input').addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            searchUser();
+        }
     });
 
     window.addEventListener('load', function () {
-        var searchString = /*[[${searchString != null}]]*/ false;
+        var searchString = /*[[${searchString != ""}]]*/ false;
         if (searchString) {
             document.getElementById('statistics_section').style.display = 'block';
             document.getElementById('graphs_section').style.display = 'none';

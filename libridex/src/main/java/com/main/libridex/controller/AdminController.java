@@ -174,25 +174,12 @@ public class AdminController {
 
     // Statistics Endpoints
 
-    @GetMapping("/statistics")
-    public String getStatistics(Model model) {
+    @GetMapping({"/statistics", "/statistics/{searchString}"})
+    public String getStatistics(@PathVariable(required = false) String searchString, Model model) {
         accessLogger.accessed("admin/statistics");
-        model.addAttribute("mostActiveUsers", lendingService.countLendingsGroupedByUser());
-        model.addAttribute("mostLentBooks", lendingService.countLendingsGroupedByBook());
-        model.addAttribute("booksCount", bookService.count());
-        model.addAttribute("lendingsCount", lendingService.count());
-        model.addAttribute("reservationsCount", reservationService.count());
-        model.addAttribute("usersCount", userService.countByRoleNot("ROLE_ADMIN"));
-        model.addAttribute("authorsCount", bookService.countDistinctAuthors());
-        model.addAttribute("booksPerGenre", bookService.countBooksPerGenre());
-        model.addAttribute("lendingsPerUser", lendingService.countLendingsPerUser());
-        model.addAttribute("lendingsPerMonth", lendingService.countLendingsPerMonth());
-        return STATISTICS_VIEW;
-    }
-
-    @GetMapping("/statistics/{searchString}")
-    public String getStatistics(@PathVariable String searchString, Model model) {
-        accessLogger.accessed("admin/statistics");
+        if (searchString == null) {
+            searchString = "";
+        }
         model.addAttribute("searchString", searchString);
         model.addAttribute("mostActiveUsers", lendingService.filterLendingsPerUser(searchString));
         model.addAttribute("mostLentBooks", lendingService.countLendingsGroupedByBook());
