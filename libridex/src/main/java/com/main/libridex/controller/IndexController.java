@@ -11,6 +11,8 @@ import com.main.libridex.service.BookService;
 import com.main.libridex.service.LendingService;
 import com.main.libridex.service.UserService;
 
+import java.util.stream.Collectors;
+
 @Controller
 public class IndexController {
 
@@ -42,7 +44,7 @@ public class IndexController {
     public String index(Model model){
         model.addAttribute("latestBooks", bookService.findFirstNSortedByCreatedAt(6));
         model.addAttribute("mostReservedBooks", bookService.findFirstNMostReserved(6));
-        model.addAttribute("mostActiveUsers", lendingService.countLendingsGroupedByUser());
+        model.addAttribute("mostActiveUsers", lendingService.countLendingsGroupedByUser().entrySet().stream().limit(30).collect(Collectors.toList()));
         accessLogger.accessed("index");
         return INDEX;
     }
