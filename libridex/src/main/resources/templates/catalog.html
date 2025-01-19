@@ -98,7 +98,7 @@
             <div class="col-md-4 mb-4 ms-4">
                 <div class="p-3 border-start">
                     <h5>Search</h5>
-                    <form th:action="@{/books/search}" method="get" class="mb-3">
+                    <form th:action="@{/books/catalog}" method="get" class="mb-3">
                         <input type="text" name="query" class="form-control" placeholder="Search by title or author" th:value="${query}">
                         <input type="hidden" name="sortBy" th:value="${sortBy}">
                         <button type="submit" class="btn btn-primary mt-2">Search</button>
