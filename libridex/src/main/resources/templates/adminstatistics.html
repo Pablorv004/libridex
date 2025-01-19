@@ -21,6 +21,11 @@
         a {
             text-decoration: none;
         }
+
+        .scrollable-container {
+            max-height: 30vh;
+            overflow-y: auto;
+        }
     </style>
     <title>Libridex</title>
 </head>
@@ -43,9 +48,7 @@
                 <div class="vr h-100"></div>
             </div>
             <div class="col-md-8">
-
                 <!-- STATISTICS SECTION -->
-
                 <div id="statistics_section" class="card border-0 mt-4" style="display: none;">
                     <div class="row justify-content-between gap-4">
                         <div class="col-md-3">
@@ -92,7 +95,7 @@
                             <section>
                                 <h2 class="text-center" style="color: rgb(103, 75, 29);">Most Lent Books</h2>
                                 <hr>
-                                <ul class="list-group">
+                                <ul class="list-group scrollable-container">
                                     <li th:each="entry : ${mostLentBooks}"
                                         class="list-group-item d-flex justify-content-between align-items-center">
                                         <span th:text="${entry.key.title}"></span>
@@ -115,7 +118,12 @@
                             <section>
                                 <h2 class="text-center" style="color: rgb(103, 75, 29);">Most Active Users</h2>
                                 <hr>
-                                <ul class="list-group">
+                                <!-- Search Bar -->
+                                <div class="input-group mb-3">
+                                    <input type="text" id="user_search_input" class="form-control" placeholder="Search for a user" th:value="${searchString}">
+                                    <button class="btn btn-outline-secondary" type="button" id="btn_search_user">Search</button>
+                                </div>
+                                <ul class="list-group scrollable-container">
                                     <li th:each="entry : ${mostActiveUsers}" th:if="${entry.key.role != 'ROLE_ADMIN'}"
                                         class="list-group-item d-flex justify-content-between align-items-center hovercard">
                                         <a class="text-decoration-none text-black d-flex justify-content-between w-100"
@@ -180,7 +188,7 @@
 </body>
 
 <!-- Buttons event listeners -->
-<script>
+<script type="text/javascript" th:inline="javascript">
     document.getElementById('btn_statistics').addEventListener('click', function () {
         document.getElementById('statistics_section').style.display = 'block';
         document.getElementById('graphs_section').style.display = 'none';
@@ -189,6 +197,19 @@
     document.getElementById('btn_graphs').addEventListener('click', function () {
         document.getElementById('statistics_section').style.display = 'none';
         document.getElementById('graphs_section').style.display = 'block';
+    });
+
+    document.getElementById('btn_search_user').addEventListener('click', function () {
+        var searchInput = document.getElementById('user_search_input').value;
+        window.location.href = '/admin/statistics/' + searchInput;
+    });
+
+    window.addEventListener('load', function () {
+        var searchString = /*[[${searchString != null}]]*/ false;
+        if (searchString) {
+            document.getElementById('statistics_section').style.display = 'block';
+            document.getElementById('graphs_section').style.display = 'none';
+        }
     });
 </script>
 

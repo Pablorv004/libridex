@@ -20,6 +20,7 @@ public interface LendingService {
     Map<User, Long> countLendingsGroupedByUser();
     Map<Book, Long> countLendingsGroupedByBook();
     Map<String, Integer> countLendingsPerUser();
+    Map<User, Integer> filterLendingsPerUser(String searchString);
     Map<String, Integer> countLendingsPerMonth();
     long count();
 }

@@ -167,6 +167,19 @@ public class LendingServiceImpl implements LendingService {
     }
 
     @Override
+    public Map<User, Integer> filterLendingsPerUser(String searchString) {
+        Map<User, Integer> lendingsPerUser = new HashMap<>();
+        List<Lending> lendings = lendingRepository.findAll();
+        for (Lending lending : lendings) {
+            User user = lending.getUser();
+            if (user.getName().toLowerCase().contains(searchString.toLowerCase())) {
+                lendingsPerUser.put(user, 1 + lendingsPerUser.getOrDefault(user, 0));
+            }
+        }
+        return lendingsPerUser;
+    }
+
+    @Override
     public Map<String, Integer> countLendingsPerMonth() {
         Map<String, Integer> lendingsPerMonth = new HashMap<>();
         List<Lending> lendings = lendingRepository.findAll();

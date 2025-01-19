@@ -190,6 +190,23 @@ public class AdminController {
         return STATISTICS_VIEW;
     }
 
+    @GetMapping("/statistics/{searchString}")
+    public String getStatistics(@PathVariable String searchString, Model model) {
+        accessLogger.accessed("admin/statistics");
+        model.addAttribute("searchString", searchString);
+        model.addAttribute("mostActiveUsers", lendingService.filterLendingsPerUser(searchString));
+        model.addAttribute("mostLentBooks", lendingService.countLendingsGroupedByBook());
+        model.addAttribute("booksCount", bookService.count());
+        model.addAttribute("lendingsCount", lendingService.count());
+        model.addAttribute("reservationsCount", reservationService.count());
+        model.addAttribute("usersCount", userService.countByRoleNot("ROLE_ADMIN"));
+        model.addAttribute("authorsCount", bookService.countDistinctAuthors());
+        model.addAttribute("booksPerGenre", bookService.countBooksPerGenre());
+        model.addAttribute("lendingsPerUser", lendingService.countLendingsPerUser());
+        model.addAttribute("lendingsPerMonth", lendingService.countLendingsPerMonth());
+        return STATISTICS_VIEW;
+    }
+
     @GetMapping("/userlendings/{id}")
     public String getUserLendings(@PathVariable Integer id, Model model) {
         model.addAttribute("user", userService.findById(id));
