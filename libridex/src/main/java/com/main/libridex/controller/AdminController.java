@@ -40,6 +40,8 @@ public class AdminController {
     private static final String RESERVATIONS_VIEW = "adminreservations";
     private static final String STATISTICS_VIEW = "adminstatistics";
     private static final String USER_LENDINGS_VIEW = "adminuserlendings";
+    private static final String LENDINGS_VIEW = "adminlendings";
+    private static final String BOOK_LENDINGS_VIEW = "adminbooklendings";
 
     @Autowired
     @Qualifier("userService")
@@ -125,7 +127,7 @@ public class AdminController {
 
     @GetMapping("/books/delete/{id}")
     public String deleteBook(@PathVariable(required = true) Integer id, RedirectAttributes flash) {
-        if(bookService.findById(id).isLent()){
+        if (bookService.findById(id).isLent()) {
             flash.addFlashAttribute("error", "Book could not be deleted because it's being lent!");
             return "redirect:/admin/books";
         }
@@ -166,40 +168,61 @@ public class AdminController {
     }
 
     @GetMapping("/reservations/delete/{id}")
-    public String endUserReservation(@PathVariable(required = true) Integer id , Model model) {
+    public String endUserReservation(@PathVariable(required = true) Integer id, Model model) {
+        accessLogger.accessed("admin/reservations/delete/" + id);
         reservationService.endReservationByForce(id);
         return "redirect:/admin/reservations";
     }
 
-
     // Statistics Endpoints
 
-    @GetMapping({"/statistics", "/statistics/{searchString}"})
-    public String getStatistics(@PathVariable(required = false) String searchString, Model model) {
+    @GetMapping({ "/statistics", "/statistics/user/{userSearch}", "/statistics/book/{bookSearch}" })
+    public String getStatistics(@PathVariable(required = false) String userSearch, @PathVariable(required = false) String bookSearch, Model model) {
         accessLogger.accessed("admin/statistics");
-        if (searchString == null) {
-            searchString = "";
-        }
-        model.addAttribute("searchString", searchString);
-        model.addAttribute("mostActiveUsers", lendingService.filterLendingsPerUser(searchString));
-        model.addAttribute("mostLentBooks", lendingService.countLendingsGroupedByBook());
+        if(userSearch == null)
+            userSearch = "";
+        if(bookSearch == null)
+            bookSearch = "";
+        model.addAttribute("userSearch", userSearch);
+        model.addAttribute("bookSearch", bookSearch);
+        model.addAttribute("mostActiveUsers", lendingService.filterLendingsPerUser(userSearch));
+        model.addAttribute("mostLentBooks", lendingService.filterLendingsPerBook(bookSearch));
         model.addAttribute("booksCount", bookService.count());
         model.addAttribute("lendingsCount", lendingService.count());
         model.addAttribute("reservationsCount", reservationService.count());
         model.addAttribute("usersCount", userService.countByRoleNot("ROLE_ADMIN"));
         model.addAttribute("authorsCount", bookService.countDistinctAuthors());
         model.addAttribute("booksPerGenre", bookService.countBooksPerGenre());
-        model.addAttribute("lendingsPerUser", lendingService.countLendingsPerUser());
         model.addAttribute("lendingsPerMonth", lendingService.countLendingsPerMonth());
         return STATISTICS_VIEW;
     }
 
     @GetMapping("/userlendings/{id}")
     public String getUserLendings(@PathVariable Integer id, Model model) {
+        accessLogger.accessed("admin/userlendings/" + id);
         model.addAttribute("user", userService.findById(id));
         model.addAttribute("lendings", lendingService.findByUserId(id));
         accessLogger.accessed("admin/userlendings");
         return USER_LENDINGS_VIEW;
+    }
+
+    @GetMapping({ "/lendings", "/lendings/{searchString}" })
+    public String getLendings(@PathVariable(required = false) String searchString, Model model) {
+        if (searchString == null) 
+            searchString = "";
+        accessLogger.accessed("admin/lendings");
+        model.addAttribute("lendings", lendingService.findAll());
+        model.addAttribute("searchString", searchString);
+        model.addAttribute("mostLentBooks", lendingService.filterLendingsPerBook(searchString));
+        return LENDINGS_VIEW;
+    }
+
+    @GetMapping("/booklendings/{id}")
+    public String getMethodName(Model model, @PathVariable Integer id) {
+        accessLogger.accessed("admin/booklendings/" + id);
+        model.addAttribute("book", bookService.findById(id));
+        model.addAttribute("lendings", lendingService.findByBookId(id));
+        return BOOK_LENDINGS_VIEW;
     }
     
 

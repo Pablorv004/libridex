@@ -38,7 +38,7 @@
     <h1 class="display-1 text-center" style="color: rgb(103, 75, 29);">Statistics</h1>
     <hr class="border-black border-2">
 
-    <div class="container text-center mt-5">
+    <div class="container text-center mt-5 mb-5">
         <div class="row justify-content-center gap-3">
             <div class="col-md-1">
                 <button id="btn_statistics" class="btn btn-transparent w-100 mb-3">Statistics</button>
@@ -95,20 +95,29 @@
                             <section>
                                 <h2 class="text-center" style="color: rgb(103, 75, 29);">Most Lent Books</h2>
                                 <hr>
+                                <!-- Search Bar -->
+                                <div class="input-group mb-3">
+                                    <input type="text" id="book_search_input" class="form-control" placeholder="Search for a book" th:value="${bookSearch}">
+                                    <button class="btn btn-outline-secondary" type="button" id="btn_search_book">Search</button>
+                                </div>
                                 <ul class="list-group scrollable-container">
+                                    <p class="text-center" th:if="${mostLentBooks.isEmpty()}">No books found matching criteria.</p>
                                     <li th:each="entry : ${mostLentBooks}"
-                                        class="list-group-item d-flex justify-content-between align-items-center">
-                                        <span th:text="${entry.key.title}"></span>
-                                        <span class="badge rounded-pill"
-                                            th:classappend="${entry.value < 10} ? 'bg-primary' : ''"
-                                            th:if="${entry.value < 10}" th:text="${entry.value}">0</span>
-                                        <span class="badge rounded-pill"
-                                            th:classappend="${entry.value >= 10 && entry.value < 50} ? 'bg-danger' : ''"
-                                            th:if="${entry.value >= 10 && entry.value < 50}"
-                                            th:text="${entry.value}">0</span>
-                                        <span class="badge rounded-pill"
-                                            th:classappend="${entry.value >= 50} ? 'bg-warning' : ''"
-                                            th:if="${entry.value >= 50}" th:text="${entry.value}">0</span>
+                                        class="list-group-item d-flex justify-content-between align-items-center hovercard">
+                                        <a class="text-decoration-none text-black d-flex justify-content-between w-100"
+                                            th:href="@{/admin/booklendings/{id}(id=${entry.key.id})}">
+                                            <span th:text="${entry.key.title}">Book Title</span>
+                                            <span class="badge rounded-pill"
+                                                th:classappend="${entry.value < 10} ? 'bg-primary' : ''"
+                                                th:if="${entry.value < 10}" th:text="${entry.value}">0</span>
+                                            <span class="badge rounded-pill"
+                                                th:classappend="${entry.value >= 10 && entry.value < 50} ? 'bg-danger' : ''"
+                                                th:if="${entry.value >= 10 && entry.value < 50}"
+                                                th:text="${entry.value}">0</span>
+                                            <span class="badge rounded-pill"
+                                                th:classappend="${entry.value >= 50} ? 'bg-warning' : ''"
+                                                th:if="${entry.value >= 50}" th:text="${entry.value}">0</span>
+                                        </a>
                                     </li>
                                 </ul>
                             </section>
@@ -120,10 +129,11 @@
                                 <hr>
                                 <!-- Search Bar -->
                                 <div class="input-group mb-3">
-                                    <input type="text" id="user_search_input" class="form-control" placeholder="Search for a user" th:value="${searchString}">
+                                    <input type="text" id="user_search_input" class="form-control" placeholder="Search for a user" th:value="${userSearch}">
                                     <button class="btn btn-outline-secondary" type="button" id="btn_search_user">Search</button>
                                 </div>
                                 <ul class="list-group scrollable-container">
+                                    <p class="text-center" th:if="${mostActiveUsers.isEmpty()}">No users found matching criteria.</p>
                                     <li th:each="entry : ${mostActiveUsers}" th:if="${entry.key.role != 'ROLE_ADMIN'}"
                                         class="list-group-item d-flex justify-content-between align-items-center hovercard">
                                         <a class="text-decoration-none text-black d-flex justify-content-between w-100"
@@ -204,7 +214,7 @@
         if (searchInput.trim() === "") {
             window.location.href = '/admin/statistics';
         } else {
-            window.location.href = '/admin/statistics/' + searchInput;
+            window.location.href = '/admin/statistics/user/' + searchInput;
         }
     }
 
@@ -213,6 +223,23 @@
     document.getElementById('user_search_input').addEventListener('keypress', function (e) {
         if (e.key === 'Enter') {
             searchUser();
+        }
+    });
+
+    function searchBook() {
+        var searchInput = document.getElementById('book_search_input').value;
+        if (searchInput.trim() === "") {
+            window.location.href = '/admin/statistics';
+        } else {
+            window.location.href = '/admin/statistics/book/' + searchInput;
+        }
+    }
+
+    document.getElementById('btn_search_book').addEventListener('click', searchBook);
+
+    document.getElementById('book_search_input').addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            searchBook();
         }
     });
 

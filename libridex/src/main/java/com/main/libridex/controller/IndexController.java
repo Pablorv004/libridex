@@ -44,7 +44,7 @@ public class IndexController {
     public String index(Model model){
         model.addAttribute("latestBooks", bookService.findFirstNSortedByCreatedAt(6));
         model.addAttribute("mostReservedBooks", bookService.findFirstNMostReserved(6));
-        model.addAttribute("mostActiveUsers", lendingService.countLendingsGroupedByUser().entrySet().stream().limit(30).collect(Collectors.toList()));
+        model.addAttribute("mostActiveUsers", lendingService.filterLendingsPerUser("").entrySet().stream().limit(30).collect(Collectors.toList()));
         accessLogger.accessed("index");
         return INDEX;
     }
