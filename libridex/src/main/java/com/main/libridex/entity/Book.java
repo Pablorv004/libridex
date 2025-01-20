@@ -1,6 +1,7 @@
 package com.main.libridex.entity;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,13 +33,13 @@ public class Book {
     private String genre;
 
     @Column(nullable = false)
-    private LocalDate publishing_date;
+    private LocalDate publishingDate;
+
+    @Column(nullable = false)
+    private LocalDateTime createdAt;
 
     @Column(nullable = false)
     private boolean lent;
-
-    @Column(nullable = false)
-    private boolean reserved;
 
     @OneToMany(mappedBy = "book")
     public List<Reservation> reservations = new ArrayList<>();

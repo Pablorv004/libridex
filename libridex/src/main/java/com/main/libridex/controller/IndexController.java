@@ -8,7 +8,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import com.main.libridex.components.logger.AccessLogger;
 import com.main.libridex.service.BookService;
+import com.main.libridex.service.LendingService;
 import com.main.libridex.service.UserService;
+
+import java.util.stream.Collectors;
 
 @Controller
 public class IndexController {
@@ -27,6 +30,10 @@ public class IndexController {
     @Qualifier("userService")
     private UserService userService;
 
+    @Autowired
+    @Qualifier("lendingService")
+    private LendingService lendingService;
+
     @GetMapping("/")
     public String redirectToIndex() {
         accessLogger.redirected("index");
@@ -35,9 +42,9 @@ public class IndexController {
 
     @GetMapping("/index")
     public String index(Model model){
-        model.addAttribute("latestBooks", bookService.findFirstN(6));
-        model.addAttribute("mostReservedBooks", bookService.findFirstN(6));
-        model.addAttribute("mostActiveUsers", userService.findFirstN(6));
+        model.addAttribute("latestBooks", bookService.findFirstNSortedByCreatedAt(6));
+        model.addAttribute("mostReservedBooks", bookService.findFirstNMostReserved(6));
+        model.addAttribute("mostActiveUsers", lendingService.filterLendingsPerUser("").entrySet().stream().limit(30).collect(Collectors.toList()));
         accessLogger.accessed("index");
         return INDEX;
     }

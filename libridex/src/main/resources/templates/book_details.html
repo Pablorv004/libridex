@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head th:replace="~{fragments :: head}">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<style>
+    .zoom {
+        transition: transform 0.5s ease;
+    }
+
+    .zoom:hover {
+        transform: scale(1.5);
+    }
+</style>
+
+<body>
+    <header th:replace="~{fragments :: navbar}"></header>
+    <img src="https://trello-backgrounds.s3.amazonaws.com/SharedBackground/2215x2048/5fa9c73355b096b1e1786af0510a6fc4/photo-1481627834876-b7833e8f5570.webp"
+        alt="Image" class="img-fluid w-100 object-fit-cover" style="height: 100vh;">
+    <div class="position-absolute w-100 bg-white pb-5 top-50 start-50 translate-middle">
+        <div class="container mt-5">
+            <div class="row">
+                <div class="col-md-5 text-center d-flex flex-column align-items-center justify-content-center">
+                    <img th:src="${book.image}" class="img-fluid rounded mb-4 w-50 zoom" style="max-height: 25vh;"
+                        alt="Book Image">
+                    <h2 class="d-block" th:text="${book.title}">Book Title</h2>
+                    <div class="d-block justify-content-center">
+                        <hr class="w-50">
+                    </div>
+                </div>
+                <div class="col-md-5 ps-4">
+                    <h3 class="text-center" style="color: rgb(103, 75, 29);">Details</h3>
+                    <hr>
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4>Author</h4>
+                        <h5><span th:text="${book.author}">Author Name</span></h5>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4>Genre</h4>
+                        <h5><span th:text="${book.genre}">Genre</span></h5>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4>Publishing Date</h4>
+                        <h5><span th:text="${book.publishingDate}">Publishing Date</span></h5>
+                    </div>
+                    <hr>
+
+                    <!-- SHOW RETURN BUTTON WHEN THE BOOK IS BEING LEND BY THE USER -->
+                    <div th:if="${isLendByUser}" class="d-flex flex-column align-items-center mt- mb-3">
+                        <div class="alert alert-info text-center">
+                            <p class="fw-bold">It look's like you're actually lending this book! Use the button below if
+                                you want to return it.</p>
+                            <p><span class="fw-bold">Max return date: </span><span th:text="${returnDate}"></span></p>
+                            <a class="btn btn-dark rounded-2 p-2"
+                                th:href="@{'/books/return/' + ${book.id}}"
+                                style="background-color: rgb(103, 75, 29); border-color: rgb(103, 75, 29); width: 10vh;">
+                                <span>Return</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- SHOW RESERVE BUTTON IF THE BOOK IS LEND, BUT NOT BEING LEND BY THE USER -->
+                    <div th:if="${book.lent && !isLendByUser && !isReservedByUser}" class="d-flex flex-column align-items-center mt- mb-3">
+                        <div class="alert alert-info text-center">
+                            <p class="fw-bold">This book is actually being lend, but you can make a reserve for it.</p>
+                            <a class="btn btn-dark rounded-2 p-2"
+                                th:href="@{'/books/reserve/' + ${book.id}}"
+                                style="background-color: rgb(103, 75, 29); border-color: rgb(103, 75, 29); width: 10vh;">
+                                <span>Reserve</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- SHOW RESERVE BUTTON WHEN BOOK IS NOT LEND BUT IS RESERVED -->
+                    <div th:if="${!book.lent && !isReservedByUser && isReserved}" class="d-flex flex-column align-items-center mt- mb-3">
+                        <div class="alert alert-info text-center">
+                            <p class="fw-bold">This book is actually reserved, but you can make a reserve for it and wait your turn.</p>
+                            <a class="btn btn-dark rounded-2 p-2"
+                                th:href="@{'/books/reserve/' + ${book.id}}"
+                                style="background-color: rgb(103, 75, 29); border-color: rgb(103, 75, 29); width: 10vh;">
+                                <span>Reserve</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- SHOW CANCEL RESERVE BUTTON IF THE BOOK IS ALREADY RESERVED BY THE USER -->
+                    <div th:if="${isReservedByUser}" class="d-flex flex-column align-items-center mt- mb-3">
+                        <div class="alert alert-info text-center">
+                            <p class="fw-bold">It looks like you already made a reserve for this book, use the button below
+                                if you want to cancel it.
+                            </p>
+                            <a class="btn btn-dark rounded-2 p-2"
+                                th:href="@{'/books/cancelreserve/' + ${book.id}}"
+                                style="background-color: rgb(103, 75, 29); border-color: rgb(103, 75, 29); width: 10vh;">
+                                <span>Cancel reserve</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- SHOW LEND BUTTON IF IS USER TURN TO LEND OR BOOK IS NOT RESERVED -->
+                    <div th:if="${ (!book.lent && isUserTurn) || (!book.lent && !isReserved) }" class="d-flex flex-column align-items-center mt- mb-3">
+                        <p th:if= "${isUserTurn}" class="fw-bolder">Or you can lend it now, it's your turn!</p>
+                        <p th:if= "${!book.lent && isUserTurn  || (!book.lent && !isReserved) }" class="fw-bolder">This book is available!</p>
+                        <a class="btn btn-dark rounded-2 p-2" th:href="@{'/books/lend/' + ${book.id}}"
+                            style="background-color: rgb(103, 75, 29); border-color: rgb(103, 75, 29); width: 10vh;">
+                            <span>Lend</span>
+                        </a>
+                    </div>
+
+                    <div class="alert alert-info" th:if="${success != null}" th:text="${success}"></div>
+                    <div class="alert alert-danger" th:if="${error != null}" th:text="${error}"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

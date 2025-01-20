@@ -15,9 +15,11 @@ import org.springframework.security.web.SecurityFilterChain;
 public class WebSecurityConfig {
 
         @Bean
-        public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
                 http.authorizeHttpRequests((requests) -> requests
-                                .requestMatchers("/", "/index","/login/**" ,"/register", "/register/send", "/catalog", "/about").permitAll()
+                                .requestMatchers("/", "/index", "/login/**", "/register", "/register/send",
+                                                "/books/catalog", "/books/details/**", "/about", "/books/search")
+                                .permitAll()
                                 // Users allowed accesses
                                 // Admin only accesses
                                 .requestMatchers("/admin/**").hasRole("ADMIN")
@@ -31,7 +33,8 @@ public class WebSecurityConfig {
                                                 "/images/**",
                                                 "/vendor/**",
                                                 "/fonts/**",
-                                                "/webjars/**").permitAll()
+                                                "/webjars/**")
+                                .permitAll()
                                 .anyRequest().authenticated())
                                 .formLogin((form) -> form
                                                 .loginPage("/login")
@@ -47,7 +50,7 @@ public class WebSecurityConfig {
         }
 
         @Bean
-        public PasswordEncoder passwordEncoder() {
+        PasswordEncoder passwordEncoder() {
                 return new BCryptPasswordEncoder();
         }
 }

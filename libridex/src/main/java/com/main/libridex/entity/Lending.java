@@ -8,10 +8,18 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 @Entity
-@Data
+@Getter
+@Setter
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
 public class Lending {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,7 +33,14 @@ public class Lending {
     @JoinColumn(name = "book_id", nullable = false)
     private Book book;
 
-    private LocalDate start_date;
+    private LocalDate startDate;
 
-    private LocalDate end_date;
+    private LocalDate endDate;
+
+    public Lending(User user, Book book, LocalDate startDate, LocalDate endDate) {
+        this.user = user;
+        this.book = book;
+        this.startDate = startDate;
+        this.endDate = endDate;
+    }
 }

@@ -36,23 +36,27 @@
                 </div>
                 <div class="mb-3">
                     <label for="genre" class="form-label text-white">Genre</label>
-                    <input type="text" th:field="*{genre}" class="form-control" id="genre" name="genre">
+                    <select th:field="*{genre}" class="form-select" id="genre" name="genre">
+                        <option value="Fiction" selected>Fiction</option>
+                        <option value="Romance">Romance</option>
+                        <option value="Science Fiction">Science Fiction</option>
+                        <option value="Fantasy">Fantasy</option>
+                        <option value="Mystery">Mystery</option>
+                        <option value="Terror">Terror</option>
+                        <option value="History">History</option>
+                    </select>
                     <div class="text-danger" th:if="${#fields.hasErrors('genre')}" th:errors="*{genre}"></div>
                 </div>
                 <div class="mb-3">
-                    <label for="publishing_date" class="form-label text-white">Publishing Date</label>
-                    <input type="date" th:field="*{publishing_date}" class="form-control" id="publishing_date" name="publishing_date">
-                    <div class="text-danger" th:if="${#fields.hasErrors('publishing_date')}" th:errors="*{publishing_date}"></div>
+                    <label for="publishingDate" class="form-label text-white">Publishing Date</label>
+                    <input type="date" th:field="*{publishingDate}" class="form-control" id="publishingDate" name="publishingDate">
+                    <div class="text-danger" th:if="${#fields.hasErrors('publishingDate')}" th:errors="*{publishingDate}"></div>
                 </div>
                 <!-- <div class="mb-4" th:if= "${book.id != null}">
                     <label class="form-label text-white d-block">Status</label>
                     <div class="form-check form-check-inline mb-2">
                         <input type="checkbox" th:field="*{lent}" class="form-check-input me-2" id="lent" name="lent">
                         <label for="lent" class="form-check-label text-white">Lent</label>
-                    </div>
-                    <div class="form-check form-check-inline d-block">
-                        <input type="checkbox" th:field="*{reserved}" class="form-check-input me-2" id="reserved" name="reserved">
-                        <label for="reserved" class="form-check-label text-white">Reserved</label>
                     </div>
                 </div> -->
                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">

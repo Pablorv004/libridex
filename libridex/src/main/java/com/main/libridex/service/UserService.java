@@ -29,4 +29,5 @@ public interface UserService {
     SecureUserDTO toSecureDTO(User user);
     User register(User user);
     boolean isRegisterValid(UserDTO userDTO, BindingResult bindingResult);
+    long countByRoleNot(String role);
 }

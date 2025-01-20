@@ -1,6 +1,7 @@
 package com.main.libridex.model;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -24,7 +25,7 @@ public class BookDTO {
     private Integer id;
 
     @NotBlank(message = "The title must not be empty")
-    @Size(max = 20, message = "The title cannot be more than 20 characters long")
+    @Size(max = 30, message = "The title cannot be more than 20 characters long")
     private String title;
 
     private String image;
@@ -40,9 +41,9 @@ public class BookDTO {
     @NotNull(message = "You must select a publishing date")
     @PastOrPresent(message = "You cannot select a future date")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate publishing_date;
+    private LocalDate publishingDate;
+
+    private LocalDateTime createdAt;
 
     private boolean lent;
-
-    private boolean reserved;
 }
