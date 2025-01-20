@@ -92,6 +92,8 @@ public class BookController {
 
         if(reservationService.endReservation(bookId)){
             flash.addFlashAttribute("success", "Book reserve cancelled successfully!");
+            if(reservationService.findUserCurrentReservation(bookId) != null && reservationService.isUserTurn(bookId))
+                emailService.sendEmailWithImage(reservationService.findUserCurrentReservation(bookId).getEmail(), "Book Reservation Availability", "", bookService.findById(bookId).getTitle(), bookService.findById(bookId).getImage());
             return "redirect:/books/catalog";
         }
 
