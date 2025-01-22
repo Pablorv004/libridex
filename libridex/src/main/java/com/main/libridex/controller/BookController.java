@@ -92,6 +92,8 @@ public class BookController {
 
         if(reservationService.endReservation(bookId)){
             flash.addFlashAttribute("success", "Book reserve cancelled successfully!");
+            if(reservationService.findUserCurrentReservation(bookId) != null && reservationService.isUserTurn(bookId))
+                emailService.sendEmailReservationAvailable(reservationService.findUserCurrentReservation(bookId).getEmail(), bookService.findById(bookId).getTitle(), bookService.findById(bookId).getImage());
             return "redirect:/books/catalog";
         }
 
@@ -120,7 +122,7 @@ public class BookController {
     public String returnBook(@PathVariable int bookId, RedirectAttributes flash) {
         lendingService.endLending(bookId);
         if(reservationService.findUserCurrentReservation(bookId) != null)
-            emailService.sendEmailWithImage(reservationService.findUserCurrentReservation(bookId).getEmail(), "Book Reservation Availability", "", bookService.findById(bookId).getTitle(), bookService.findById(bookId).getImage());
+            emailService.sendEmailReservationAvailable(reservationService.findUserCurrentReservation(bookId).getEmail(), bookService.findById(bookId).getTitle(), bookService.findById(bookId).getImage());
         flash.addFlashAttribute("success", "Book returned successfully!");
         return "redirect:/books/catalog";
     }
@@ -134,8 +136,14 @@ public class BookController {
             @RequestParam(required = false) List<String> authors,
             @RequestParam(defaultValue = "title_asc") String sortBy,
             @RequestParam(defaultValue = "all") String publishingDateRange,
+            @RequestParam(required = false) String query,
             Model model) {
-        Page<Book> bookPage = bookService.findPaginatedWithFilters(page, genres, authors, sortBy, publishingDateRange);
+        Page<Book> bookPage;
+        if (query != null && !query.isEmpty()) {
+            bookPage = bookService.searchBooks(query, page);
+        } else {
+            bookPage = bookService.findPaginatedWithFilters(page, genres, authors, sortBy, publishingDateRange);
+        }
         Map<String, Integer> genresWithAmount = bookService.findGenresWithAmountByBook();
         Map<String, Integer> authorsWithAmount = bookService.findAuthorsWithAmountByBook();
         model.addAttribute("genresWithAmount", genresWithAmount);
@@ -145,30 +153,8 @@ public class BookController {
         model.addAttribute("totalPages", bookPage.getTotalPages());
         model.addAttribute("sortBy", sortBy);
         model.addAttribute("publishingDateRange", publishingDateRange);
-        accessLogger.accessed("catalog");
-        return CATALOG;
-    }
-
-    @GetMapping("/search")
-    public String search(@RequestParam String query,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(required = false) List<String> genres,
-            @RequestParam(required = false) List<String> authors,
-            @RequestParam(defaultValue = "title_asc") String sortBy,
-            Model model) {
-        Page<Book> bookPage = bookService.searchBooks(query, page);
-        Map<String, Integer> genresWithAmount = bookService.findGenresWithAmountByBook();
-        Map<String, Integer> authorsWithAmount = bookService.findAuthorsWithAmountByBook();
-        model.addAttribute("genresWithAmount", genresWithAmount);
-        model.addAttribute("authorsWithAmount", authorsWithAmount);
-        model.addAttribute("books", bookPage.getContent());
-        model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", bookPage.getTotalPages());
         model.addAttribute("query", query);
-        model.addAttribute("genres", genres);
-        model.addAttribute("authors", authors);
-        model.addAttribute("sortBy", sortBy);
-        accessLogger.accessed("search");
+        accessLogger.accessed("catalog");
         return CATALOG;
     }
 }

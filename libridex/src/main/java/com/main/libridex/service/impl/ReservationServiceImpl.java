@@ -116,6 +116,11 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
+    public long count() {
+        return reservationRepository.count();
+    }
+
+    @Override
     public boolean isReserved(Integer bookId) {
         List<Reservation> reservations = reservationRepository.findByBookId(bookId);
 
@@ -162,6 +167,11 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     public List<Reservation> findByUserId(Integer userId) {
         return reservationRepository.findByUserId(userId);
+    }
+
+    @Override
+    public List<Reservation> findByUserIdAndStatusNotEnded(Integer userId) {
+        return reservationRepository.findByUserIdAndStatusNotEnded(userId);
     }
 
     // MODEL MAPPERS

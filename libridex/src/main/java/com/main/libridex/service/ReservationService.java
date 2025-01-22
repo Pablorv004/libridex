@@ -20,4 +20,6 @@ public interface ReservationService {
     Reservation findBookCurrentReservation(Integer id);
     User findUserCurrentReservation(Integer id);
     List<Reservation> findByUserId(Integer userId);
+    List<Reservation> findByUserIdAndStatusNotEnded(Integer userId);
+    long count();
 }

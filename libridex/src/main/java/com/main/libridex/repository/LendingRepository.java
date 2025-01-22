@@ -17,4 +17,7 @@ public interface LendingRepository extends JpaRepository<Lending, Serializable> 
     List<Lending> findByUserIdAndEndDateIsNull(Integer id);
     @Query("SELECT l.user.id, COUNT(l) FROM Lending l GROUP BY l.user.id")
     List<Object[]> countLendingsGroupedByUserId();
+    @Query("SELECT l.book.id, COUNT(l) FROM Lending l GROUP BY l.book.id")
+    List<Object[]> countLendingsGroupedByBookId();
+    long count();
 }

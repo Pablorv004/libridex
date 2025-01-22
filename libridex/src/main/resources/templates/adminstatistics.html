@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}" />
+    <script src="https://kit.fontawesome.com/39fe04e284.js" crossorigin="anonymous"></script>
+    <script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <style>
+        .hovercard {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .hovercard:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        .scrollable-container {
+            max-height: 30vh;
+            overflow-y: auto;
+        }
+    </style>
+    <title>Libridex</title>
+</head>
+
+<body>
+    <header th:replace="~{fragments :: navbar}"></header>
+    <img src="https://trello-backgrounds.s3.amazonaws.com/SharedBackground/2215x2048/5fa9c73355b096b1e1786af0510a6fc4/photo-1481627834876-b7833e8f5570.webp"
+        alt="Image" class="img-fluid w-100 object-fit-cover" style="height: 25vh;">
+
+    <h1 class="display-1 text-center" style="color: rgb(103, 75, 29);">Statistics</h1>
+    <hr class="border-black border-2">
+
+    <div class="container text-center mt-5 mb-5">
+        <div class="row justify-content-center gap-3">
+            <div class="col-md-1">
+                <button id="btn_statistics" class="btn btn-transparent w-100 mb-3">Statistics</button>
+                <button id="btn_graphs" class="btn btn-transparent w-100">Graphs</button>
+            </div>
+            <div class="col-md-1">
+                <div class="vr h-100"></div>
+            </div>
+            <div class="col-md-8">
+                <!-- STATISTICS SECTION -->
+                <div id="statistics_section" class="card border-0 mt-4">
+                    <div class="row justify-content-between gap-4">
+                        <div class="col-md-3">
+                            <h2 class="text-center" style="color: rgb(103, 75, 29);">Total Stats</h2>
+                            <hr class="mb-0">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <p class="fw-bold mb-0">Lendings:</p>
+                                    <p class="mb-0" th:text="${lendingsCount}"></p>
+                                </div>
+                            </div>
+                            <hr class="mt-0 mb-0">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <p class="fw-bold mb-0">Reservations:</p>
+                                    <p class="mb-0" th:text="${reservationsCount}"></p>
+                                </div>
+                            </div>
+                            <hr class="mt-0 mb-0">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <p class="fw-bold mb-0">Users:</p>
+                                    <p class="mb-0" th:text="${usersCount}"></p>
+                                </div>
+                            </div>
+                            <hr class="mt-0 mb-0">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <p class="fw-bold mb-0">Books:</p>
+                                    <p class="mb-0" th:text="${booksCount}"></p>
+                                </div>
+                            </div>
+                            <hr class="mt-0 mb-0">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <p class="fw-bold mb-0">Authors:</p>
+                                    <p class="mb-0" th:text="${authorsCount}"></p>
+                                </div>
+                            </div>
+                            <hr class="mt-0 mb-0">
+                        </div>
+                        <div class="col-md-4">
+                            <hr class="d-md-none">
+                            <section>
+                                <h2 class="text-center" style="color: rgb(103, 75, 29);">Most Lent Books</h2>
+                                <hr>
+                                <!-- Search Bar -->
+                                <div class="input-group mb-3">
+                                    <input type="text" id="book_search_input" class="form-control" placeholder="Search for a book" th:value="${bookSearch}">
+                                    <button class="btn btn-outline-secondary" type="button" id="btn_search_book">Search</button>
+                                </div>
+                                <ul class="list-group scrollable-container">
+                                    <p class="text-center" th:if="${mostLentBooks.isEmpty()}">No books found matching criteria.</p>
+                                    <li th:each="entry : ${mostLentBooks}"
+                                        class="list-group-item d-flex justify-content-between align-items-center hovercard">
+                                        <a class="text-decoration-none text-black d-flex justify-content-between w-100"
+                                            th:href="@{/admin/booklendings/{id}(id=${entry.key.id})}">
+                                            <span th:text="${entry.key.title}">Book Title</span>
+                                            <span class="badge rounded-pill"
+                                                th:classappend="${entry.value < 10} ? 'bg-primary' : ''"
+                                                th:if="${entry.value < 10}" th:text="${entry.value}">0</span>
+                                            <span class="badge rounded-pill"
+                                                th:classappend="${entry.value >= 10 && entry.value < 50} ? 'bg-danger' : ''"
+                                                th:if="${entry.value >= 10 && entry.value < 50}"
+                                                th:text="${entry.value}">0</span>
+                                            <span class="badge rounded-pill"
+                                                th:classappend="${entry.value >= 50} ? 'bg-warning' : ''"
+                                                th:if="${entry.value >= 50}" th:text="${entry.value}">0</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </section>
+                        </div>
+                        <div class="col-md-4">
+                            <hr class="d-md-none">
+                            <section>
+                                <h2 class="text-center" style="color: rgb(103, 75, 29);">Most Active Users</h2>
+                                <hr>
+                                <!-- Search Bar -->
+                                <div class="input-group mb-3">
+                                    <input type="text" id="user_search_input" class="form-control" placeholder="Search for a user" th:value="${userSearch}">
+                                    <button class="btn btn-outline-secondary" type="button" id="btn_search_user">Search</button>
+                                </div>
+                                <ul class="list-group scrollable-container">
+                                    <p class="text-center" th:if="${mostActiveUsers.isEmpty()}">No users found matching criteria.</p>
+                                    <li th:each="entry : ${mostActiveUsers}" th:if="${entry.key.role != 'ROLE_ADMIN'}"
+                                        class="list-group-item d-flex justify-content-between align-items-center hovercard">
+                                        <a class="text-decoration-none text-black d-flex justify-content-between w-100"
+                                            th:href="@{/admin/userlendings/{id}(id=${entry.key.id})}">
+                                            <span th:text="${entry.key.name}">User Name</span>
+                                            <span class="badge rounded-pill"
+                                                th:classappend="${entry.value < 10} ? 'bg-primary' : ''"
+                                                th:if="${entry.value < 10}" th:text="${entry.value}">0</span>
+                                            <span class="badge rounded-pill"
+                                                th:classappend="${entry.value >= 10 && entry.value < 50} ? 'bg-danger' : ''"
+                                                th:if="${entry.value >= 10 && entry.value < 50}"
+                                                th:text="${entry.value}">0</span>
+                                            <span class="badge rounded-pill"
+                                                th:classappend="${entry.value >= 50} ? 'bg-warning' : ''"
+                                                th:if="${entry.value >= 50}" th:text="${entry.value}">0</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </section>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- GRAPHS SECTION -->
+
+                <div id="graphs_section" style="display: none;">
+                    <div class="d-flex justify-content-center align-items-center">
+                        <p class="fw-bold mb-0 me-3">Please select a chart:</p>
+                        <select class="form-select w-auto" id="chart_data" name="chart_data">
+                            <option value="" selected>Select a chart</option>
+                            <option value="month_lendings">Lendings per month</option>
+                            <option value="user_lendings">Lendings per user</option>
+                            <option value="books_genre">Books by genre</option>
+                        </select>
+                        <div class="form-check form-check-inline ms-3">
+                            <input class="form-check-input" type="radio" name="chart_type" id="pie_chart"
+                                value="pie_chart" checked>
+                            <label class="form-check-label" for="pie_chart">Pie Chart</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="chart_type" id="bar_chart"
+                                value="bar_chart">
+                            <label class="form-check-label" for="bar_chart">Bar Chart</label>
+                        </div>
+                    </div>
+                    <div id="month_lendings" class="chart-div card border-3 mt-4" style="display: none;">
+                        Content for Lendings per month
+                    </div>
+                    <div id="user_lendings" class="chart-div card border-3 mt-4" style="display: none;">
+                        Content for Lendings per user
+                    </div>
+                    <div id="books_genre" class="chart-div card border-3 mt-4 w-100" style="display: none;">
+                        Content for Books by genre
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    </div>
+</body>
+
+<!-- Buttons event listeners -->
+<script>
+    document.getElementById('btn_statistics').addEventListener('click', function () {
+        document.getElementById('statistics_section').style.display = 'block';
+        document.getElementById('graphs_section').style.display = 'none';
+    });
+
+    document.getElementById('btn_graphs').addEventListener('click', function () {
+        document.getElementById('statistics_section').style.display = 'none';
+        document.getElementById('graphs_section').style.display = 'block';
+    });
+
+    function searchUser() {
+        var searchInput = document.getElementById('user_search_input').value;
+        if (searchInput.trim() === "") {
+            window.location.href = '/admin/statistics';
+        } else {
+            window.location.href = '/admin/statistics/user/' + searchInput;
+        }
+    }
+
+    document.getElementById('btn_search_user').addEventListener('click', searchUser);
+
+    document.getElementById('user_search_input').addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            searchUser();
+        }
+    });
+
+    function searchBook() {
+        var searchInput = document.getElementById('book_search_input').value;
+        if (searchInput.trim() === "") {
+            window.location.href = '/admin/statistics';
+        } else {
+            window.location.href = '/admin/statistics/book/' + searchInput;
+        }
+    }
+
+    document.getElementById('btn_search_book').addEventListener('click', searchBook);
+
+    document.getElementById('book_search_input').addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            searchBook();
+        }
+    });
+
+</script>
+
+<!-- Chart scripts -->
+<script type="text/javascript" th:inline="javascript">
+
+    // Read the data from back-end
+    var booksPerGenre = /*[[${booksPerGenre}]]*/ 'noValue';
+    var lendingsPerUser = /*[[${lendingsPerUser}]]*/ 'noValue';
+    var lendingsPerMonth = /*[[${lendingsPerMonth}]]*/ 'noValue';
+
+    // Load the Visualization API and the corechart package.
+    google.charts.load('current', { 'packages': ['corechart'] });
+
+    document.getElementById('chart_data').addEventListener('change', function () {
+        updateChart();
+    });
+
+    document.querySelectorAll('input[name="chart_type"]').forEach(function (radio) {
+        radio.addEventListener('change', function () {
+            updateChart();
+        });
+    });
+
+    function updateChart() {
+        var selectedValue = document.getElementById('chart_data').value;
+        var selectedPieChart = document.getElementById('pie_chart').checked;
+        var chartDivs = document.querySelectorAll('.chart-div');
+
+        chartDivs.forEach(function (div) {
+            if (div.id === selectedValue) {
+                div.style.display = 'block';
+                if (selectedValue === 'books_genre') {
+                    if (selectedPieChart) {
+                        drawPieChart(booksPerGenre, 'Genres', 'Books', 'Books per genre', 'books_genre');
+                    } else {
+                        drawBarChart(booksPerGenre, 'Genres', 'Books', 'Books per genre', 'books_genre');
+                    }
+                } else if (selectedValue === 'user_lendings') {
+                    if (selectedPieChart) {
+                        drawPieChart(lendingsPerUser, 'Users', 'Lendings', 'Lendings per user', 'user_lendings');
+                    } else {
+                        drawBarChart(lendingsPerUser, 'Users', 'Lendings', 'Lendings per user', 'user_lendings');
+                    }
+                } else if (selectedValue === 'month_lendings') {
+                    if (selectedPieChart) {
+                        drawPieChart(lendingsPerMonth, 'Months', 'Lendings', 'Lendings per month', 'month_lendings');
+                    } else {
+                        drawBarChart(lendingsPerMonth, 'Months', 'Lendings', 'Lendings per month', 'month_lendings');
+                    }
+                }
+            } else {
+                div.style.display = 'none';
+            }
+        });
+    }
+
+    function drawPieChart(datasource, column1, column2, title, divId) {
+        var real_data = datasource;
+
+        // Create the data table.
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', column1);
+        data.addColumn('number', column2);
+        Object.keys(real_data).forEach(function (key) {
+            data.addRow([key, real_data[key]]);
+        });
+
+        // Set chart options
+        var options = {
+            'title': title,
+            'width': 750,
+            'height': 500
+        };
+
+        // Instantiate and draw our chart, passing in some options.
+        var chart = new google.visualization.PieChart(document.getElementById(divId));
+        chart.draw(data, options);
+    }
+
+    function drawBarChart(datasource, column1, column2, title, divId) {
+        var real_data = datasource;
+
+        // Create the data table.
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', column1);
+        data.addColumn('number', column2);
+        Object.keys(real_data).forEach(function (key) {
+            data.addRow([key, real_data[key]]);
+        });
+
+        // Set chart options
+        var options = {
+            'title': title,
+            'width': 750,
+            'height': 500
+        };
+
+        // Instantiate and draw our chart, passing in some options.
+        var chart = new google.visualization.ColumnChart(document.getElementById(divId));
+        chart.draw(data, options);
+    }
+</script>
+
+</html>

@@ -165,6 +165,27 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    public long count() {
+        return bookRepository.count();
+    }
+
+    @Override
+    public long countDistinctAuthors() {
+        return bookRepository.countDistinctAuthors();
+    }
+
+    @Override
+    public Map<String, Integer> countBooksPerGenre() {
+        Map<String, Integer> booksPerGenre = new HashMap<>();
+        List<Book> books = bookRepository.findAll();
+        for(Book book : books) {
+            String genre = book.getGenre();
+            booksPerGenre.put(genre, 1 + booksPerGenre.getOrDefault(genre, 0));
+        }
+        return booksPerGenre;
+    }
+
+    @Override
     public BookDTO findById(Integer id) {
         return toDTO(bookRepository.findById(id));
     }
@@ -210,7 +231,7 @@ public class BookServiceImpl implements BookService {
         } else {
             // If no image is selected, set the default image
             if (bookDTO.getImage().isBlank()) {
-                bookDTO.setImage("https://res.cloudinary.com/dlmbw4who/image/upload/v1734182372/default_image.png");
+                bookDTO.setImage("https://res.cloudinary.com/dlmbw4who/image/upload/v1736968304/default_image_vvjykw.png");
             }
         }
     }

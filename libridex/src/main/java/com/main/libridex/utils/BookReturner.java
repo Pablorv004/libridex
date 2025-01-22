@@ -60,8 +60,8 @@ public class BookReturner {
                 // Send email telling the next user with a reserve that the book is available
                 // for lending
                 if (reservationService.findUserCurrentReservation(bookId) != null)
-                    emailService.sendEmailWithImage(reservationService.findUserCurrentReservation(bookId).getEmail(),
-                            "Book Reservation Availability", "", bookService.findById(bookId).getTitle(),
+                    emailService.sendEmailReservationAvailable(reservationService.findUserCurrentReservation(bookId).getEmail(),
+                            bookService.findById(bookId).getTitle(),
                             bookService.findById(bookId).getImage());
             }
         }

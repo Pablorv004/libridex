@@ -31,6 +31,8 @@ public interface BookService {
 
     Map<String, Integer> findAuthorsWithAmountByBook();
 
+    Map<String, Integer> countBooksPerGenre();
+
     void checkExistentBook(BookDTO bookDTO, BindingResult bResult);
 
     void setImage(BookDTO bookDTO, MultipartFile imageFile);
@@ -40,4 +42,8 @@ public interface BookService {
     Page<Book> findPaginatedWithFilters(int pageNumber, List<String> genres, List<String> authors, String sortBy, String publishingDateRange);
 
     Page<Book> searchBooks(String query, int pageNumber);
+
+    long countDistinctAuthors();
+
+    long count();
 }

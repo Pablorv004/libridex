@@ -2,6 +2,7 @@ package com.main.libridex.service.impl;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -129,24 +130,67 @@ public class LendingServiceImpl implements LendingService {
     }
 
     @Override
+    public long count() {
+        return lendingRepository.count();
+    }
+
+    @Override
     public List<Lending> findByUserIdAndEndDateIsNull(Integer userId) {
         return lendingRepository.findByUserIdAndEndDateIsNull(userId);
     }
 
     @Override
-    public Map<User, Long> countLendingsGroupedByUser() {
-        List<Object[]> results = lendingRepository.countLendingsGroupedByUserId();
-        return results.stream()
-                .collect(Collectors.toMap(
-                        result -> userRepository.findById((Integer) result[0]).orElse(null),
-                        result -> (Long) result[1]))
-                .entrySet().stream()
-                .sorted(Map.Entry.<User, Long>comparingByValue().reversed())
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        Map.Entry::getValue,
-                        (e1, _) -> e1,
-                        LinkedHashMap::new));
+    public List<Lending> findAll() {
+        return lendingRepository.findAll();
+    }
+
+        @Override
+        public Map<User, Integer> filterLendingsPerUser(String searchString) {
+        Map<User, Integer> lendingsPerUser = new HashMap<>();
+        List<Lending> lendings = lendingRepository.findAll();
+        for (Lending lending : lendings) {
+            User user = lending.getUser();
+            if (user.getName().toLowerCase().contains(searchString.toLowerCase())) {
+            lendingsPerUser.put(user, 1 + lendingsPerUser.getOrDefault(user, 0));
+            }
+        }
+        return lendingsPerUser.entrySet().stream()
+            .sorted(Map.Entry.<User, Integer>comparingByValue().reversed())
+            .collect(Collectors.toMap(
+                Map.Entry::getKey,
+                Map.Entry::getValue,
+                (e1, _) -> e1,
+                LinkedHashMap::new));
+        }
+
+        @Override
+        public Map<Book, Integer> filterLendingsPerBook(String searchString) {
+        Map<Book, Integer> lendingsPerBook = new HashMap<>();
+        List<Lending> lendings = lendingRepository.findAll();
+        for (Lending lending : lendings) {
+            Book book = lending.getBook();
+            if (book.getTitle().toLowerCase().contains(searchString.toLowerCase())) {
+            lendingsPerBook.put(book, 1 + lendingsPerBook.getOrDefault(book, 0));
+            }
+        }
+        return lendingsPerBook.entrySet().stream()
+            .sorted(Map.Entry.<Book, Integer>comparingByValue().reversed())
+            .collect(Collectors.toMap(
+                Map.Entry::getKey,
+                Map.Entry::getValue,
+                (e1, _) -> e1,
+                LinkedHashMap::new));
+        }
+
+        @Override
+        public Map<String, Integer> countLendingsPerMonth() {
+        Map<String, Integer> lendingsPerMonth = new HashMap<>();
+        List<Lending> lendings = lendingRepository.findAll();
+        for(Lending lending : lendings) {
+            String month = lending.getStartDate().getMonth().toString() + " (" + lending.getStartDate().getYear() + ")";
+            lendingsPerMonth.put(month, 1 + lendingsPerMonth.getOrDefault(month, 0));
+        }
+        return lendingsPerMonth;
     }
 
     // MODEL MAPPERS

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head th:replace="~{fragments :: head}"></head>
+
+<body>
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.min.css">
+    <header th:replace="~{fragments :: navbar}"></header>
+    <img src="https://trello-backgrounds.s3.amazonaws.com/SharedBackground/2215x2048/5fa9c73355b096b1e1786af0510a6fc4/photo-1481627834876-b7833e8f5570.webp"
+        alt="Image" class="img-fluid w-100 object-fit-cover" style="height: 25vh;">
+    <div class="container text-center mt-5">
+        <div class="alert alert-info" th:if= "${success != null}" th:text="${success}"></div>
+        <h1 style="color: rgb(103, 75, 29);" th:text="${book.title + ' Lendings'}"></h1>
+        <hr class="border-black border-2">
+        <div class="mb-5">
+            <table id="usersTable" class="table table-striped table-bordered" th:if= "${!lendings.isEmpty()}">
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="lending : ${lendings}">
+                        <td th:text="${lending.user.name}"></td>
+                        <td th:text="${lending.startDate}"></td>
+                        <td th:text="${lending.endDate}"></td>
+                    </tr>
+                </tbody>
+            </table>
+            <a th:href= "@{/admin/lendings}" class="btn btn-primary me-2">Show All Lendings</a>
+            <a th:href= "@{/admin/statistics}" class="btn btn-secondary">Show All Statistics</a>
+        </div>
+    </div>
+</body>
+<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
+<script>
+    new DataTable('#usersTable', {
+        lengthMenu: [5, 10, 25, 50, 100],
+        responsive: true
+    });
+</script>
+</html>

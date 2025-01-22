@@ -27,12 +27,12 @@ public class EmailServiceImpl implements EmailService{
     }
 
     @Override
-    public void sendEmailWithImage(String to, String subject, String text, String bookName, String bookImageUrl) {
+    public void sendEmailReservationAvailable(String to, String bookName, String bookImageUrl) {
         MimeMessage message = emailSender.createMimeMessage();
         try {
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
             helper.setTo(to);
-            helper.setSubject(subject);
+            helper.setSubject("Book Reservation Availability");
             String[] parts = to.split("@");
             String username = parts[0];
             String htmlMsg = "<html><body>"
