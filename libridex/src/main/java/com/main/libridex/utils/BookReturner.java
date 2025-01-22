@@ -12,6 +12,7 @@ import com.main.libridex.repository.BookRepository;
 import com.main.libridex.repository.LendingRepository;
 import com.main.libridex.service.BookService;
 import com.main.libridex.service.EmailService;
+import com.main.libridex.service.LendingService;
 import com.main.libridex.service.ReservationService;
 
 @Component
@@ -39,8 +40,8 @@ public class BookReturner {
     /**
      * Processes the return of books by checking all lendings in the repository.
      * If a lending's limit date has passed and the book has not been returned,
-     * it sets the end date, marks the book as not lent, and updates the
-     * repositories.
+     * it sets the end date, marks the book as not lent, updates the
+     * repositories and sends an email to the user notificating about the book return.
      * Additionally, if there is a reservation for the book, it sends an email
      * notification to the next user in the reservation queue.
      */
@@ -56,6 +57,9 @@ public class BookReturner {
                 l.getBook().setLent(false);
                 bookRepository.save(l.getBook());
                 lendingRepository.save(l);
+
+                // Send email to the user notificating about the late book return
+                emailService.sendEmailReturnLate(l.getUser().getEmail(), bookService.findById(bookId).getTitle(), bookService.findById(bookId).getImage());
 
                 // Send email telling the next user with a reserve that the book is available
                 // for lending

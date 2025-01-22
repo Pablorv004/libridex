@@ -106,5 +106,31 @@ public class EmailServiceImpl implements EmailService{
             e.printStackTrace();
         }
     }
+
+    @Override
+    public void sendEmailReturnLate(String to, String bookName, String bookImageUrl) {
+        MimeMessage message = emailSender.createMimeMessage();
+        try {
+            MimeMessageHelper helper = new MimeMessageHelper(message, true);
+            helper.setTo(to);
+            helper.setSubject("About the book that you lent some time ago...");
+            String[] parts = to.split("@");
+            String username = parts[0];
+            String htmlMsg = "<html><body>"
+                    + "<h1>Libridex</h1>"
+                    + "<br>"
+                    + "<h2>Dear " + username + ",</h2>"
+                    + "<img src='" + bookImageUrl + "' alt='Book Image' />"
+                    + "<p>We've noticed that you did not return the book: <b>" + bookName + "</b> in time, so we did it for you!</p>"
+                    + "<p>Thank you for using our services!</p>"
+                    + "<p>Best regards,</p>"
+                    + "<p>Libridex Team</p>"
+                    + "</body></html>";
+            helper.setText(htmlMsg, true);
+            emailSender.send(message);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+    }
     
 }
