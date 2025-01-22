@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -110,7 +111,8 @@ public class BookController {
 
         if(lentSuccessfully){
             flash.addFlashAttribute("success", "Book lent successfully!");
-            emailService.sendEmailLending(reservationService.findUserCurrentReservation(bookId).getEmail(), bookService.findById(bookId).getTitle(), bookService.findById(bookId).getImage());
+            String email = SecurityContextHolder.getContext().getAuthentication().getName();
+            emailService.sendEmailLending(email, bookService.findById(bookId).getTitle(), bookService.findById(bookId).getImage());
             reservationService.endReservation(bookId);
             return "redirect:/books/catalog";
         }
@@ -121,9 +123,11 @@ public class BookController {
 
     @GetMapping("/return/{bookId}")
     public String returnBook(@PathVariable int bookId, RedirectAttributes flash) {
+        String email = lendingService.findUserCurrentLending(bookId).getEmail();
         lendingService.endLending(bookId);
+        emailService.sendEmailReturn(email, bookService.findById(bookId).getTitle(), bookService.findById(bookId).getImage());
         if(reservationService.findUserCurrentReservation(bookId) != null)
-            emailService.sendEmailReturn(reservationService.findUserCurrentReservation(bookId).getEmail(), bookService.findById(bookId).getTitle(), bookService.findById(bookId).getImage());
+            emailService.sendEmailReservationAvailable(reservationService.findUserCurrentReservation(bookId).getEmail(), bookService.findById(bookId).getTitle(), bookService.findById(bookId).getImage());
         flash.addFlashAttribute("success", "Book returned successfully!");
         return "redirect:/books/catalog";
     }
