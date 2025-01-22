@@ -110,6 +110,7 @@ public class BookController {
 
         if(lentSuccessfully){
             flash.addFlashAttribute("success", "Book lent successfully!");
+            emailService.sendEmailLending(reservationService.findUserCurrentReservation(bookId).getEmail(), bookService.findById(bookId).getTitle(), bookService.findById(bookId).getImage());
             reservationService.endReservation(bookId);
             return "redirect:/books/catalog";
         }
@@ -122,7 +123,7 @@ public class BookController {
     public String returnBook(@PathVariable int bookId, RedirectAttributes flash) {
         lendingService.endLending(bookId);
         if(reservationService.findUserCurrentReservation(bookId) != null)
-            emailService.sendEmailReservationAvailable(reservationService.findUserCurrentReservation(bookId).getEmail(), bookService.findById(bookId).getTitle(), bookService.findById(bookId).getImage());
+            emailService.sendEmailReturn(reservationService.findUserCurrentReservation(bookId).getEmail(), bookService.findById(bookId).getTitle(), bookService.findById(bookId).getImage());
         flash.addFlashAttribute("success", "Book returned successfully!");
         return "redirect:/books/catalog";
     }

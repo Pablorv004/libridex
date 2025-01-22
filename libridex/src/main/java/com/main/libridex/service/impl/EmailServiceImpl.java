@@ -53,5 +53,58 @@ public class EmailServiceImpl implements EmailService{
             e.printStackTrace();
         }
     }
+
+    @Override
+    public void sendEmailLending(String to, String bookName, String bookImageUrl) {
+        MimeMessage message = emailSender.createMimeMessage();
+        try {
+            MimeMessageHelper helper = new MimeMessageHelper(message, true);
+            helper.setTo(to);
+            helper.setSubject("Book lending effective");
+            String[] parts = to.split("@");
+            String username = parts[0];
+            String htmlMsg = "<html><body>"
+                    + "<h1>Libridex</h1>"
+                    + "<br>"
+                    + "<h2>Dear " + username + ",</h2>"
+                    + "<img src='" + bookImageUrl + "' alt='Book Image' />"
+                    + "<p>You've successfully lent the book: <b>" + bookName + "</b>You have a total of one week to return it.</p>"
+                    + "<p>You may find more information on how to return it and your profile on our site.</p>"
+                    + "<p>Thank you for using our services!</p>"
+                    + "<p>Best regards,</p>"
+                    + "<p>Libridex Team</p>"
+                    + "</body></html>";
+            helper.setText(htmlMsg, true);
+            emailSender.send(message);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void sendEmailReturn(String to, String bookName, String bookImageUrl) {
+        MimeMessage message = emailSender.createMimeMessage();
+        try {
+            MimeMessageHelper helper = new MimeMessageHelper(message, true);
+            helper.setTo(to);
+            helper.setSubject("Book return effective");
+            String[] parts = to.split("@");
+            String username = parts[0];
+            String htmlMsg = "<html><body>"
+                    + "<h1>Libridex</h1>"
+                    + "<br>"
+                    + "<h2>Dear " + username + ",</h2>"
+                    + "<img src='" + bookImageUrl + "' alt='Book Image' />"
+                    + "<p>You've successfully returned the book: <b>" + bookName + "</b></p>"
+                    + "<p>Thank you for using our services!</p>"
+                    + "<p>Best regards,</p>"
+                    + "<p>Libridex Team</p>"
+                    + "</body></html>";
+            helper.setText(htmlMsg, true);
+            emailSender.send(message);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+    }
     
 }
