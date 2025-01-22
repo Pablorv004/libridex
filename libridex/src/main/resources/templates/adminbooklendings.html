@@ -13,7 +13,6 @@
         <h1 style="color: rgb(103, 75, 29);" th:text="${book.title + ' Lendings'}"></h1>
         <hr class="border-black border-2">
         <div class="mb-5">
-            <a th:href= "@{/admin/lendings}" class="btn btn-primary">Back</a>
             <table id="usersTable" class="table table-striped table-bordered" th:if= "${!lendings.isEmpty()}">
                 <thead>
                     <tr>
@@ -30,6 +29,8 @@
                     </tr>
                 </tbody>
             </table>
+            <a th:href= "@{/admin/lendings}" class="btn btn-primary me-2">Show All Lendings</a>
+            <a th:href= "@{/admin/statistics}" class="btn btn-secondary">Show All Statistics</a>
         </div>
     </div>
 </body>
