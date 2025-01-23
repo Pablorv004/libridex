@@ -60,7 +60,7 @@ public class EmailServiceImpl implements EmailService{
         try {
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
             helper.setTo(to);
-            helper.setSubject("Book lending effective");
+            helper.setSubject("Book Successfully Lent");
             String[] parts = to.split("@");
             String username = parts[0];
             String htmlMsg = "<html><body>"
@@ -87,7 +87,7 @@ public class EmailServiceImpl implements EmailService{
         try {
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
             helper.setTo(to);
-            helper.setSubject("Book return effective");
+            helper.setSubject("Book Successfully Returned");
             String[] parts = to.split("@");
             String username = parts[0];
             String htmlMsg = "<html><body>"
@@ -113,7 +113,7 @@ public class EmailServiceImpl implements EmailService{
         try {
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
             helper.setTo(to);
-            helper.setSubject("About the book that you lent some time ago...");
+            helper.setSubject("About the book you borrowed some time ago...");
             String[] parts = to.split("@");
             String username = parts[0];
             String htmlMsg = "<html><body>"
