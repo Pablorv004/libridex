@@ -5,15 +5,15 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.4.1</version>
+		<version>3.4.2</version>
 		<relativePath />
 		<!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.main</groupId>
 	<artifactId>libridex</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.8.0-BETA</version>
 	<name>libridex</name>
-	<description>Demo project for Spring Boot</description>
+	<description>Online bookstore manager.</description>
 	<url />
 	<licenses>
 		<license />
