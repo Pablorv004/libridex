@@ -27,6 +27,7 @@ public class WebSecurityConfig {
                                 .requestMatchers(
                                                 "/resources/**",
                                                 "/images/**",
+                                                "/icon/**",
                                                 "/static/**",
                                                 "/css/**",
                                                 "/js/**",
