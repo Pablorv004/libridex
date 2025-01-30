@@ -60,7 +60,7 @@ public class EmailServiceImpl implements EmailService{
         try {
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
             helper.setTo(to);
-            helper.setSubject("Book lending effective");
+            helper.setSubject("Book Successfully Lent");
             String[] parts = to.split("@");
             String username = parts[0];
             String htmlMsg = "<html><body>"
@@ -68,7 +68,7 @@ public class EmailServiceImpl implements EmailService{
                     + "<br>"
                     + "<h2>Dear " + username + ",</h2>"
                     + "<img src='" + bookImageUrl + "' alt='Book Image' />"
-                    + "<p>You've successfully lent the book: <b>" + bookName + "</b>You have a total of one week to return it.</p>"
+                    + "<p>You've successfully lent the book: <b>" + bookName + "</b>. You have a total of one week to return it.</p>"
                     + "<p>You may find more information on how to return it and your profile on our site.</p>"
                     + "<p>Thank you for using our services!</p>"
                     + "<p>Best regards,</p>"
@@ -87,7 +87,7 @@ public class EmailServiceImpl implements EmailService{
         try {
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
             helper.setTo(to);
-            helper.setSubject("Book return effective");
+            helper.setSubject("Book Successfully Returned");
             String[] parts = to.split("@");
             String username = parts[0];
             String htmlMsg = "<html><body>"
@@ -95,7 +95,7 @@ public class EmailServiceImpl implements EmailService{
                     + "<br>"
                     + "<h2>Dear " + username + ",</h2>"
                     + "<img src='" + bookImageUrl + "' alt='Book Image' />"
-                    + "<p>You've successfully returned the book: <b>" + bookName + "</b></p>"
+                    + "<p>You've successfully returned the book: <b>" + bookName + "</b>.</p>"
                     + "<p>Thank you for using our services!</p>"
                     + "<p>Best regards,</p>"
                     + "<p>Libridex Team</p>"
@@ -113,7 +113,7 @@ public class EmailServiceImpl implements EmailService{
         try {
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
             helper.setTo(to);
-            helper.setSubject("About the book that you lent some time ago...");
+            helper.setSubject("About the book you borrowed some time ago...");
             String[] parts = to.split("@");
             String username = parts[0];
             String htmlMsg = "<html><body>"

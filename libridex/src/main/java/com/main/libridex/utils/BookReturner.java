@@ -12,7 +12,6 @@ import com.main.libridex.repository.BookRepository;
 import com.main.libridex.repository.LendingRepository;
 import com.main.libridex.service.BookService;
 import com.main.libridex.service.EmailService;
-import com.main.libridex.service.LendingService;
 import com.main.libridex.service.ReservationService;
 
 @Component
