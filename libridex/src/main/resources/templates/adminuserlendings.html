@@ -26,7 +26,7 @@
                     <tr th:each="lending : ${lendings}">
                         <td th:text="${lending.book.title}"></td>
                         <td th:text="${lending.startDate}"></td>
-                        <td th:text="${lending.endDate}"></td>
+                        <td th:text="${lending.endDate != null ? lending.endDate : 'Ongoing'}"></td>
                     </tr>
                 </tbody>
             </table>
