@@ -92,6 +92,15 @@ public class LendingServiceImpl implements LendingService {
     }
 
     @Override
+    public User findUserCurrentLending(Integer bookId) {
+        for (Lending l : findByBookId(bookId))
+            if (l.getBook().getId() == bookId && l.getEndDate() == null)
+                return l.getUser();
+
+        return null;
+    }
+
+    @Override
     public List<Lending> getAllLendings() {
         List<LendingDTO> lendingDTOs = new ArrayList<>();
         for (Lending lending : lendingRepository.findAll())

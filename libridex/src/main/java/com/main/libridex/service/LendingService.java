@@ -13,6 +13,7 @@ public interface LendingService {
     boolean createLending(Integer bookId);
     void endLending(Integer id);
     List<Lending> getAllLendings();
+    User findUserCurrentLending(Integer id);
     int countUserActiveLendings(User user, int bookId);
     boolean isLendByUser(Integer bookId);
     Lending findBookCurrentLending(Integer id);

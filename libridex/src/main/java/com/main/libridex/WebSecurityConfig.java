@@ -27,6 +27,7 @@ public class WebSecurityConfig {
                                 .requestMatchers(
                                                 "/resources/**",
                                                 "/images/**",
+                                                "/icon/**",
                                                 "/static/**",
                                                 "/css/**",
                                                 "/js/**",
@@ -35,6 +36,11 @@ public class WebSecurityConfig {
                                                 "/fonts/**",
                                                 "/webjars/**")
                                 .permitAll()
+                                // Only allow users to lend, reserve and return.
+                                .requestMatchers("/books/lend/**", "/books/reserve/**", "/books/cancelreserve/**",
+                                                "/books/return/**",
+                                                "/reservations/**")
+                                .hasRole("USER")
                                 .anyRequest().authenticated())
                                 .formLogin((form) -> form
                                                 .loginPage("/login")

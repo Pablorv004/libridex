@@ -1,7 +1,7 @@
 # Libridex
 
 Libridex is an online management service for libraries. It provides a comprehensive solution for managing library resources, users, and transactions efficiently.
-
+Fully deployed at [Libridex Live](https://libridex.live/)
 ## Features
 
 - **User Management**: Manage library users with ease.

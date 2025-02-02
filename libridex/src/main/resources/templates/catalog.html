@@ -112,10 +112,6 @@
                         <option value="upload_date_desc" th:selected="${sortBy == 'upload_date_desc'}">Upload Date (Newest to Oldest)</option>
                     </select>
                     <h5 class="d-flex">Filters</h5>
-                    <div class="d-flex mb-3">
-                        <button type="button" class="btn btn-secondary" onclick="resetFilters()">Reset</button>
-                        <button type="button" class="btn btn-primary ms-2" onclick="applyFilters()">Apply</button>
-                    </div>
                     <div class="mb-3">
                         <label>Genres</label>
                         <div class="form-check" style="max-height: 150px; overflow-y: auto;">
@@ -154,6 +150,10 @@
                             <input class="form-check-input" type="radio" name="publishingDateRange" value="year" id="publishingDate_year">
                             <label class="form-check-label" for="publishingDate_year">Less than a year old</label>
                         </div>
+                    </div>
+                    <div class="d-flex mb-3">
+                        <button type="button" class="btn btn-secondary" onclick="resetFilters()">Reset</button>
+                        <button type="button" class="btn btn-primary ms-2" onclick="applyFilters()">Apply</button>
                     </div>
                 </div>
             </div>

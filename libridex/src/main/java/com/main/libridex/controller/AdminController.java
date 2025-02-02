@@ -1,6 +1,8 @@
 package com.main.libridex.controller;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -193,6 +195,8 @@ public class AdminController {
         model.addAttribute("usersCount", userService.countByRoleNot("ROLE_ADMIN"));
         model.addAttribute("authorsCount", bookService.countDistinctAuthors());
         model.addAttribute("booksPerGenre", bookService.countBooksPerGenre());
+        model.addAttribute("lendingsPerUser", lendingService.filterLendingsPerUser("").entrySet().stream()
+            .collect(Collectors.toMap(entry -> entry.getKey().getName(), Map.Entry::getValue)));
         model.addAttribute("lendingsPerMonth", lendingService.countLendingsPerMonth());
         return STATISTICS_VIEW;
     }
